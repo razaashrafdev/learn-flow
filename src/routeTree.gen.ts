@@ -22,6 +22,8 @@ import { Route as AppCompletedRouteImport } from './routes/app.completed'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppMyCoursesRouteImport } from './routes/app.my-courses'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
+import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
 import { Route as AppCoursesIndexRouteImport } from './routes/app.courses.index'
 import { Route as AppCoursesCourseIdRouteImport } from './routes/app.courses.$courseId'
 import { Route as AppLearnCourseIdRouteImport } from './routes/app.learn.$courseId'
@@ -91,6 +93,16 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppCoursesIndexRoute = AppCoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
@@ -121,8 +133,10 @@ export interface FileRoutesByFullPath {
   '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
   '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses/': typeof AdminCoursesIndexRoute
   '/app/courses/': typeof AppCoursesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -137,8 +151,10 @@ export interface FileRoutesByTo {
   '/app/profile': typeof AppProfileRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
   '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses': typeof AdminCoursesIndexRoute
   '/app/courses': typeof AppCoursesIndexRoute
 }
 export interface FileRoutesById {
@@ -156,8 +172,10 @@ export interface FileRoutesById {
   '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
   '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses/': typeof AdminCoursesIndexRoute
   '/app/courses/': typeof AppCoursesIndexRoute
 }
 export interface FileRouteTypes {
@@ -176,8 +194,10 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin/'
     | '/app/'
+    | '/admin/courses/new'
     | '/app/courses/$courseId'
     | '/app/learn/$courseId'
+    | '/admin/courses/'
     | '/app/courses/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -192,8 +212,10 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin'
     | '/app'
+    | '/admin/courses/new'
     | '/app/courses/$courseId'
     | '/app/learn/$courseId'
+    | '/admin/courses'
     | '/app/courses'
   id:
     | '__root__'
@@ -210,8 +232,10 @@ export interface FileRouteTypes {
     | '/app/profile'
     | '/admin/'
     | '/app/'
+    | '/admin/courses/new'
     | '/app/courses/$courseId'
     | '/app/learn/$courseId'
+    | '/admin/courses/'
     | '/app/courses/'
   fileRoutesById: FileRoutesById
 }
@@ -316,6 +340,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
     }
+    '/admin/courses/': {
+      id: '/admin/courses/'
+      path: '/courses'
+      fullPath: '/admin/courses/'
+      preLoaderRoute: typeof AdminCoursesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/new': {
+      id: '/admin/courses/new'
+      path: '/courses/new'
+      fullPath: '/admin/courses/new'
+      preLoaderRoute: typeof AdminCoursesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/app/courses/': {
       id: '/app/courses/'
       path: '/courses'
@@ -344,12 +382,16 @@ interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCoursesNewRoute: typeof AdminCoursesNewRoute
+  AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
+  AdminCoursesNewRoute: AdminCoursesNewRoute,
+  AdminCoursesIndexRoute: AdminCoursesIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
