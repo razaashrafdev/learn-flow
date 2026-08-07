@@ -10,33 +10,301 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminEnrollmentsRouteImport } from './routes/admin.enrollments'
+import { Route as AdminProgressRouteImport } from './routes/admin.progress'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminStudentsRouteImport } from './routes/admin.students'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppCompletedRouteImport } from './routes/app.completed'
+import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppMyCoursesRouteImport } from './routes/app.my-courses'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
+import { Route as AdminCoursesCourseIdRouteImport } from './routes/admin.courses.$courseId'
+import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
+import { Route as AppCoursesIndexRouteImport } from './routes/app.courses.index'
+import { Route as AppCoursesCourseIdRouteImport } from './routes/app.courses.$courseId'
+import { Route as AppLearnCourseIdRouteImport } from './routes/app.learn.$courseId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEnrollmentsRoute = AdminEnrollmentsRouteImport.update({
+  id: '/enrollments',
+  path: '/enrollments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminProgressRoute = AdminProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStudentsRoute = AdminStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCompletedRoute = AppCompletedRouteImport.update({
+  id: '/completed',
+  path: '/completed',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDashboardRoute = AppDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMyCoursesRoute = AppMyCoursesRouteImport.update({
+  id: '/my-courses',
+  path: '/my-courses',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursesCourseIdRoute = AdminCoursesCourseIdRouteImport.update({
+  id: '/courses/$courseId',
+  path: '/courses/$courseId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppCoursesIndexRoute = AppCoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCoursesCourseIdRoute = AppCoursesCourseIdRouteImport.update({
+  id: '/courses/$courseId',
+  path: '/courses/$courseId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLearnCourseIdRoute = AppLearnCourseIdRouteImport.update({
+  id: '/learn/$courseId',
+  path: '/learn/$courseId',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/register': typeof RegisterRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/progress': typeof AdminProgressRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/app/completed': typeof AppCompletedRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
+  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses/': typeof AdminCoursesIndexRoute
+  '/app/courses/': typeof AppCoursesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/register': typeof RegisterRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/progress': typeof AdminProgressRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/app/completed': typeof AppCompletedRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/admin': typeof AdminIndexRoute
+  '/app': typeof AppIndexRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
+  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses': typeof AdminCoursesIndexRoute
+  '/app/courses': typeof AppCoursesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/app': typeof AppRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/register': typeof RegisterRoute
+  '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/progress': typeof AdminProgressRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/students': typeof AdminStudentsRoute
+  '/app/completed': typeof AppCompletedRoute
+  '/app/dashboard': typeof AppDashboardRoute
+  '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
+  '/admin/': typeof AdminIndexRoute
+  '/app/': typeof AppIndexRoute
+  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
+  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/admin/courses/': typeof AdminCoursesIndexRoute
+  '/app/courses/': typeof AppCoursesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/app'
+    | '/forgot-password'
+    | '/register'
+    | '/admin/categories'
+    | '/admin/dashboard'
+    | '/admin/enrollments'
+    | '/admin/progress'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/app/completed'
+    | '/app/dashboard'
+    | '/app/my-courses'
+    | '/app/profile'
+    | '/admin/'
+    | '/app/'
+    | '/admin/courses/$courseId'
+    | '/admin/courses/new'
+    | '/app/courses/$courseId'
+    | '/app/learn/$courseId'
+    | '/admin/courses/'
+    | '/app/courses/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/register'
+    | '/admin/categories'
+    | '/admin/dashboard'
+    | '/admin/enrollments'
+    | '/admin/progress'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/app/completed'
+    | '/app/dashboard'
+    | '/app/my-courses'
+    | '/app/profile'
+    | '/admin'
+    | '/app'
+    | '/admin/courses/$courseId'
+    | '/admin/courses/new'
+    | '/app/courses/$courseId'
+    | '/app/learn/$courseId'
+    | '/admin/courses'
+    | '/app/courses'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/app'
+    | '/forgot-password'
+    | '/register'
+    | '/admin/categories'
+    | '/admin/dashboard'
+    | '/admin/enrollments'
+    | '/admin/progress'
+    | '/admin/settings'
+    | '/admin/students'
+    | '/app/completed'
+    | '/app/dashboard'
+    | '/app/my-courses'
+    | '/app/profile'
+    | '/admin/'
+    | '/app/'
+    | '/admin/courses/$courseId'
+    | '/admin/courses/new'
+    | '/app/courses/$courseId'
+    | '/app/learn/$courseId'
+    | '/admin/courses/'
+    | '/app/courses/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +316,222 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/enrollments': {
+      id: '/admin/enrollments'
+      path: '/enrollments'
+      fullPath: '/admin/enrollments'
+      preLoaderRoute: typeof AdminEnrollmentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/progress': {
+      id: '/admin/progress'
+      path: '/progress'
+      fullPath: '/admin/progress'
+      preLoaderRoute: typeof AdminProgressRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/students': {
+      id: '/admin/students'
+      path: '/students'
+      fullPath: '/admin/students'
+      preLoaderRoute: typeof AdminStudentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/completed': {
+      id: '/app/completed'
+      path: '/completed'
+      fullPath: '/app/completed'
+      preLoaderRoute: typeof AppCompletedRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/dashboard': {
+      id: '/app/dashboard'
+      path: '/dashboard'
+      fullPath: '/app/dashboard'
+      preLoaderRoute: typeof AppDashboardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/my-courses': {
+      id: '/app/my-courses'
+      path: '/my-courses'
+      fullPath: '/app/my-courses'
+      preLoaderRoute: typeof AppMyCoursesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/admin/courses/': {
+      id: '/admin/courses/'
+      path: '/courses'
+      fullPath: '/admin/courses/'
+      preLoaderRoute: typeof AdminCoursesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/$courseId': {
+      id: '/admin/courses/$courseId'
+      path: '/courses/$courseId'
+      fullPath: '/admin/courses/$courseId'
+      preLoaderRoute: typeof AdminCoursesCourseIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/new': {
+      id: '/admin/courses/new'
+      path: '/courses/new'
+      fullPath: '/admin/courses/new'
+      preLoaderRoute: typeof AdminCoursesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/app/courses/': {
+      id: '/app/courses/'
+      path: '/courses'
+      fullPath: '/app/courses/'
+      preLoaderRoute: typeof AppCoursesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/courses/$courseId': {
+      id: '/app/courses/$courseId'
+      path: '/courses/$courseId'
+      fullPath: '/app/courses/$courseId'
+      preLoaderRoute: typeof AppCoursesCourseIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/learn/$courseId': {
+      id: '/app/learn/$courseId'
+      path: '/learn/$courseId'
+      fullPath: '/app/learn/$courseId'
+      preLoaderRoute: typeof AppLearnCourseIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEnrollmentsRoute: typeof AdminEnrollmentsRoute
+  AdminProgressRoute: typeof AdminProgressRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminStudentsRoute: typeof AdminStudentsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminCoursesCourseIdRoute: typeof AdminCoursesCourseIdRoute
+  AdminCoursesNewRoute: typeof AdminCoursesNewRoute
+  AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminEnrollmentsRoute: AdminEnrollmentsRoute,
+  AdminProgressRoute: AdminProgressRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminStudentsRoute: AdminStudentsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  AdminCoursesCourseIdRoute: AdminCoursesCourseIdRoute,
+  AdminCoursesNewRoute: AdminCoursesNewRoute,
+  AdminCoursesIndexRoute: AdminCoursesIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface AppRouteChildren {
+  AppCompletedRoute: typeof AppCompletedRoute
+  AppDashboardRoute: typeof AppDashboardRoute
+  AppMyCoursesRoute: typeof AppMyCoursesRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppCoursesCourseIdRoute: typeof AppCoursesCourseIdRoute
+  AppLearnCourseIdRoute: typeof AppLearnCourseIdRoute
+  AppCoursesIndexRoute: typeof AppCoursesIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppCompletedRoute: AppCompletedRoute,
+  AppDashboardRoute: AppDashboardRoute,
+  AppMyCoursesRoute: AppMyCoursesRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppIndexRoute: AppIndexRoute,
+  AppCoursesCourseIdRoute: AppCoursesCourseIdRoute,
+  AppLearnCourseIdRoute: AppLearnCourseIdRoute,
+  AppCoursesIndexRoute: AppCoursesIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
