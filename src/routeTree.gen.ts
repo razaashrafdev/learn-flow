@@ -15,10 +15,12 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppCompletedRouteImport } from './routes/app.completed'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppMyCoursesRouteImport } from './routes/app.my-courses'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppCoursesIndexRouteImport } from './routes/app.courses.index'
 import { Route as AppCoursesCourseIdRouteImport } from './routes/app.courses.$courseId'
 import { Route as AppLearnCourseIdRouteImport } from './routes/app.learn.$courseId'
@@ -53,6 +55,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -71,6 +78,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
 const AppMyCoursesRoute = AppMyCoursesRouteImport.update({
   id: '/my-courses',
   path: '/my-courses',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCoursesIndexRoute = AppCoursesIndexRouteImport.update({
@@ -95,9 +107,11 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -108,9 +122,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -124,9 +140,11 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
+  '/app/profile': typeof AppProfileRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -141,9 +159,11 @@ export interface FileRouteTypes {
     | '/app'
     | '/forgot-password'
     | '/register'
+    | '/admin/settings'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
+    | '/app/profile'
     | '/admin/'
     | '/app/'
     | '/app/courses/$courseId'
@@ -154,9 +174,11 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/register'
+    | '/admin/settings'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
+    | '/app/profile'
     | '/admin'
     | '/app'
     | '/app/courses/$courseId'
@@ -169,9 +191,11 @@ export interface FileRouteTypes {
     | '/app'
     | '/forgot-password'
     | '/register'
+    | '/admin/settings'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
+    | '/app/profile'
     | '/admin/'
     | '/app/'
     | '/app/courses/$courseId'
@@ -231,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -259,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMyCoursesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/courses/': {
       id: '/app/courses/'
       path: '/courses'
@@ -284,10 +322,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
@@ -297,6 +337,7 @@ interface AppRouteChildren {
   AppCompletedRoute: typeof AppCompletedRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppMyCoursesRoute: typeof AppMyCoursesRoute
+  AppProfileRoute: typeof AppProfileRoute
   AppIndexRoute: typeof AppIndexRoute
   AppCoursesCourseIdRoute: typeof AppCoursesCourseIdRoute
   AppLearnCourseIdRoute: typeof AppLearnCourseIdRoute
@@ -307,6 +348,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCompletedRoute: AppCompletedRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppMyCoursesRoute: AppMyCoursesRoute,
+  AppProfileRoute: AppProfileRoute,
   AppIndexRoute: AppIndexRoute,
   AppCoursesCourseIdRoute: AppCoursesCourseIdRoute,
   AppLearnCourseIdRoute: AppLearnCourseIdRoute,

@@ -46,7 +46,7 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
       return;
     }
     setErrors({});
-    updateProfile({ name: parsed.data.name, email: parsed.data.email, avatar: parsed.data.avatar || undefined });
+    updateProfile({ name: parsed.data.name, email: parsed.data.email, avatar: parsed.data.avatar ?? "" });
     toast.success("Profile updated");
   };
 
