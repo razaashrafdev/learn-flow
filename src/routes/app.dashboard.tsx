@@ -93,10 +93,7 @@ function StudentDashboard() {
                     />
                   </div>
                   <div className="flex flex-1 flex-col p-5">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      {s.categoryName(course.categoryId)}
-                    </p>
-                    <h3 className="mt-1.5 line-clamp-2 text-base font-bold">{course.title}</h3>
+                    <h3 className="line-clamp-2 text-base font-bold">{course.title}</h3>
                     <div className="mt-4">
                       <ProgressRow percent={progress.percent} />
                     </div>

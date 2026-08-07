@@ -43,7 +43,6 @@ function MyCourses() {
               <CourseCard
                 key={e.id}
                 course={course}
-                categoryName={s.categoryName(course.categoryId)}
                 lessonCount={s.publishedLessonsOfCourse(course.id).length}
                 progress={{ percent: progress.percent, label: `${progress.done}/${progress.total} lessons complete` }}
                 footer={{

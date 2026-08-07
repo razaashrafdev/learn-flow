@@ -15,10 +15,8 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminEnrollmentsRouteImport } from './routes/admin.enrollments'
-import { Route as AdminProgressRouteImport } from './routes/admin.progress'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -63,11 +61,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => AdminRoute,
-} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -76,11 +69,6 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
 const AdminEnrollmentsRoute = AdminEnrollmentsRouteImport.update({
   id: '/enrollments',
   path: '/enrollments',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminProgressRoute = AdminProgressRouteImport.update({
-  id: '/progress',
-  path: '/progress',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -155,10 +143,8 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
-  '/admin/progress': typeof AdminProgressRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
@@ -178,10 +164,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
-  '/admin/progress': typeof AdminProgressRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
@@ -204,10 +188,8 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/register': typeof RegisterRoute
-  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
-  '/admin/progress': typeof AdminProgressRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
@@ -231,10 +213,8 @@ export interface FileRouteTypes {
     | '/app'
     | '/forgot-password'
     | '/register'
-    | '/admin/categories'
     | '/admin/dashboard'
     | '/admin/enrollments'
-    | '/admin/progress'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
@@ -254,10 +234,8 @@ export interface FileRouteTypes {
     | '/'
     | '/forgot-password'
     | '/register'
-    | '/admin/categories'
     | '/admin/dashboard'
     | '/admin/enrollments'
-    | '/admin/progress'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
@@ -279,10 +257,8 @@ export interface FileRouteTypes {
     | '/app'
     | '/forgot-password'
     | '/register'
-    | '/admin/categories'
     | '/admin/dashboard'
     | '/admin/enrollments'
-    | '/admin/progress'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
@@ -351,13 +327,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/categories': {
-      id: '/admin/categories'
-      path: '/categories'
-      fullPath: '/admin/categories'
-      preLoaderRoute: typeof AdminCategoriesRouteImport
-      parentRoute: typeof AdminRoute
-    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -370,13 +339,6 @@ declare module '@tanstack/react-router' {
       path: '/enrollments'
       fullPath: '/admin/enrollments'
       preLoaderRoute: typeof AdminEnrollmentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/progress': {
-      id: '/admin/progress'
-      path: '/progress'
-      fullPath: '/admin/progress'
-      preLoaderRoute: typeof AdminProgressRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -474,10 +436,8 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
-  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminEnrollmentsRoute: typeof AdminEnrollmentsRoute
-  AdminProgressRoute: typeof AdminProgressRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -487,10 +447,8 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminEnrollmentsRoute: AdminEnrollmentsRoute,
-  AdminProgressRoute: AdminProgressRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -535,3 +493,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

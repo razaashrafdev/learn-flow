@@ -1,6 +1,6 @@
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
@@ -41,17 +41,19 @@ function EditCourse() {
 
   return (
     <AppShell nav={adminNav} title="Edit course" subtitle={course.title}>
+      <Button asChild variant="ghost" className="mb-4 -ml-2 w-fit">
+        <Link to="/admin/courses"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link>
+      </Button>
       <Tabs defaultValue="details">
-        <TabsList>
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
+        <TabsList className="w-full">
+          <TabsTrigger value="details" className="flex-1">Details</TabsTrigger>
+          <TabsTrigger value="curriculum" className="flex-1">Curriculum</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="mt-5">
           <CourseForm
             initial={toFormValues(course)}
-            categories={data.categories}
-            submitLabel="Save changes"
+            submitLabel="Save Changes"
             onSubmit={(values) => {
               updateCourse(course.id, values);
               toast.success("Course updated");
@@ -110,7 +112,7 @@ function EditCourse() {
                     <li key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-2">
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium">{l.title}</p>
-                        <p className="truncate text-xs text-muted-foreground">{l.duration} · {l.youtubeId}</p>
+                        <p className="truncate text-xs text-muted-foreground">{l.duration} · {l.youtubeVideoId}</p>
                       </div>
                       <div className="flex shrink-0 gap-1">
                         <Button variant="ghost" size="icon" aria-label="Move lesson up" onClick={() => moveLesson(l.id, -1)}>
