@@ -160,3 +160,34 @@
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-card);
 }
+
+[data-sonner-toaster] {
+  left: auto !important;
+  right: 16px !important;
+  transform: none !important;
+  justify-content: flex-end !important;
+}
+[data-sonner-toaster] [data-sonner-toast] {
+  color: #000 !important;
+  width: 30% !important;
+  min-width: 280px !important;
+  max-width: 420px !important;
+}
+[data-sonner-toaster] [data-sonner-toast] svg {
+  color: #000 !important;
+}
+[data-sonner-toaster] [data-sonner-toast] [data-description] {
+  color: #000 !important;
+}
+[data-sonner-toaster] [data-sonner-toast][data-type="success"],
+[data-sonner-toaster] [data-sonner-toast][data-type="error"],
+[data-sonner-toaster] [data-sonner-toast][data-type="info"],
+[data-sonner-toaster] [data-sonner-toast][data-type="warning"] {
+  color: #000 !important;
+}
+[data-sonner-toaster] [data-sonner-toast][data-type="success"] svg,
+[data-sonner-toaster] [data-sonner-toast][data-type="error"] svg,
+[data-sonner-toaster] [data-sonner-toast][data-type="info"] svg,
+[data-sonner-toaster] [data-sonner-toast][data-type="warning"] svg {
+  color: #000 !important;
+}

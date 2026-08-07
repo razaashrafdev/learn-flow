@@ -2,8 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpen, CheckCircle2, Users, ClipboardList } from "lucide-react";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
-import { EmptyState, ProgressRow, StatCard, StatusPill } from "@/components/lms/ui-bits";
-import { Button } from "@/components/ui/button";
+import { EmptyState, ProgressRow, StatCard } from "@/components/lms/ui-bits";
 import { useLms, useSelectors } from "@/lib/lms/store";
 
 export const Route = createFileRoute("/admin/dashboard")({
@@ -41,12 +40,7 @@ function AdminDashboard() {
     <AppShell
       nav={adminNav}
       title="Dashboard"
-      subtitle="Overview of your learning platform"
-      actions={
-        <Button asChild>
-          <Link to="/admin/courses/new">Add course</Link>
-        </Button>
-      }
+      subtitle=""
     >
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard label="Total students" value={students.length} icon={Users} />
@@ -68,34 +62,27 @@ function AdminDashboard() {
               <p className="text-sm text-muted-foreground">No enrollments yet.</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[620px] text-sm">
+            <div>
+              <table className="w-full text-sm">
                 <thead className="bg-surface text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Student</th>
-                    <th className="px-5 py-3 font-semibold">Course</th>
                     <th className="px-5 py-3 font-semibold">Date</th>
                     <th className="px-5 py-3 font-semibold">Progress</th>
-                    <th className="px-5 py-3 font-semibold">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
                   {recent.map((e) => {
                     const student = data.users.find((u) => u.id === e.studentId);
-                    const course = data.courses.find((c) => c.id === e.courseId);
                     const p = s.courseProgress(e.studentId, e.courseId);
                     return (
                       <tr key={e.id}>
                         <td className="px-5 py-3 font-medium">{student?.name ?? "Unknown"}</td>
-                        <td className="max-w-[220px] truncate px-5 py-3">{course?.title ?? "Deleted course"}</td>
                         <td className="px-5 py-3 text-muted-foreground">
                           {new Date(e.enrolledAt).toLocaleDateString()}
                         </td>
                         <td className="w-40 px-5 py-3">
                           <ProgressRow percent={p.percent} />
-                        </td>
-                        <td className="px-5 py-3">
-                          <StatusPill status={e.status} />
                         </td>
                       </tr>
                     );

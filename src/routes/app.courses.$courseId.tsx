@@ -60,7 +60,7 @@ function CourseDetails() {
   };
 
   return (
-    <AppShell nav={studentNav} title={course.title} subtitle={s.categoryName(course.categoryId)}>
+    <AppShell nav={studentNav} title={course.title}>
       <Link
         to="/app/courses"
         className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground"
@@ -188,7 +188,6 @@ function CourseDetails() {
 
             <dl className="mt-6 space-y-3 border-t border-border pt-6 text-sm">
               {[
-                ["Category", s.categoryName(course.categoryId)],
                 ["Level", course.level],
                 ["Duration", course.duration],
                 ["Lessons", String(lessons.length)],

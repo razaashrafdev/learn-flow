@@ -7,6 +7,7 @@ export type User = {
   password: string;
   role: Role;
   avatar?: string;
+  whatsapp?: string;
   active: boolean;
   createdAt: string;
 };

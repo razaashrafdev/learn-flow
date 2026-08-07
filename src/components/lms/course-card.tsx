@@ -7,13 +7,11 @@ import type { Course } from "@/lib/lms/types";
 
 export function CourseCard({
   course,
-  categoryName,
   lessonCount,
   progress,
   footer,
 }: {
   course: Course;
-  categoryName: string;
   lessonCount: number;
   progress?: { percent: number; label?: string };
   footer?: { label: string; to: string; params?: Record<string, string> };
@@ -31,9 +29,6 @@ export function CourseCard({
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
-        <span className="absolute left-3 top-3 rounded-full bg-background/90 px-2.5 py-1 text-xs font-semibold backdrop-blur">
-          {categoryName}
-        </span>
       </Link>
 
       <div className="flex flex-1 flex-col p-5">

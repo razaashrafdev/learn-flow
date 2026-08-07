@@ -12,15 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Category, Course, CourseLevel, CourseStatus } from "@/lib/lms/types";
+import type { Course, CourseStatus } from "@/lib/lms/types";
 
 export type CourseFormValues = {
   title: string;
   shortDescription: string;
   description: string;
   thumbnail: string;
-  categoryId: string;
-  level: CourseLevel;
   duration: string;
   instructor: string;
   status: CourseStatus;
@@ -31,18 +29,15 @@ const schema = z.object({
   shortDescription: z.string().trim().min(10, "Write a short summary").max(200),
   description: z.string().trim().min(20, "Add a fuller description").max(4000),
   thumbnail: z.string().trim().url("Enter a valid image URL").max(600),
-  categoryId: z.string().min(1, "Pick a category"),
   duration: z.string().trim().min(1, "Add a duration").max(20),
   instructor: z.string().trim().min(2, "Add an instructor name").max(80),
 });
 
-export const emptyCourse = (categoryId: string): CourseFormValues => ({
+export const emptyCourse = (): CourseFormValues => ({
   title: "",
   shortDescription: "",
   description: "",
   thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800",
-  categoryId,
-  level: "Beginner",
   duration: "1h",
   instructor: "",
   status: "draft",
@@ -54,8 +49,6 @@ export function toFormValues(course: Course): CourseFormValues {
     shortDescription: course.shortDescription,
     description: course.description,
     thumbnail: course.thumbnail,
-    categoryId: course.categoryId,
-    level: course.level,
     duration: course.duration,
     instructor: course.instructor,
     status: course.status,
@@ -64,12 +57,10 @@ export function toFormValues(course: Course): CourseFormValues {
 
 export function CourseForm({
   initial,
-  categories,
   submitLabel,
   onSubmit,
 }: {
   initial: CourseFormValues;
-  categories: Category[];
   submitLabel: string;
   onSubmit: (values: CourseFormValues) => void;
 }) {
@@ -93,7 +84,7 @@ export function CourseForm({
   };
 
   return (
-    <form onSubmit={submit} className="card-surface max-w-3xl space-y-5 p-6">
+    <form onSubmit={submit} className="card-surface w-full space-y-5 p-6">
       <div className="space-y-1.5">
         <Label htmlFor="title">Course title</Label>
         <Input id="title" value={values.title} maxLength={120} onChange={(e) => set("title", e.target.value)} />
@@ -127,42 +118,11 @@ export function CourseForm({
         {errors["thumbnail"] ? <p className="text-xs font-medium text-destructive">{errors["thumbnail"]}</p> : null}
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-1.5">
-          <Label>Category</Label>
-          <Select value={values.categoryId} onValueChange={(v) => set("categoryId", v)}>
-            <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
-            <SelectContent>
-              {categories.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors["categoryId"] ? <p className="text-xs font-medium text-destructive">{errors["categoryId"]}</p> : null}
-        </div>
-
-        <div className="space-y-1.5">
-          <Label>Level</Label>
-          <Select value={values.level} onValueChange={(v) => set("level", v as CourseLevel)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
-            <SelectContent>
-              {(["Beginner", "Intermediate", "Advanced", "All Levels"] as CourseLevel[]).map((l) => (
-                <SelectItem key={l} value={l}>{l}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <div className="space-y-1.5">
           <Label htmlFor="duration">Duration</Label>
           <Input id="duration" value={values.duration} maxLength={20} placeholder="6h" onChange={(e) => set("duration", e.target.value)} />
           {errors["duration"] ? <p className="text-xs font-medium text-destructive">{errors["duration"]}</p> : null}
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="instructor">Instructor</Label>
-          <Input id="instructor" value={values.instructor} maxLength={80} onChange={(e) => set("instructor", e.target.value)} />
-          {errors["instructor"] ? <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p> : null}
         </div>
 
         <div className="space-y-1.5">
@@ -175,9 +135,15 @@ export function CourseForm({
             </SelectContent>
           </Select>
         </div>
+
+        <div className="col-span-2 space-y-1.5 sm:col-span-1">
+          <Label htmlFor="instructor">Instructor</Label>
+          <Input id="instructor" value={values.instructor} maxLength={80} onChange={(e) => set("instructor", e.target.value)} />
+          {errors["instructor"] ? <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p> : null}
+        </div>
       </div>
 
-      <Button type="submit">{submitLabel}</Button>
+      <Button type="submit" className="w-full self-start sm:w-auto">{submitLabel}</Button>
     </form>
   );
 }

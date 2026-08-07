@@ -34,7 +34,6 @@ function BrowseCourses() {
   const { data, currentUser, ready } = useLms();
   const s = useSelectors();
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("all");
   const [level, setLevel] = useState("all");
   const [visible, setVisible] = useState(PAGE_SIZE);
 
@@ -42,23 +41,21 @@ function BrowseCourses() {
     const q = query.trim().toLowerCase();
     return data.courses
       .filter((c) => c.status === "published")
-      .filter((c) => (category === "all" ? true : c.categoryId === category))
       .filter((c) => (level === "all" ? true : c.level === level))
       .filter((c) =>
         q
           ? c.title.toLowerCase().includes(q) ||
             c.shortDescription.toLowerCase().includes(q) ||
-            c.description.toLowerCase().includes(q) ||
-            s.categoryName(c.categoryId).toLowerCase().includes(q)
+            c.description.toLowerCase().includes(q)
           : true,
       );
-  }, [data.courses, query, category, level, s]);
+  }, [data.courses, query, level, s]);
 
   const shown = results.slice(0, visible);
 
   return (
     <AppShell nav={studentNav} title="Browse courses" subtitle={`${results.length} published courses`}>
-      <div className="card-surface mb-6 grid gap-3 p-4 md:grid-cols-[minmax(0,1fr)_auto_auto]">
+      <div className="card-surface mb-6 grid gap-3 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
         <div className="relative min-w-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -68,30 +65,11 @@ function BrowseCourses() {
               setQuery(e.target.value);
               setVisible(PAGE_SIZE);
             }}
-            placeholder="Search by title, description or category"
+            placeholder="Search by title or description"
             className="pl-9"
             aria-label="Search courses"
           />
         </div>
-        <Select
-          value={category}
-          onValueChange={(v) => {
-            setCategory(v);
-            setVisible(PAGE_SIZE);
-          }}
-        >
-          <SelectTrigger className="md:w-48" aria-label="Filter by category">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
-            {data.categories.map((c) => (
-              <SelectItem key={c.id} value={c.id}>
-                {c.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
         <Select
           value={level}
           onValueChange={(v) => {
@@ -119,13 +97,12 @@ function BrowseCourses() {
         <EmptyState
           icon={SearchX}
           title="No courses match your filters"
-          description="Try a different search term, or clear the category and level filters."
+          description="Try a different search term, or clear the level filter."
           action={
             <Button
               variant="outline"
               onClick={() => {
                 setQuery("");
-                setCategory("all");
                 setLevel("all");
               }}
             >
@@ -142,7 +119,6 @@ function BrowseCourses() {
                 <CourseCard
                   key={course.id}
                   course={course}
-                  categoryName={s.categoryName(course.categoryId)}
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
                   footer={
                     enrolled

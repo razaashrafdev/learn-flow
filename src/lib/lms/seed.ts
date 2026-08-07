@@ -220,17 +220,26 @@ export function buildSeed(): LmsData {
       active: true,
       createdAt: iso(200),
     },
-    ...["Jonah Whitfield", "Amelie Dubois", "Ravi Shankar", "Nora Lindqvist", "Tomas Varga"].map(
-      (name, i) => ({
-        id: `user-student-${i + 1}`,
-        name,
-        email: `${name.split(" ")[0]!.toLowerCase()}@student.dev`,
-        password: "student123",
-        role: "student" as const,
-        active: i !== 4,
-        createdAt: iso(60 - i * 7),
-      }),
-    ),
+    ...[
+      "Jonah Whitfield",
+      "Amelie Dubois",
+      "Ravi Shankar",
+      "Nora Lindqvist",
+      "Tomas Varga",
+      "Sofia Martinez",
+      "Liam O'Connor",
+      "Yuki Tanaka",
+      "Emma Wilson",
+      "Carlos Reyes",
+    ].map((name, i) => ({
+      id: `user-student-${i + 1}`,
+      name,
+      email: `${name.split(" ")[0]!.toLowerCase()}@student.dev`,
+      password: "student123",
+      role: "student" as const,
+      active: i !== 4,
+      createdAt: iso(60 - i * 7),
+    })),
   ];
 
   const courses: LmsData["courses"] = [];

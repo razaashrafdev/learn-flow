@@ -42,7 +42,6 @@ function CompletedCourses() {
               <CourseCard
                 key={e.id}
                 course={course}
-                categoryName={s.categoryName(course.categoryId)}
                 lessonCount={s.publishedLessonsOfCourse(course.id).length}
                 progress={{ percent: 100, label: "Completed" }}
                 footer={{ label: "Review course", to: "/app/learn/$courseId", params: { courseId: course.id } }}

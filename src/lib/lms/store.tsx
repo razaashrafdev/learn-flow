@@ -20,7 +20,7 @@ import type {
 } from "./types";
 import { extractYoutubeId } from "./youtube";
 
-const STORAGE_KEY = "lms.demo.v1";
+const STORAGE_KEY = "lms.demo.v2";
 const SESSION_KEY = "lms.session.v1";
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}`;
@@ -68,6 +68,10 @@ type Ctx = {
   setLastLesson: (courseId: string, lessonId: string) => void;
   setLessonCompleted: (courseId: string, lessonId: string, completed: boolean) => void;
   setStudentActive: (studentId: string, active: boolean) => void;
+  createStudent: (name: string, email: string, password: string, whatsapp?: string) => { ok: boolean; error?: string };
+  updateStudent: (id: string, patch: Partial<Pick<User, "name" | "email" | "whatsapp">>) => { ok: boolean; error?: string };
+  changeStudentPassword: (id: string, newPassword: string) => { ok: boolean; error?: string };
+  deleteStudent: (id: string) => void;
 };
 
 const LmsContext = createContext<Ctx | null>(null);
@@ -395,6 +399,46 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       });
     },
     setStudentActive: (studentId, active) => patchUser(studentId, { active }),
+    createStudent: (name, email, password, whatsapp) => {
+      const exists = data.users.some((u) => u.email.toLowerCase() === email.trim().toLowerCase());
+      if (exists) return { ok: false, error: "An account with this email already exists." };
+      const user: User = {
+        id: uid("user"),
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        role: "student",
+        whatsapp: whatsapp?.trim() || "",
+        active: true,
+        createdAt: nowIso(),
+      };
+      setData((d) => ({ ...d, users: [...d.users, user] }));
+      return { ok: true };
+    },
+    updateStudent: (id, patch) => {
+      if (patch.email) {
+        const exists = data.users.some((u) => u.id !== id && u.email.toLowerCase() === patch.email!.trim().toLowerCase());
+        if (exists) return { ok: false, error: "An account with this email already exists." };
+      }
+      patchUser(id, {
+        ...(patch.name ? { name: patch.name.trim() } : {}),
+        ...(patch.email ? { email: patch.email.trim().toLowerCase() } : {}),
+        ...(patch.whatsapp !== undefined ? { whatsapp: patch.whatsapp.trim() } : {}),
+      });
+      return { ok: true };
+    },
+    changeStudentPassword: (id, newPassword) => {
+      if (newPassword.length < 8) return { ok: false, error: "Use at least 8 characters." };
+      patchUser(id, { password: newPassword });
+      return { ok: true };
+    },
+    deleteStudent: (id) =>
+      setData((d) => ({
+        ...d,
+        users: d.users.filter((u) => u.id !== id),
+        enrollments: d.enrollments.filter((e) => e.studentId !== id),
+        progress: d.progress.filter((p) => p.studentId !== id),
+      })),
   };
 
   return <LmsContext.Provider value={value}>{children}</LmsContext.Provider>;
