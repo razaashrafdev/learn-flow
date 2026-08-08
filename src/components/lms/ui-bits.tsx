@@ -20,16 +20,14 @@ export function StatCard({
 }) {
   return (
     <div className="card-surface p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-muted-foreground">{label}</p>
-          <p className="mt-2 text-3xl font-extrabold tracking-tight">{value}</p>
-          {hint ? <p className="mt-1 truncate text-xs text-muted-foreground">{hint}</p> : null}
-        </div>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <p className="text-3xl font-extrabold tracking-tight">{value}</p>
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary-soft text-accent-foreground">
           <Icon className="h-5 w-5" />
         </span>
       </div>
+      {hint ? <p className="mt-1 truncate text-xs text-muted-foreground">{hint}</p> : null}
     </div>
   );
 }
@@ -76,7 +74,7 @@ export function StatusPill({ status }: { status: string }) {
     active: "bg-success/12 text-success",
     disabled: "bg-destructive/10 text-destructive",
   };
-  const label = status === "in_progress" ? "In progress" : status.charAt(0).toUpperCase() + status.slice(1);
+  const label = status === "in_progress" ? "In Progress" : status.charAt(0).toUpperCase() + status.slice(1);
   return (
     <span
       className={cn(

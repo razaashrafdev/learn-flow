@@ -8,10 +8,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [
-      { title: "Admin dashboard — Lumen LMS" },
-      { name: "description", content: "Platform overview: students, courses, enrollments and recent activity." },
-      { property: "og:title", content: "Admin dashboard — Lumen LMS" },
-      { property: "og:description", content: "Platform overview for Lumen LMS administrators." },
+      { title: "Admin Dashboard — Lumen LMS" },
+      { name: "description", content: "Platform Overview: Students, Courses, Enrollments and Recent Activity." },
+      { property: "og:title", content: "Admin Dashboard — Lumen LMS" },
+      { property: "og:description", content: "Platform Overview for Lumen LMS Administrators." },
     ],
   }),
   component: AdminDashboard,
@@ -42,24 +42,24 @@ function AdminDashboard() {
       title="Dashboard"
       subtitle=""
     >
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total students" value={students.length} icon={Users} />
-        <StatCard label="Total courses" value={data.courses.length} icon={BookOpen} />
-        <StatCard label="Published courses" value={published.length} icon={CheckCircle2} />
-        <StatCard label="Total enrollments" value={data.enrollments.length} icon={ClipboardList} />
+      <div className="grid grid-cols-2 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="Total Students" value={students.length} icon={Users} />
+        <StatCard label="Total Courses" value={data.courses.length} icon={BookOpen} />
+        <StatCard label="Published Courses" value={published.length} icon={CheckCircle2} />
+        <StatCard label="Total Enrollments" value={data.enrollments.length} icon={ClipboardList} />
       </div>
 
       <section className="mt-9 grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <div className="card-surface min-w-0 overflow-hidden">
           <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4">
-            <h2 className="text-base font-bold">Recent enrollments</h2>
+            <h2 className="text-base font-bold">Recent Enrollments</h2>
             <Link to="/admin/enrollments" className="text-sm font-semibold text-primary hover:underline">
-              View all
+              View All
             </Link>
           </div>
           {recent.length === 0 ? (
             <div className="p-6">
-              <p className="text-sm text-muted-foreground">No enrollments yet.</p>
+              <p className="text-sm text-muted-foreground">No Enrollments Yet.</p>
             </div>
           ) : (
             <div>
@@ -93,14 +93,14 @@ function AdminDashboard() {
           )}
         </div>
 
-        <div className="card-surface min-w-0 p-5">
-          <h2 className="text-base font-bold">Popular courses</h2>
+        <div className="min-w-0">
+            <h2 className="text-base font-bold">Popular Courses</h2>
           {popular.length === 0 ? (
             <EmptyState
               icon={BookOpen}
-              title="No courses yet"
-              description="Create your first course to see it here."
-              action={{ label: "Add course", to: "/admin/courses/new" }}
+              title="No Courses Yet"
+              description="Create Your First Course to See It Here."
+              action={{ label: "Add Course", to: "/admin/courses/new" }}
             />
           ) : (
             <ul className="mt-4 space-y-4">
@@ -122,7 +122,7 @@ function AdminDashboard() {
                     />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold">{course.title}</p>
-                      <p className="text-xs text-muted-foreground">{count} students</p>
+                      <p className="text-xs text-muted-foreground">{count} Students</p>
                       <div className="mt-1.5">
                         <ProgressRow percent={avg} />
                       </div>

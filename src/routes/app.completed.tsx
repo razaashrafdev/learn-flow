@@ -9,10 +9,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/completed")({
   head: () => ({
     meta: [
-      { title: "Completed courses — Lumen LMS" },
-      { name: "description", content: "Every course you've finished on Lumen LMS, ready to revisit any time." },
-      { property: "og:title", content: "Completed courses — Lumen LMS" },
-      { property: "og:description", content: "Courses you've finished on Lumen LMS." },
+      { title: "Completed Courses — Lumen LMS" },
+      { name: "description", content: "Every Course You've Finished on Lumen LMS, Ready to Revisit Any Time." },
+      { property: "og:title", content: "Completed Courses — Lumen LMS" },
+      { property: "og:description", content: "Courses You've Finished on Lumen LMS." },
     ],
   }),
   component: CompletedCourses,
@@ -25,13 +25,13 @@ function CompletedCourses() {
   const completed = data.enrollments.filter((e) => e.studentId === user.id && e.status === "completed");
 
   return (
-    <AppShell nav={studentNav} title="Completed courses" subtitle={`${completed.length} finished`}>
+    <AppShell nav={studentNav} title="Completed Courses">
       {completed.length === 0 ? (
         <EmptyState
           icon={CheckCircle2}
-          title="No completed courses yet"
-          description="Finish every lesson in a course and it will show up here."
-          action={{ label: "Go to my courses", to: "/app/my-courses" }}
+          title="No Completed Courses Yet"
+          description="Finish Every Lesson in a Course and It Will Show Up Here."
+          action={{ label: "Go to My Courses", to: "/app/my-courses" }}
         />
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -44,7 +44,7 @@ function CompletedCourses() {
                 course={course}
                 lessonCount={s.publishedLessonsOfCourse(course.id).length}
                 progress={{ percent: 100, label: "Completed" }}
-                footer={{ label: "Review course", to: "/app/learn/$courseId", params: { courseId: course.id } }}
+                footer={{ label: "Review Course", to: "/app/learn/$courseId", params: { courseId: course.id } }}
               />
             );
           })}

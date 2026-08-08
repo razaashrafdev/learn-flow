@@ -26,10 +26,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/enrollments")({
   head: () => ({
     meta: [
-      { title: "Enrollments — Lumen LMS admin" },
-      { name: "description", content: "Every student enrollment across the Lumen LMS catalogue with live progress." },
-      { property: "og:title", content: "Enrollments — Lumen LMS admin" },
-      { property: "og:description", content: "Track Lumen LMS enrollments and completion." },
+      { title: "Enrollments — Lumen LMS Admin" },
+      { name: "description", content: "Every Student Enrollment Across the Lumen LMS Catalogue with Live Progress." },
+      { property: "og:title", content: "Enrollments — Lumen LMS Admin" },
+      { property: "og:description", content: "Track Lumen LMS Enrollments and Completion." },
     ],
   }),
   component: AdminEnrollments,
@@ -39,9 +39,11 @@ function AdminEnrollments() {
   const { data, setStudentActive } = useLms();
   const s = useSelectors();
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [detailsId, setDetailsId] = useState<string | null>(null);
 
-  const rows = data.enrollments
+  const PAGE_SIZE = 10;
+  const allRows = data.enrollments
     .slice()
     .sort((a, b) => b.enrolledAt.localeCompare(a.enrolledAt))
     .filter((e) => {
@@ -50,11 +52,13 @@ function AdminEnrollments() {
       const searchStr = (student?.name ?? "") + (course?.title ?? "");
       return searchStr.toLowerCase().includes(query.trim().toLowerCase());
     });
+  const totalPages = Math.max(1, Math.ceil(allRows.length / PAGE_SIZE));
+  const rows = allRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <AppShell nav={adminNav} title="Enrollments"       subtitle="">
       <div className="mb-5 max-w-sm">
-        <Input value={query} maxLength={120} placeholder="Search by student or course" aria-label="Search enrollments" onChange={(e) => setQuery(e.target.value)} />
+        <Input value={query} maxLength={120} placeholder="Search by Student or Course" aria-label="Search Enrollments" onChange={(e) => { setQuery(e.target.value); setPage(1); }} />
       </div>
 
       <div className="card-surface overflow-x-auto">
@@ -81,7 +85,7 @@ function AdminEnrollments() {
                   <td className="max-w-[120px] px-3 py-3 sm:max-w-none sm:px-5">
                     <span className="block truncate font-medium">{student?.name ?? "Unknown"}</span>
                   </td>
-                  <td className="hidden max-w-[240px] truncate px-5 py-3 md:table-cell">{course?.title ?? "Deleted course"}</td>
+                  <td className="hidden max-w-[240px] truncate px-5 py-3 md:table-cell">{course?.title ?? "Deleted Course"}</td>
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">{new Date(e.enrolledAt).toLocaleDateString()}</td>
                   <td className="px-3 py-3 sm:px-5"><ProgressRow percent={p.percent} /></td>
                   <td className="px-2 py-3 sm:px-5">
@@ -99,7 +103,7 @@ function AdminEnrollments() {
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
                             setStudentActive(e.studentId, !isActive);
-                            toast.success(isActive ? "Student deactivated" : "Student activated");
+                            toast.success(isActive ? "Student Deactivated" : "Student Activated");
                           }}>
                             {isActive ? <XCircle className="h-4 w-4 mr-2" /> : <CheckCircle2 className="h-4 w-4 mr-2" />}
                             {isActive ? "Deactivate" : "Activate"}
@@ -115,30 +119,79 @@ function AdminEnrollments() {
         </table>
       </div>
 
+      {totalPages > 1 && (
+        <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="hidden text-sm text-muted-foreground sm:block">
+            Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, allRows.length)} of {allRows.length}
+          </p>
+          <div className="flex gap-1.5">
+            <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+              <span className="sm:hidden">&lt;</span><span className="hidden sm:inline">Prev</span>
+            </Button>
+            {Array.from({ length: Math.min(totalPages, 3) }, (_, i) => {
+              let p: number;
+              if (totalPages <= 3) {
+                p = i + 1;
+              } else if (page <= 2) {
+                p = i + 1;
+              } else if (page >= totalPages - 1) {
+                p = totalPages - 2 + i;
+              } else {
+                p = page - 1 + i;
+              }
+              return (
+                <Button key={p} variant={p === page ? "default" : "outline"} size="sm" onClick={() => setPage(p)}>{p}</Button>
+              );
+            })}
+            <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+              <span className="sm:hidden">&gt;</span><span className="hidden sm:inline">Next</span>
+            </Button>
+          </div>
+        </div>
+      )}
+
       {detailsId && (() => {
         const e = rows.find((r) => r.id === detailsId);
         if (!e) return null;
         const student = data.users.find((u) => u.id === e.studentId);
         const course = data.courses.find((c) => c.id === e.courseId);
         const p = s.courseProgress(e.studentId, e.courseId);
+        const isCompleted = e.status === "completed";
+        const isActive = student?.active !== false;
         return (
           <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{student?.name ?? "Unknown"}</AlertDialogTitle>
-              </AlertDialogHeader>
-              <div className="space-y-3 text-sm">
-                <div className="grid grid-cols-2 gap-3">
-                  <div><span className="text-muted-foreground">Course:</span> {course?.title ?? "Deleted"}</div>
-                  <div><span className="text-muted-foreground">Progress:</span> {p.percent}%</div>
-                  <div><span className="text-muted-foreground">Enrolled:</span> {new Date(e.enrolledAt).toLocaleDateString()}</div>
-                  <div><span className="text-muted-foreground">Status:</span> {e.status === "completed" ? "Completed" : "In Progress"}</div>
-                  <div><span className="text-muted-foreground">Student Status:</span> {student?.active !== false ? "Active" : "Inactive"}</div>
+            <AlertDialogContent className="gap-0 p-0 overflow-hidden sm:max-w-md">
+              <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 pt-6 pb-4">
+                <h2 className="text-center text-lg font-bold tracking-tight">{student?.name ?? "Unknown"}</h2>
+                <p className="mt-0.5 text-center text-sm text-muted-foreground">{course?.title ?? "Deleted Course"}</p>
+                <div className="mt-3 flex justify-center gap-2">
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${isCompleted ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${isCompleted ? "bg-emerald-500" : "bg-amber-500"}`} />
+                    {isCompleted ? "Completed" : "In Progress"}
+                  </span>
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${isActive ? "bg-blue-100 text-blue-700" : "bg-red-100 text-red-700"}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-blue-500" : "bg-red-500"}`} />
+                    {isActive ? "Active" : "Inactive"}
+                  </span>
                 </div>
               </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Close</AlertDialogCancel>
-              </AlertDialogFooter>
+
+              <div className="px-6 py-5 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Progress</p>
+                    <p className="mt-0.5 text-sm font-medium">{p.done}/{p.total} Lessons ({p.percent}%)</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Enrolled</p>
+                    <p className="mt-0.5 text-sm font-medium">{new Date(e.enrolledAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-border px-6 py-3.5">
+                <AlertDialogCancel className="w-full">Close</AlertDialogCancel>
+              </div>
             </AlertDialogContent>
           </AlertDialog>
         );

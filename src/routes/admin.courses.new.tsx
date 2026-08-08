@@ -10,10 +10,10 @@ import { useLms } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/courses/new")({
   head: () => ({
     meta: [
-      { title: "Add a course — Lumen LMS admin" },
-      { name: "description", content: "Create a new course with a category, level, duration and instructor." },
-      { property: "og:title", content: "Add a course — Lumen LMS admin" },
-      { property: "og:description", content: "Create a new course on Lumen LMS." },
+      { title: "Add a Course — Lumen LMS Admin" },
+      { name: "description", content: "Create a New Course with a Category, Level, Duration and Instructor." },
+      { property: "og:title", content: "Add a Course — Lumen LMS Admin" },
+      { property: "og:description", content: "Create a New Course on Lumen LMS." },
     ],
   }),
   component: NewCourse,
@@ -24,7 +24,7 @@ function NewCourse() {
   const navigate = useNavigate();
 
   return (
-    <AppShell nav={adminNav} title="Add course" subtitle="Step 1 — course details">
+    <AppShell nav={adminNav} title="Add Course" subtitle="Step 1 — Course Details">
       <Button asChild variant="ghost" className="mb-4 -ml-2 w-fit">
         <Link to="/admin/courses"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link>
       </Button>
@@ -32,8 +32,8 @@ function NewCourse() {
         initial={emptyCourse()}
         submitLabel="Create Course"
         onSubmit={(values) => {
-          const course = createCourse({ ...values, categoryId: "", level: "Beginner" });
-          toast.success("Course created — now add sections and lessons");
+          const course = createCourse({ ...values, categoryId: "" });
+          toast.success("Course Created — Now Add Sections and Lessons");
           navigate({ to: "/admin/courses/$courseId", params: { courseId: course.id } });
         }}
       />

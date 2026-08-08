@@ -66,7 +66,7 @@ export function CourseCard({
               to={footer?.to ?? "/app/courses/$courseId"}
               params={footer?.params ?? { courseId: course.id }}
             >
-              {footer?.label ?? "View course"}
+              {footer?.label ?? "View Course"}
             </Link>
           </Button>
         </div>

@@ -9,10 +9,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({
     meta: [
-      { title: "Your dashboard — Lumen LMS" },
-      { name: "description", content: "Track your enrolled courses, progress and continue learning." },
-      { property: "og:title", content: "Your dashboard — Lumen LMS" },
-      { property: "og:description", content: "Track your progress and continue learning on Lumen." },
+      { title: "Your Dashboard — Lumen LMS" },
+      { name: "description", content: "Track Your Enrolled Courses, Progress and Continue Learning." },
+      { property: "og:title", content: "Your Dashboard — Lumen LMS" },
+      { property: "og:description", content: "Track Your Progress and Continue Learning on Lumen." },
     ],
   }),
   component: StudentDashboard,
@@ -42,25 +42,20 @@ function StudentDashboard() {
     <AppShell
       nav={studentNav}
       title={`Welcome back, ${user.name.split(" ")[0]}`}
-      subtitle="Here's where you left off."
-      actions={
-        <Button asChild>
-          <Link to="/app/courses">Browse courses</Link>
-        </Button>
-      }
+      subtitle="Here's Where You Left Off."
     >
-      <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Enrolled courses" value={enrollments.length} icon={BookOpen} />
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="Enrolled Courses" value={enrollments.length} icon={BookOpen} />
         <StatCard label="Completed" value={completed.length} icon={CheckCircle2} />
-        <StatCard label="In progress" value={inProgress.length} icon={PlayCircle} />
-        <StatCard label="Overall progress" value={`${overall}%`} icon={TrendingUp} />
+        <StatCard label="Overall Progress" value={`${overall}%`} icon={TrendingUp} />
+        <div className="hidden sm:block"><StatCard label="In Progress" value={inProgress.length} icon={PlayCircle} /></div>
       </div>
 
       <section className="mt-9">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-bold">Continue learning</h2>
+          <h2 className="text-lg font-bold">Continue Learning</h2>
           <Link to="/app/my-courses" className="text-sm font-semibold text-primary hover:underline">
-            View all
+            View All
           </Link>
         </div>
 
@@ -69,9 +64,9 @@ function StudentDashboard() {
         ) : continueList.length === 0 ? (
           <EmptyState
             icon={Compass}
-            title="You haven't started a course yet"
-            description="Browse the catalogue and enroll in something that looks useful."
-            action={{ label: "Browse courses", to: "/app/courses" }}
+            title="You Haven't Started a Course Yet"
+            description="Browse the Catalogue and Enroll in Something that Looks Useful."
+            action={{ label: "Browse Courses", to: "/app/courses" }}
           />
         ) : (
           <div className="grid gap-5 lg:grid-cols-3">
@@ -98,11 +93,11 @@ function StudentDashboard() {
                       <ProgressRow percent={progress.percent} />
                     </div>
                     <p className="mt-2 line-clamp-1 text-xs text-muted-foreground">
-                      Next: {current?.title ?? "All lessons complete"}
+                      Next: {current?.title ?? "All Lessons Complete"}
                     </p>
                     <Button asChild className="mt-5 w-full">
                       <Link to="/app/learn/$courseId" params={{ courseId: course.id }}>
-                        Continue learning
+                        Continue Learning
                       </Link>
                     </Button>
                   </div>
