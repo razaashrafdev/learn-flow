@@ -39,10 +39,10 @@ import type { User as UserType } from "@/lib/lms/types";
 export const Route = createFileRoute("/admin/students")({
   head: () => ({
     meta: [
-      { title: "Students — Lumen LMS admin" },
-      { name: "description", content: "Review every learner, their enrollments and account status on Lumen LMS." },
-      { property: "og:title", content: "Students — Lumen LMS admin" },
-      { property: "og:description", content: "Manage Lumen LMS learners and their accounts." },
+      { title: "Students — Lumen LMS Admin" },
+      { name: "description", content: "Review Every Learner, Their Enrollments and Account Status on Lumen LMS." },
+      { property: "og:title", content: "Students — Lumen LMS Admin" },
+      { property: "og:description", content: "Manage Lumen LMS Learners and Their Accounts." },
     ],
   }),
   component: AdminStudents,
@@ -52,6 +52,7 @@ function AdminStudents() {
   const { data, setStudentActive, createStudent, updateStudent, changeStudentPassword, deleteStudent } = useLms();
   const s = useSelectors();
   const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [addOpen, setAddOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -62,18 +63,21 @@ function AdminStudents() {
   const [editErrors, setEditErrors] = useState<Record<string, string>>({});
   const [detailsId, setDetailsId] = useState<string | null>(null);
 
-  const students = s
+  const PAGE_SIZE = 10;
+  const allStudents = s
     .studentsList()
     .filter((u) => (u.name + u.email).toLowerCase().includes(query.trim().toLowerCase()));
+  const totalPages = Math.max(1, Math.ceil(allStudents.length / PAGE_SIZE));
+  const students = allStudents.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const resetAddForm = () => setForm({ name: "", email: "", password: "", whatsapp: "" });
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     const fe: Record<string, string> = {};
-    if (form.name.trim().length < 2) fe["name"] = "Name is required";
-    if (!form.email.trim()) fe["email"] = "Email is required";
-    if (form.password.length < 8) fe["password"] = "Use at least 8 characters";
+    if (form.name.trim().length < 2) fe["name"] = "Name Is Required";
+    if (!form.email.trim()) fe["email"] = "Email Is Required";
+    if (form.password.length < 8) fe["password"] = "Use at Least 8 Characters";
     setErrors(fe);
     if (Object.keys(fe).length) return;
 
@@ -84,7 +88,7 @@ function AdminStudents() {
     }
     resetAddForm();
     setAddOpen(false);
-    toast.success("Student added");
+    toast.success("Student Added");
   };
 
   const openEdit = (student: UserType) => {
@@ -98,9 +102,9 @@ function AdminStudents() {
     e.preventDefault();
     if (!editingStudent) return;
     const fe: Record<string, string> = {};
-    if (editForm.name.trim().length < 2) fe["name"] = "Name is required";
-    if (!editForm.email.trim()) fe["email"] = "Email is required";
-    if (editForm.password && editForm.password.length < 8) fe["password"] = "Use at least 8 characters";
+    if (editForm.name.trim().length < 2) fe["name"] = "Name Is Required";
+    if (!editForm.email.trim()) fe["email"] = "Email Is Required";
+    if (editForm.password && editForm.password.length < 8) fe["password"] = "Use at Least 8 Characters";
     setEditErrors(fe);
     if (Object.keys(fe).length) return;
 
@@ -114,13 +118,13 @@ function AdminStudents() {
     }
     setEditOpen(false);
     setEditingStudent(null);
-    toast.success("Student updated");
+    toast.success("Student Updated");
   };
 
   return (
     <AppShell nav={adminNav} title="Students"       subtitle="">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <Input value={query} maxLength={120} placeholder="Search students" aria-label="Search students" onChange={(e) => setQuery(e.target.value)} className="max-w-sm" />
+        <Input value={query} maxLength={120} placeholder="Search Students" aria-label="Search Students" onChange={(e) => { setQuery(e.target.value); setPage(1); }} className="max-w-sm" />
 
         <Dialog open={addOpen} onOpenChange={(o) => { setAddOpen(o); if (!o) resetAddForm(); }}>
           <DialogTrigger asChild>
@@ -132,11 +136,11 @@ function AdminStudents() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Student</DialogTitle>
-              <DialogDescription>Fill in the details to add a new student.</DialogDescription>
+              <DialogDescription>Fill in the Details to Add a New Student.</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleAdd} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="add-name">Full name</Label>
+                <Label htmlFor="add-name">Full Name</Label>
                 <Input id="add-name" value={form.name} maxLength={80} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 {errors["name"] ? <p className="text-xs font-medium text-destructive">{errors["name"]}</p> : null}
               </div>
@@ -146,7 +150,7 @@ function AdminStudents() {
                 {errors["email"] ? <p className="text-xs font-medium text-destructive">{errors["email"]}</p> : null}
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="add-whatsapp">WhatsApp number</Label>
+                <Label htmlFor="add-whatsapp">WhatsApp Number</Label>
                 <Input id="add-whatsapp" value={form.whatsapp} maxLength={20} placeholder="+92 300 1234567" onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
               </div>
               <div className="space-y-1.5">
@@ -202,7 +206,7 @@ function AdminStudents() {
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => {
                           setStudentActive(u.id, u.active === false);
-                          toast.success(u.active === false ? "Student activated" : "Student deactivated");
+                          toast.success(u.active === false ? "Student Activated" : "Student Deactivated");
                         }}>
                           {u.active === false ? <CheckCircle2 className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
                           {u.active === false ? "Activate" : "Deactivate"}
@@ -221,15 +225,46 @@ function AdminStudents() {
         </table>
       </div>
 
+      {totalPages > 1 && (
+        <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="hidden text-sm text-muted-foreground sm:block">
+            Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, allStudents.length)} of {allStudents.length}
+          </p>
+          <div className="flex gap-1.5">
+            <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+              <span className="sm:hidden">&lt;</span><span className="hidden sm:inline">Prev</span>
+            </Button>
+            {Array.from({ length: Math.min(totalPages, 3) }, (_, i) => {
+              let p: number;
+              if (totalPages <= 3) {
+                p = i + 1;
+              } else if (page <= 2) {
+                p = i + 1;
+              } else if (page >= totalPages - 1) {
+                p = totalPages - 2 + i;
+              } else {
+                p = page - 1 + i;
+              }
+              return (
+                <Button key={p} variant={p === page ? "default" : "outline"} size="sm" onClick={() => setPage(p)}>{p}</Button>
+              );
+            })}
+            <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
+              <span className="sm:hidden">&gt;</span><span className="hidden sm:inline">Next</span>
+            </Button>
+          </div>
+        </div>
+      )}
+
       <Dialog open={editOpen} onOpenChange={(o) => { setEditOpen(o); if (!o) setEditingStudent(null); }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Student</DialogTitle>
-            <DialogDescription>Update the student's details.</DialogDescription>
+              <DialogTitle>Edit Student</DialogTitle>
+              <DialogDescription>Update the Student's Details.</DialogDescription>
           </DialogHeader>
           <form onSubmit={handleEdit} className="space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="edit-name">Full name</Label>
+              <Label htmlFor="edit-name">Full Name</Label>
               <Input id="edit-name" value={editForm.name} maxLength={80} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
               {editErrors["name"] ? <p className="text-xs font-medium text-destructive">{editErrors["name"]}</p> : null}
             </div>
@@ -239,12 +274,12 @@ function AdminStudents() {
               {editErrors["email"] ? <p className="text-xs font-medium text-destructive">{editErrors["email"]}</p> : null}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-whatsapp">WhatsApp number</Label>
+              <Label htmlFor="edit-whatsapp">WhatsApp Number</Label>
               <Input id="edit-whatsapp" value={editForm.whatsapp} maxLength={20} placeholder="+92 300 1234567" onChange={(e) => setEditForm({ ...editForm, whatsapp: e.target.value })} />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="edit-password">New password</Label>
-              <Input id="edit-password" type="password" value={editForm.password} maxLength={128} placeholder="Leave blank to keep current" onChange={(e) => setEditForm({ ...editForm, password: e.target.value })} />
+              <Label htmlFor="edit-password">New Password</Label>
+              <Input id="edit-password" type="password" value={editForm.password} maxLength={128}                 placeholder="Leave Blank to Keep Current" onChange={(e) => setEditForm({ ...editForm, password: e.target.value })} />
               {editErrors["password"] ? <p className="text-xs font-medium text-destructive">{editErrors["password"]}</p> : null}
             </div>
             <DialogFooter className="gap-2">
@@ -259,24 +294,45 @@ function AdminStudents() {
         const u = data.users.find((us) => us.id === detailsId);
         if (!u) return null;
         const enrolled = data.enrollments.filter((e) => e.studentId === u.id).length;
+        const isActive = u.active !== false;
         return (
           <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>{u.name}</AlertDialogTitle>
-              </AlertDialogHeader>
-              <div className="space-y-3 text-sm">
-                <div className="grid grid-cols-2 gap-3">
-                  <div><span className="text-muted-foreground">Email:</span> {u.email}</div>
-                  <div><span className="text-muted-foreground">WhatsApp:</span> {u.whatsapp ?? "—"}</div>
-                  <div><span className="text-muted-foreground">Enrolled:</span> {enrolled}</div>
-                  <div><span className="text-muted-foreground">Joined:</span> {new Date(u.createdAt).toLocaleDateString()}</div>
-                  <div><span className="text-muted-foreground">Status:</span> {u.active !== false ? "Active" : "Inactive"}</div>
+            <AlertDialogContent className="gap-0 p-0 overflow-hidden sm:max-w-md">
+              <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 pt-6 pb-4">
+                <h2 className="text-center text-lg font-bold tracking-tight">{u.name}</h2>
+                <p className="mt-0.5 text-center text-sm text-muted-foreground">{u.email}</p>
+                <div className="mt-3 flex justify-center">
+                  <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}>
+                    <span className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-emerald-500" : "bg-red-500"}`} />
+                    {isActive ? "Active" : "Inactive"}
+                  </span>
                 </div>
               </div>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Close</AlertDialogCancel>
-              </AlertDialogFooter>
+
+              <div className="px-6 py-5 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">WhatsApp</p>
+                    <p className="mt-0.5 text-sm font-medium truncate">{u.whatsapp || "—"}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Enrolled</p>
+                    <p className="mt-0.5 text-sm font-medium">{enrolled} course{enrolled !== 1 ? "s" : ""}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Joined</p>
+                    <p className="mt-0.5 text-sm font-medium">{new Date(u.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Role</p>
+                    <p className="mt-0.5 text-sm font-medium capitalize">{u.role}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-border px-6 py-3.5">
+                <AlertDialogCancel className="w-full">Close</AlertDialogCancel>
+              </div>
             </AlertDialogContent>
           </AlertDialog>
         );
@@ -285,9 +341,9 @@ function AdminStudents() {
       <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete this student?</AlertDialogTitle>
+            <AlertDialogTitle>Delete This Student?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove the student and all their enrollments and progress. This cannot be undone.
+              This Will Permanently Remove the Student and All Their Enrollments and Progress. This Cannot Be Undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -296,7 +352,7 @@ function AdminStudents() {
               onClick={() => {
                 if (deleteId) {
                   deleteStudent(deleteId);
-                  toast.success("Student deleted");
+                  toast.success("Student Deleted");
                 }
                 setDeleteId(null);
               }}

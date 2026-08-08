@@ -13,10 +13,10 @@ import { useLms } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/courses/$courseId")({
   head: () => ({
     meta: [
-      { title: "Edit course — Lumen LMS admin" },
-      { name: "description", content: "Edit course details and build the curriculum with sections and YouTube lessons." },
-      { property: "og:title", content: "Edit course — Lumen LMS admin" },
-      { property: "og:description", content: "Edit a Lumen LMS course and its curriculum." },
+      { title: "Edit Course — Lumen LMS Admin" },
+      { name: "description", content: "Edit Course Details and Build the Curriculum with Sections and YouTube Lessons." },
+      { property: "og:title", content: "Edit Course — Lumen LMS Admin" },
+      { property: "og:description", content: "Edit a Lumen LMS Course and Its Curriculum." },
     ],
   }),
   component: EditCourse,
@@ -31,8 +31,8 @@ function EditCourse() {
 
   if (!course) {
     return (
-      <AppShell nav={adminNav} title="Course not found">
-        <p className="text-sm text-muted-foreground">This course no longer exists.</p>
+      <AppShell nav={adminNav} title="Course Not Found">
+        <p className="text-sm text-muted-foreground">This Course No Longer Exists.</p>
       </AppShell>
     );
   }
@@ -40,7 +40,7 @@ function EditCourse() {
   const sections = data.sections.filter((s) => s.courseId === course.id).sort((a, b) => a.order - b.order);
 
   return (
-    <AppShell nav={adminNav} title="Edit course" subtitle={course.title}>
+    <AppShell nav={adminNav} title="Edit Course" subtitle={course.title}>
       <Button asChild variant="ghost" className="mb-4 -ml-2 w-fit">
         <Link to="/admin/courses"><ArrowLeft className="mr-1 h-4 w-4" />Back</Link>
       </Button>
@@ -56,7 +56,7 @@ function EditCourse() {
             submitLabel="Save Changes"
             onSubmit={(values) => {
               updateCourse(course.id, values);
-              toast.success("Course updated");
+              toast.success("Course Updated");
             }}
           />
         </TabsContent>
@@ -69,17 +69,17 @@ function EditCourse() {
               if (sectionTitle.trim().length < 2) return;
               createSection(course.id, sectionTitle.trim());
               setSectionTitle("");
-              toast.success("Section added");
+              toast.success("Section Added");
             }}
           >
             <Input
               value={sectionTitle}
               maxLength={100}
-              placeholder="New section title"
-              aria-label="New section title"
+              placeholder="New Section Title"
+              aria-label="New Section Title"
               onChange={(e) => setSectionTitle(e.target.value)}
             />
-            <Button type="submit" className="shrink-0"><Plus className="mr-1 h-4 w-4" />Add section</Button>
+            <Button type="submit" className="shrink-0"><Plus className="mr-1 h-4 w-4" />Add Section</Button>
           </form>
 
           {sections.map((section) => {
@@ -100,7 +100,7 @@ function EditCourse() {
                       variant="ghost"
                       size="icon"
                       aria-label="Delete section"
-                      onClick={() => { deleteSection(section.id); toast.success("Section deleted"); }}
+                      onClick={() => { deleteSection(section.id); toast.success("Section Deleted"); }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -121,7 +121,7 @@ function EditCourse() {
                         <Button variant="ghost" size="icon" aria-label="Move lesson down" onClick={() => moveLesson(l.id, 1)}>
                           <ChevronDown className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Delete lesson" onClick={() => { deleteLesson(l.id); toast.success("Lesson deleted"); }}>
+                        <Button variant="ghost" size="icon" aria-label="Delete lesson"                         onClick={() => { deleteLesson(l.id); toast.success("Lesson Deleted"); }}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
@@ -141,16 +141,16 @@ function EditCourse() {
                       freePreview: false,
                       published: true,
                     });
-                    if (!res.ok) { toast.error(res.error ?? "Could not add lesson"); return; }
+                    if (!res.ok) { toast.error(res.error ?? "Could Not Add Lesson"); return; }
                     setLessonDraft({ ...lessonDraft, [section.id]: { title: "", url: "", duration: "10:00" } });
-                    toast.success("Lesson added");
+                    toast.success("Lesson Added");
                   }}
                 >
                   <Input
                     value={draft.title}
                     maxLength={120}
-                    placeholder="Lesson title"
-                    aria-label="Lesson title"
+                    placeholder="Lesson Title"
+                    aria-label="Lesson Title"
                     onChange={(e) => setLessonDraft({ ...lessonDraft, [section.id]: { ...draft, title: e.target.value } })}
                   />
                   <Input
@@ -167,7 +167,7 @@ function EditCourse() {
                     aria-label="Lesson duration"
                     onChange={(e) => setLessonDraft({ ...lessonDraft, [section.id]: { ...draft, duration: e.target.value } })}
                   />
-                  <Button type="submit" variant="secondary" className="shrink-0">Add lesson</Button>
+                  <Button type="submit" variant="secondary" className="shrink-0">Add Lesson</Button>
                 </form>
               </div>
             );

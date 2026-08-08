@@ -29,12 +29,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export type NavItem = { label: string; to: string; icon: typeof BookOpen; exact?: boolean };
+export type NavItem = { label: string; mobileLabel?: string; to: string; icon: typeof BookOpen; exact?: boolean };
 
 export const studentNav: NavItem[] = [
   { label: "Dashboard", to: "/app/dashboard", icon: LayoutGrid },
   { label: "My Courses", to: "/app/my-courses", icon: BookOpen },
-  { label: "Browse Courses", to: "/app/courses", icon: Compass },
+  { label: "Browse Courses", mobileLabel: "Browse", to: "/app/courses", icon: Compass },
   { label: "Completed", to: "/app/completed", icon: CheckCircle2 },
   { label: "Profile", to: "/app/profile", icon: UserRound },
 ];
@@ -82,7 +82,7 @@ export function AppShell({
 
   const handleSignOut = () => {
     signOut();
-    toast.success("Signed out");
+    toast.success("Signed Out");
     navigate({ to: "/", replace: true });
   };
 
@@ -100,7 +100,7 @@ export function AppShell({
           type="button"
           onClick={() => setOpen(false)}
           className="ml-auto rounded-md p-1.5 text-muted-foreground hover:bg-muted lg:hidden"
-          aria-label="Close navigation"
+          aria-label="Close Navigation"
         >
           <X className="h-4 w-4" />
         </button>
@@ -170,7 +170,7 @@ export function AppShell({
                 size="icon"
                 className="hidden lg:flex"
                 onClick={() => setCollapsed(!collapsed)}
-                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                aria-label={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
               >
                 {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
               </Button>
@@ -205,7 +205,9 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 px-4 pb-24 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">{children}</main>
+        <main className="flex-1 px-4 pb-24 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
+          {children}
+        </main>
       </div>
 
       <nav className="fixed bottom-4 left-4 right-4 z-40 flex rounded-2xl border border-border bg-background/95 shadow-lg backdrop-blur lg:hidden">
@@ -223,11 +225,12 @@ export function AppShell({
               )}
             >
               <item.icon className="h-5 w-5" />
-              <span>{item.label}</span>
+              <span>{item.mobileLabel ?? item.label}</span>
             </Link>
           );
         })}
       </nav>
+      <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-30 h-24 bg-gradient-to-t from-background to-transparent lg:hidden" />
     </div>
   );
 }

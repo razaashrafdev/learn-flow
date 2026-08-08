@@ -19,10 +19,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/courses/")({
   head: () => ({
     meta: [
-      { title: "Browse courses — Lumen LMS" },
-      { name: "description", content: "Search and filter the full Lumen LMS course catalogue by category and level." },
-      { property: "og:title", content: "Browse courses — Lumen LMS" },
-      { property: "og:description", content: "Search the Lumen LMS course catalogue." },
+      { title: "Browse Courses — Lumen LMS" },
+      { name: "description", content: "Search and Filter the Full Lumen LMS Course Catalogue by Category and Level." },
+      { property: "og:title", content: "Browse Courses — Lumen LMS" },
+      { property: "og:description", content: "Search the Lumen LMS Course Catalogue." },
     ],
   }),
   component: BrowseCourses,
@@ -54,8 +54,8 @@ function BrowseCourses() {
   const shown = results.slice(0, visible);
 
   return (
-    <AppShell nav={studentNav} title="Browse courses" subtitle={`${results.length} published courses`}>
-      <div className="card-surface mb-6 grid gap-3 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
+    <AppShell nav={studentNav} title="Browse Courses">
+      <div className="mb-6 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
         <div className="relative min-w-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -65,9 +65,9 @@ function BrowseCourses() {
               setQuery(e.target.value);
               setVisible(PAGE_SIZE);
             }}
-            placeholder="Search by title or description"
+            placeholder="Search by Title or Description"
             className="pl-9"
-            aria-label="Search courses"
+            aria-label="Search Courses"
           />
         </div>
         <Select
@@ -81,7 +81,7 @@ function BrowseCourses() {
             <SelectValue placeholder="Level" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All levels</SelectItem>
+            <SelectItem value="all">All Levels</SelectItem>
             {["Beginner", "Intermediate", "Advanced", "All Levels"].map((l) => (
               <SelectItem key={l} value={l}>
                 {l}
@@ -96,8 +96,8 @@ function BrowseCourses() {
       ) : shown.length === 0 ? (
         <EmptyState
           icon={SearchX}
-          title="No courses match your filters"
-          description="Try a different search term, or clear the level filter."
+          title="No Courses Match Your Filters"
+          description="Try a Different Search Term, or Clear the Level Filter."
           action={
             <Button
               variant="outline"
@@ -106,7 +106,7 @@ function BrowseCourses() {
                 setLevel("all");
               }}
             >
-              Clear filters
+              Clear Filters
             </Button>
           }
         />
@@ -122,8 +122,8 @@ function BrowseCourses() {
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
                   footer={
                     enrolled
-                      ? { label: "Continue learning", to: "/app/learn/$courseId", params: { courseId: course.id } }
-                      : { label: "View course", to: "/app/courses/$courseId", params: { courseId: course.id } }
+                      ? { label: "Continue Learning", to: "/app/learn/$courseId", params: { courseId: course.id } }
+                      : { label: "View Course", to: "/app/courses/$courseId", params: { courseId: course.id } }
                   }
                 />
               );
@@ -133,7 +133,7 @@ function BrowseCourses() {
           {visible < results.length ? (
             <div className="mt-8 flex justify-center">
               <Button variant="outline" onClick={() => setVisible((v) => v + PAGE_SIZE)}>
-                Load more courses
+                Load More Courses
               </Button>
             </div>
           ) : null}

@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Course, CourseStatus } from "@/lib/lms/types";
+import type { Course, CourseLevel, CourseStatus } from "@/lib/lms/types";
 
 export type CourseFormValues = {
   title: string;
@@ -21,16 +21,18 @@ export type CourseFormValues = {
   thumbnail: string;
   duration: string;
   instructor: string;
+  level: CourseLevel;
   status: CourseStatus;
 };
 
 const schema = z.object({
-  title: z.string().trim().min(3, "Title is required").max(120),
-  shortDescription: z.string().trim().min(10, "Write a short summary").max(200),
-  description: z.string().trim().min(20, "Add a fuller description").max(4000),
-  thumbnail: z.string().trim().url("Enter a valid image URL").max(600),
-  duration: z.string().trim().min(1, "Add a duration").max(20),
-  instructor: z.string().trim().min(2, "Add an instructor name").max(80),
+  title: z.string().trim().min(3, "Title Is Required").max(120),
+  shortDescription: z.string().trim().min(10, "Write a Short Summary").max(200),
+  description: z.string().trim().min(20, "Add a Fuller Description").max(4000),
+  thumbnail: z.string().trim().url("Enter a Valid Image URL").max(600),
+  duration: z.string().trim().min(1, "Add a Duration").max(20),
+  instructor: z.string().trim().min(2, "Add an Instructor Name").max(80),
+  level: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]),
 });
 
 export const emptyCourse = (): CourseFormValues => ({
@@ -40,6 +42,7 @@ export const emptyCourse = (): CourseFormValues => ({
   thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800",
   duration: "1h",
   instructor: "",
+  level: "Beginner",
   status: "draft",
 });
 
@@ -51,6 +54,7 @@ export function toFormValues(course: Course): CourseFormValues {
     thumbnail: course.thumbnail,
     duration: course.duration,
     instructor: course.instructor,
+    level: course.level,
     status: course.status,
   };
 }
@@ -86,13 +90,13 @@ export function CourseForm({
   return (
     <form onSubmit={submit} className="card-surface w-full space-y-5 p-6">
       <div className="space-y-1.5">
-        <Label htmlFor="title">Course title</Label>
+        <Label htmlFor="title">Course Title</Label>
         <Input id="title" value={values.title} maxLength={120} onChange={(e) => set("title", e.target.value)} />
         {errors["title"] ? <p className="text-xs font-medium text-destructive">{errors["title"]}</p> : null}
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="short">Short description</Label>
+        <Label htmlFor="short">Short Description</Label>
         <Input
           id="short"
           value={values.shortDescription}
@@ -105,7 +109,7 @@ export function CourseForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="desc">Full description</Label>
+        <Label htmlFor="desc">Full Description</Label>
         <Textarea id="desc" rows={5} value={values.description} maxLength={4000} onChange={(e) => set("description", e.target.value)} />
         {errors["description"] ? (
           <p className="text-xs font-medium text-destructive">{errors["description"]}</p>
@@ -118,7 +122,7 @@ export function CourseForm({
         {errors["thumbnail"] ? <p className="text-xs font-medium text-destructive">{errors["thumbnail"]}</p> : null}
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="space-y-1.5">
           <Label htmlFor="duration">Duration</Label>
           <Input id="duration" value={values.duration} maxLength={20} placeholder="6h" onChange={(e) => set("duration", e.target.value)} />
@@ -136,7 +140,20 @@ export function CourseForm({
           </Select>
         </div>
 
-        <div className="col-span-2 space-y-1.5 sm:col-span-1">
+        <div className="space-y-1.5">
+          <Label>Level</Label>
+          <Select value={values.level} onValueChange={(v) => set("level", v as CourseLevel)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Beginner">Beginner</SelectItem>
+              <SelectItem value="Intermediate">Intermediate</SelectItem>
+              <SelectItem value="Advanced">Advanced</SelectItem>
+              <SelectItem value="All Levels">All Levels</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-1.5">
           <Label htmlFor="instructor">Instructor</Label>
           <Input id="instructor" value={values.instructor} maxLength={80} onChange={(e) => set("instructor", e.target.value)} />
           {errors["instructor"] ? <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p> : null}

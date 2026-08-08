@@ -231,6 +231,11 @@ export function buildSeed(): LmsData {
       "Yuki Tanaka",
       "Emma Wilson",
       "Carlos Reyes",
+      "Zara Ahmed",
+      "Kofi Mensah",
+      "Ines Ferreira",
+      "Arjun Patel",
+      "Mila Novak",
     ].map((name, i) => ({
       id: `user-student-${i + 1}`,
       name,
@@ -302,6 +307,16 @@ export function buildSeed(): LmsData {
     [3, 2, 3],
     [3, 4, 5],
     [4, 1, 1],
+    [11, 1, 3],
+    [11, 2, 6],
+    [12, 3, 4],
+    [12, 5, 2],
+    [13, 1, 7],
+    [13, 4, 1],
+    [14, 2, 5],
+    [14, 3, 3],
+    [15, 5, 4],
+    [15, 1, 2],
   ];
 
   plan.forEach(([sIdx, cIdx, done], i) => {

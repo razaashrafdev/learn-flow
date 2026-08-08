@@ -16,10 +16,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/courses/$courseId")({
   head: () => ({
     meta: [
-      { title: "Course details — Lumen LMS" },
-      { name: "description", content: "Review the curriculum, instructor and lessons before you enroll." },
-      { property: "og:title", content: "Course details — Lumen LMS" },
-      { property: "og:description", content: "Review the curriculum before you enroll." },
+      { title: "Course Details — Lumen LMS" },
+      { name: "description", content: "Review the Curriculum, Instructor and Lessons Before You Enroll." },
+      { property: "og:title", content: "Course Details — Lumen LMS" },
+      { property: "og:description", content: "Review the Curriculum Before You Enroll." },
     ],
   }),
   component: CourseDetails,
@@ -36,12 +36,12 @@ function CourseDetails() {
 
   if (!course || course.status !== "published") {
     return (
-      <AppShell nav={studentNav} title="Course unavailable">
+        <AppShell nav={studentNav} title="Course Unavailable">
         <EmptyState
           icon={FileQuestion}
-          title="This course isn't available"
-          description="It may have been unpublished or removed by the administrator."
-          action={{ label: "Back to catalogue", to: "/app/courses" }}
+          title="This Course Isn't Available"
+          description="It May Have Been Unpublished or Removed by the Administrator."
+          action={{ label: "Back to Catalogue", to: "/app/courses" }}
         />
       </AppShell>
     );
@@ -55,7 +55,7 @@ function CourseDetails() {
 
   const handleEnroll = () => {
     enroll(course.id);
-    toast.success("You're enrolled — happy learning");
+    toast.success("You're Enrolled — Happy Learning");
     navigate({ to: "/app/learn/$courseId", params: { courseId: course.id } });
   };
 
@@ -65,7 +65,7 @@ function CourseDetails() {
         to="/app/courses"
         className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground"
       >
-        <ChevronLeft className="h-4 w-4" /> Back to courses
+        <ChevronLeft className="h-4 w-4" /> Back to Courses
       </Link>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
@@ -98,13 +98,13 @@ function CourseDetails() {
           </div>
 
           <div className="card-surface p-6">
-            <h3 className="text-base font-bold">Course curriculum</h3>
+            <h3 className="text-base font-bold">Course Curriculum</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               {sections.length} sections · {lessons.length} lessons
             </p>
 
             {sections.length === 0 ? (
-              <p className="mt-6 text-sm text-muted-foreground">No lessons added yet.</p>
+              <p className="mt-6 text-sm text-muted-foreground">No Lessons Added Yet.</p>
             ) : (
               <Accordion type="multiple" defaultValue={[sections[0]!.id]} className="mt-4">
                 {sections.map((section, si) => {
@@ -156,31 +156,31 @@ function CourseDetails() {
           <div className="card-surface p-6">
             {enrollment ? (
               <>
-                <p className="text-sm font-semibold">Your progress</p>
+                <p className="text-sm font-semibold">Your Progress</p>
                 <div className="mt-3">
                   <ProgressRow percent={progress.percent} />
                 </div>
                 <p className="mt-2 text-xs text-muted-foreground">
-                  {progress.done} of {progress.total} lessons completed
+                  {progress.done} of {progress.total} Lessons Completed
                 </p>
                 <Button asChild className="mt-5 w-full">
                   <Link to="/app/learn/$courseId" params={{ courseId: course.id }}>
-                    {progress.done === 0 ? "Start learning" : "Continue learning"}
+                    {progress.done === 0 ? "Start Learning" : "Continue Learning"}
                   </Link>
                 </Button>
               </>
             ) : (
               <>
-                <p className="text-sm font-semibold">Ready to start?</p>
+                <p className="text-sm font-semibold">Ready to Start?</p>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                  Enrollment is free and gives you access to every lesson in this course.
+                  Enrollment Is Free and Gives You Access to Every Lesson in This Course.
                 </p>
                 <Button className="mt-5 w-full" onClick={handleEnroll} disabled={lessons.length === 0}>
-                  Enroll now
+                  Enroll Now
                 </Button>
                 {lessons.length === 0 ? (
                   <p className="mt-2 text-xs text-muted-foreground">
-                    This course has no lessons yet.
+                    This Course Has No Lessons Yet.
                   </p>
                 ) : null}
               </>

@@ -14,9 +14,9 @@ export const Route = createFileRoute("/app/learn/$courseId")({
   head: () => ({
     meta: [
       { title: "Learning — Lumen LMS" },
-      { name: "description", content: "Watch your video lessons and mark them complete as you go." },
+      { name: "description", content: "Watch Your Video Lessons and Mark Them Complete as You Go." },
       { property: "og:title", content: "Learning — Lumen LMS" },
-      { property: "og:description", content: "Watch lessons and track completion on Lumen LMS." },
+      { property: "og:description", content: "Watch Lessons and Track Completion on Lumen LMS." },
     ],
   }),
   component: LearnPage,
@@ -53,16 +53,16 @@ function LearnPage() {
 
   if (!course || !enrollment) {
     return (
-      <AppShell nav={studentNav} title="Not available">
+        <AppShell nav={studentNav} title="Not Available">
         <EmptyState
           icon={FileQuestion}
-          title={course ? "You're not enrolled in this course" : "Course not found"}
+          title={course ? "You're Not Enrolled in This Course" : "Course Not Found"}
           description={
             course
-              ? "Enroll from the course page to start watching the lessons."
-              : "This course may have been removed by the administrator."
+              ? "Enroll from the Course Page to Start Watching the Lessons."
+              : "This Course May Have Been Removed by the Administrator."
           }
-          action={{ label: "Back to catalogue", to: "/app/courses" }}
+          action={{ label: "Back to Catalogue", to: "/app/courses" }}
         />
       </AppShell>
     );
@@ -80,21 +80,21 @@ function LearnPage() {
     setLessonCompleted(course.id, active.id, !isDone);
     if (!isDone) {
       const willFinish = progress.done + 1 >= progress.total;
-      toast.success(willFinish ? "Course completed — nice work!" : "Lesson marked as complete");
+      toast.success(willFinish ? "Course Completed — Nice Work!" : "Lesson Marked as Complete");
       if (next) setActiveId(next.id);
     } else {
-      toast.info("Lesson marked as not complete");
+      toast.info("Lesson Marked as Not Complete");
     }
   };
 
   return (
-    <AppShell nav={studentNav} title={course.title} subtitle={`${progress.done}/${progress.total} lessons complete`}>
+    <AppShell nav={studentNav} title={course.title} subtitle={`${progress.done}/${progress.total} Lessons Complete`}>
       <Link
         to="/app/courses/$courseId"
         params={{ courseId: course.id }}
         className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground"
       >
-        <ChevronLeft className="h-4 w-4" /> Course overview
+        <ChevronLeft className="h-4 w-4" /> Course Overview
       </Link>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -114,19 +114,19 @@ function LearnPage() {
             </div>
 
             <div className="p-5 sm:p-6">
-              <h2 className="text-lg font-bold sm:text-xl">{active?.title ?? "No lessons yet"}</h2>
+              <h2 className="text-lg font-bold sm:text-xl">{active?.title ?? "No Lessons Yet"}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {active?.description ?? "The administrator hasn't added any lessons to this course."}
+                {active?.description ?? "The Administrator Hasn't Added Any Lessons to This Course."}
               </p>
 
-              <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="mt-6 flex flex-row items-center gap-2">
                 <Button
                   variant="outline"
                   disabled={!prev}
                   onClick={() => prev && setActiveId(prev.id)}
                   className="sm:w-auto"
                 >
-                  <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+                  <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Previous</span>
                 </Button>
                 <Button
                   onClick={toggleComplete}
@@ -135,7 +135,7 @@ function LearnPage() {
                   className="flex-1"
                 >
                   <CheckCircle2 className="mr-2 h-4 w-4" />
-                  {isDone ? "Completed" : "Mark as complete"}
+                  {isDone ? "Completed" : "Mark as Complete"}
                 </Button>
                 <Button
                   variant="outline"
@@ -143,7 +143,7 @@ function LearnPage() {
                   onClick={() => next && setActiveId(next.id)}
                   className="sm:w-auto"
                 >
-                  Next <ChevronRight className="ml-1 h-4 w-4" />
+                  <span className="hidden sm:inline">Next</span> <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -153,7 +153,7 @@ function LearnPage() {
         <aside className="min-w-0">
           <div className="card-surface overflow-hidden lg:sticky lg:top-24">
             <div className="border-b border-border p-5">
-              <h3 className="text-base font-bold">Course content</h3>
+              <h3 className="text-base font-bold">Course Content</h3>
               <div className="mt-3">
                 <ProgressRow percent={progress.percent} />
               </div>

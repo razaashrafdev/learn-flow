@@ -20,7 +20,7 @@ import type {
 } from "./types";
 import { extractYoutubeId } from "./youtube";
 
-const STORAGE_KEY = "lms.demo.v2";
+const STORAGE_KEY = "lms.demo.v3";
 const SESSION_KEY = "lms.session.v1";
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}`;
