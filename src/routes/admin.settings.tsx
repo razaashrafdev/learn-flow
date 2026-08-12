@@ -6,9 +6,9 @@ import { ProfileForms } from "./app.profile";
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — Lumen LMS admin" },
-      { name: "description", content: "Update the administrator profile and password for your Lumen LMS platform." },
-      { property: "og:title", content: "Settings — Lumen LMS admin" },
+      { title: "Settings — Hamza Visuals LMS admin" },
+      { name: "description", content: "Update the administrator profile and password for your Hamza Visuals LMS platform." },
+      { property: "og:title", content: "Settings — Hamza Visuals LMS admin" },
       { property: "og:description", content: "Administrator profile and password settings." },
     ],
   }),

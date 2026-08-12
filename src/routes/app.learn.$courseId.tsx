@@ -13,10 +13,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/app/learn/$courseId")({
   head: () => ({
     meta: [
-      { title: "Learning — Lumen LMS" },
+      { title: "Learning — Hamza Visuals LMS" },
       { name: "description", content: "Watch Your Video Lessons and Mark Them Complete as You Go." },
-      { property: "og:title", content: "Learning — Lumen LMS" },
-      { property: "og:description", content: "Watch Lessons and Track Completion on Lumen LMS." },
+      { property: "og:title", content: "Learning — Hamza Visuals LMS" },
+      { property: "og:description", content: "Watch Lessons and Track Completion on Hamza Visuals LMS." },
     ],
   }),
   component: LearnPage,
@@ -62,7 +62,7 @@ function LearnPage() {
               ? "Enroll from the Course Page to Start Watching the Lessons."
               : "This Course May Have Been Removed by the Administrator."
           }
-          action={{ label: "Back to Catalogue", to: "/app/courses" }}
+          action={{ label: "Back to Home", to: "/" }}
         />
       </AppShell>
     );
@@ -87,6 +87,10 @@ function LearnPage() {
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <AppShell nav={studentNav} title={course.title} subtitle={`${progress.done}/${progress.total} Lessons Complete`}>
       <Link
@@ -100,15 +104,19 @@ function LearnPage() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0">
           <div className="card-surface overflow-hidden">
-            <div className="aspect-video w-full bg-foreground/90">
+            <div
+              className="aspect-video w-full bg-foreground/90"
+              onContextMenu={handleContextMenu}
+            >
               {active ? (
                 <iframe
                   key={active.id}
                   src={youtubeEmbed(active.youtubeVideoId)}
                   title={active.title}
-                  className="h-full w-full"
+                  className="h-full w-full pointer-events-none"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
+                  referrerPolicy="no-referrer"
                 />
               ) : null}
             </div>

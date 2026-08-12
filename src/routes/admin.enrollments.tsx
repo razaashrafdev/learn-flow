@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { MoreHorizontal, CheckCircle2, XCircle, BookOpen } from "lucide-react";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
-import { ProgressRow } from "@/components/lms/ui-bits";
+import { Pagination } from "@/components/lms/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -26,10 +26,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/enrollments")({
   head: () => ({
     meta: [
-      { title: "Enrollments — Lumen LMS Admin" },
-      { name: "description", content: "Every Student Enrollment Across the Lumen LMS Catalogue with Live Progress." },
-      { property: "og:title", content: "Enrollments — Lumen LMS Admin" },
-      { property: "og:description", content: "Track Lumen LMS Enrollments and Completion." },
+      { title: "Enrollments — Hamza Visuals LMS Admin" },
+      { name: "description", content: "Every Student Enrollment Across the Hamza Visuals LMS Catalogue with Live Progress." },
+      { property: "og:title", content: "Enrollments — Hamza Visuals LMS Admin" },
+      { property: "og:description", content: "Track Hamza Visuals LMS Enrollments and Completion." },
     ],
   }),
   component: AdminEnrollments,
@@ -69,7 +69,6 @@ function AdminEnrollments() {
               <th className="px-3 py-3 font-semibold sm:px-5">Student</th>
               <th className="hidden px-5 py-3 font-semibold md:table-cell">Course</th>
               <th className="hidden px-5 py-3 font-semibold md:table-cell">Enrolled</th>
-              <th className="px-3 py-3 font-semibold sm:px-5">Progress</th>
               <th className="px-2 py-3 text-right font-semibold sm:px-5">Actions</th>
             </tr>
           </thead>
@@ -77,7 +76,6 @@ function AdminEnrollments() {
             {rows.map((e, i) => {
               const student = data.users.find((u) => u.id === e.studentId);
               const course = data.courses.find((c) => c.id === e.courseId);
-              const p = s.courseProgress(e.studentId, e.courseId);
               const isActive = student?.active !== false;
               return (
                 <tr key={e.id}>
@@ -87,7 +85,6 @@ function AdminEnrollments() {
                   </td>
                   <td className="hidden max-w-[240px] truncate px-5 py-3 md:table-cell">{course?.title ?? "Deleted Course"}</td>
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">{new Date(e.enrolledAt).toLocaleDateString()}</td>
-                  <td className="px-3 py-3 sm:px-5"><ProgressRow percent={p.percent} /></td>
                   <td className="px-2 py-3 sm:px-5">
                     <div className="flex justify-end">
                       <DropdownMenu>
@@ -119,36 +116,13 @@ function AdminEnrollments() {
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="hidden text-sm text-muted-foreground sm:block">
-            Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, allRows.length)} of {allRows.length}
-          </p>
-          <div className="flex gap-1.5">
-            <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-              <span className="sm:hidden">&lt;</span><span className="hidden sm:inline">Prev</span>
-            </Button>
-            {Array.from({ length: Math.min(totalPages, 3) }, (_, i) => {
-              let p: number;
-              if (totalPages <= 3) {
-                p = i + 1;
-              } else if (page <= 2) {
-                p = i + 1;
-              } else if (page >= totalPages - 1) {
-                p = totalPages - 2 + i;
-              } else {
-                p = page - 1 + i;
-              }
-              return (
-                <Button key={p} variant={p === page ? "default" : "outline"} size="sm" onClick={() => setPage(p)}>{p}</Button>
-              );
-            })}
-            <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
-              <span className="sm:hidden">&gt;</span><span className="hidden sm:inline">Next</span>
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={allRows.length}
+        PAGE_SIZE={PAGE_SIZE}
+        setPage={setPage}
+      />
 
       {detailsId && (() => {
         const e = rows.find((r) => r.id === detailsId);

@@ -13,10 +13,10 @@ import { useLms } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/profile")({
   head: () => ({
     meta: [
-      { title: "Your Profile — Lumen LMS" },
-      { name: "description", content: "Update Your Name, Email, Profile Picture and Password on Lumen LMS." },
-      { property: "og:title", content: "Your Profile — Lumen LMS" },
-      { property: "og:description", content: "Manage Your Lumen LMS Account Details." },
+      { title: "Your Profile — Hamza Visuals LMS" },
+      { name: "description", content: "Update Your Name, Email, Profile Picture and Password on Hamza Visuals LMS." },
+      { property: "og:title", content: "Your Profile — Hamza Visuals LMS" },
+      { property: "og:description", content: "Manage Your Hamza Visuals LMS Account Details." },
     ],
   }),
   component: ProfilePage,

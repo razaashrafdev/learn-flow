@@ -10,10 +10,10 @@ import { useLms } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/courses/new")({
   head: () => ({
     meta: [
-      { title: "Add a Course — Lumen LMS Admin" },
+      { title: "Add a Course — Hamza Visuals LMS Admin" },
       { name: "description", content: "Create a New Course with a Category, Level, Duration and Instructor." },
-      { property: "og:title", content: "Add a Course — Lumen LMS Admin" },
-      { property: "og:description", content: "Create a New Course on Lumen LMS." },
+      { property: "og:title", content: "Add a Course — Hamza Visuals LMS Admin" },
+      { property: "og:description", content: "Create a New Course on Hamza Visuals LMS." },
     ],
   }),
   component: NewCourse,

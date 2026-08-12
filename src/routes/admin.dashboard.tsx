@@ -8,10 +8,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [
-      { title: "Admin Dashboard — Lumen LMS" },
+      { title: "Admin Dashboard — Hamza Visuals LMS" },
       { name: "description", content: "Platform Overview: Students, Courses, Enrollments and Recent Activity." },
-      { property: "og:title", content: "Admin Dashboard — Lumen LMS" },
-      { property: "og:description", content: "Platform Overview for Lumen LMS Administrators." },
+      { property: "og:title", content: "Admin Dashboard — Hamza Visuals LMS" },
+      { property: "og:description", content: "Platform Overview for Hamza Visuals LMS Administrators." },
     ],
   }),
   component: AdminDashboard,

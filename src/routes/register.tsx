@@ -13,13 +13,13 @@ import { AuthAside } from "@/components/lms/auth-aside";
 export const Route = createFileRoute("/register")({
   head: () => ({
     meta: [
-      { title: "Create your student account — Lumen LMS" },
+      { title: "Create your student account — Hamza Visuals LMS" },
       {
         name: "description",
-        content: "Register as a student on Lumen LMS and start learning with structured video courses.",
+        content: "Register as a student on Hamza Visuals LMS and start learning with structured video courses.",
       },
-      { property: "og:title", content: "Create your student account — Lumen LMS" },
-      { property: "og:description", content: "Register free and start learning on Lumen LMS." },
+      { property: "og:title", content: "Create your student account — Hamza Visuals LMS" },
+      { property: "og:description", content: "Register free and start learning on Hamza Visuals LMS." },
     ],
   }),
   component: RegisterPage,
@@ -66,7 +66,7 @@ function RegisterPage() {
         setErrors({ email: result.error ?? "" });
         return;
       }
-      toast.success("Account created — welcome to Lumen");
+      toast.success("Account created — welcome to Hamza Visuals");
       navigate({ to: "/app/dashboard", replace: true });
     }, 400);
   };
@@ -86,7 +86,7 @@ function RegisterPage() {
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
               <GraduationCap className="h-5 w-5" />
             </span>
-            <span className="text-lg font-extrabold tracking-tight">Lumen</span>
+            <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>
           </div>
 
           <h1 className="text-2xl font-extrabold tracking-tight">Create your student account</h1>
@@ -122,7 +122,7 @@ function RegisterPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/" className="font-semibold text-primary hover:underline">
+            <Link to="/login" className="font-semibold text-primary hover:underline">
               Sign in
             </Link>
           </p>

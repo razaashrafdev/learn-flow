@@ -16,7 +16,7 @@ export function RoleGate({ role, children }: { role: Role; children: ReactNode }
   useEffect(() => {
     if (!ready) return;
     if (!currentUser) {
-      navigate({ to: "/", replace: true });
+      navigate({ to: "/login", replace: true });
     } else if (currentUser.role !== role) {
       navigate({ to: currentUser.role === "admin" ? "/admin/dashboard" : "/app/dashboard", replace: true });
     }
