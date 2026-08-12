@@ -7,22 +7,15 @@ import { CourseCard } from "@/components/lms/course-card";
 import { CardGridSkeleton, EmptyState } from "@/components/lms/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useLms, useSelectors } from "@/lib/lms/store";
 
 export const Route = createFileRoute("/app/courses/")({
   head: () => ({
     meta: [
-      { title: "Browse Courses — Lumen LMS" },
-      { name: "description", content: "Search and Filter the Full Lumen LMS Course Catalogue by Category and Level." },
-      { property: "og:title", content: "Browse Courses — Lumen LMS" },
-      { property: "og:description", content: "Search the Lumen LMS Course Catalogue." },
+      { title: "Browse Courses — Hamza Visuals LMS" },
+      { name: "description", content: "Search and Filter the Full Hamza Visuals LMS Course Catalogue." },
+      { property: "og:title", content: "Browse Courses — Hamza Visuals LMS" },
+      { property: "og:description", content: "Search the Hamza Visuals LMS Course Catalogue." },
     ],
   }),
   component: BrowseCourses,
@@ -34,14 +27,12 @@ function BrowseCourses() {
   const { data, currentUser, ready } = useLms();
   const s = useSelectors();
   const [query, setQuery] = useState("");
-  const [level, setLevel] = useState("all");
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     return data.courses
       .filter((c) => c.status === "published")
-      .filter((c) => (level === "all" ? true : c.level === level))
       .filter((c) =>
         q
           ? c.title.toLowerCase().includes(q) ||
@@ -49,13 +40,13 @@ function BrowseCourses() {
             c.description.toLowerCase().includes(q)
           : true,
       );
-  }, [data.courses, query, level, s]);
+  }, [data.courses, query, s]);
 
   const shown = results.slice(0, visible);
 
   return (
     <AppShell nav={studentNav} title="Browse Courses">
-      <div className="mb-6 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
+      <div className="mb-6">
         <div className="relative min-w-0">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
@@ -70,25 +61,6 @@ function BrowseCourses() {
             aria-label="Search Courses"
           />
         </div>
-        <Select
-          value={level}
-          onValueChange={(v) => {
-            setLevel(v);
-            setVisible(PAGE_SIZE);
-          }}
-        >
-          <SelectTrigger className="md:w-44" aria-label="Filter by level">
-            <SelectValue placeholder="Level" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Levels</SelectItem>
-            {["Beginner", "Intermediate", "Advanced", "All Levels"].map((l) => (
-              <SelectItem key={l} value={l}>
-                {l}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
       </div>
 
       {!ready ? (
@@ -96,17 +68,16 @@ function BrowseCourses() {
       ) : shown.length === 0 ? (
         <EmptyState
           icon={SearchX}
-          title="No Courses Match Your Filters"
-          description="Try a Different Search Term, or Clear the Level Filter."
+          title="No Courses Match Your Search"
+          description="Try a Different Search Term, or Clear the Search."
           action={
             <Button
               variant="outline"
               onClick={() => {
                 setQuery("");
-                setLevel("all");
               }}
             >
-              Clear Filters
+              Clear Search
             </Button>
           }
         />

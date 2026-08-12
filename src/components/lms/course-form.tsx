@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Course, CourseLevel, CourseStatus } from "@/lib/lms/types";
+import type { Course, CourseLevel, CourseStatus, PricingType } from "@/lib/lms/types";
 
 export type CourseFormValues = {
   title: string;
@@ -22,6 +22,7 @@ export type CourseFormValues = {
   duration: string;
   instructor: string;
   level: CourseLevel;
+  pricingType: PricingType;
   status: CourseStatus;
 };
 
@@ -33,6 +34,7 @@ const schema = z.object({
   duration: z.string().trim().min(1, "Add a Duration").max(20),
   instructor: z.string().trim().min(2, "Add an Instructor Name").max(80),
   level: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]),
+  pricingType: z.enum(["free", "paid"]),
 });
 
 export const emptyCourse = (): CourseFormValues => ({
@@ -41,8 +43,9 @@ export const emptyCourse = (): CourseFormValues => ({
   description: "",
   thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800",
   duration: "1h",
-  instructor: "",
+  instructor: "Hamza Bhatti",
   level: "Beginner",
+  pricingType: "free",
   status: "draft",
 });
 
@@ -55,6 +58,7 @@ export function toFormValues(course: Course): CourseFormValues {
     duration: course.duration,
     instructor: course.instructor,
     level: course.level,
+    pricingType: course.pricingType,
     status: course.status,
   };
 }
@@ -141,14 +145,12 @@ export function CourseForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label>Level</Label>
-          <Select value={values.level} onValueChange={(v) => set("level", v as CourseLevel)}>
+          <Label>Pricing</Label>
+          <Select value={values.pricingType} onValueChange={(v) => set("pricingType", v as PricingType)}>
             <SelectTrigger><SelectValue /></SelectTrigger>
             <SelectContent>
-              <SelectItem value="Beginner">Beginner</SelectItem>
-              <SelectItem value="Intermediate">Intermediate</SelectItem>
-              <SelectItem value="Advanced">Advanced</SelectItem>
-              <SelectItem value="All Levels">All Levels</SelectItem>
+              <SelectItem value="free">Free</SelectItem>
+              <SelectItem value="paid">Paid</SelectItem>
             </SelectContent>
           </Select>
         </div>

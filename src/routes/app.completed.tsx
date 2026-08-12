@@ -9,10 +9,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/completed")({
   head: () => ({
     meta: [
-      { title: "Completed Courses — Lumen LMS" },
-      { name: "description", content: "Every Course You've Finished on Lumen LMS, Ready to Revisit Any Time." },
-      { property: "og:title", content: "Completed Courses — Lumen LMS" },
-      { property: "og:description", content: "Courses You've Finished on Lumen LMS." },
+      { title: "Completed Courses — Hamza Visuals LMS" },
+      { name: "description", content: "Every Course You've Finished on Hamza Visuals LMS, Ready to Revisit Any Time." },
+      { property: "og:title", content: "Completed Courses — Hamza Visuals LMS" },
+      { property: "og:description", content: "Courses You've Finished on Hamza Visuals LMS." },
     ],
   }),
   component: CompletedCourses,

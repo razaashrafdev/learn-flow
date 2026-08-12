@@ -10,10 +10,10 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
     meta: [
-      { title: "Reset your password — Lumen LMS" },
-      { name: "description", content: "Request a password reset link for your Lumen LMS account." },
-      { property: "og:title", content: "Reset your password — Lumen LMS" },
-      { property: "og:description", content: "Request a password reset link for Lumen LMS." },
+      { title: "Reset your password — Hamza Visuals LMS" },
+      { name: "description", content: "Request a password reset link for your Hamza Visuals LMS account." },
+      { property: "og:title", content: "Reset your password — Hamza Visuals LMS" },
+      { property: "og:description", content: "Request a password reset link for Hamza Visuals LMS." },
     ],
   }),
   component: ForgotPasswordPage,
@@ -44,7 +44,7 @@ function ForgotPasswordPage() {
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
             <GraduationCap className="h-5 w-5" />
           </span>
-          <span className="text-lg font-extrabold tracking-tight">Lumen</span>
+          <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>
         </div>
 
         {sent ? (
@@ -85,7 +85,7 @@ function ForgotPasswordPage() {
         )}
 
         <Link
-          to="/"
+          to="/login"
           className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" /> Back to sign in

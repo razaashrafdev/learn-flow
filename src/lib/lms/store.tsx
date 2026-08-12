@@ -13,6 +13,7 @@ import type {
   Category,
   Course,
   Enrollment,
+  EnrollmentRequest,
   Lesson,
   LmsData,
   Section,
@@ -20,7 +21,7 @@ import type {
 } from "./types";
 import { extractYoutubeId } from "./youtube";
 
-const STORAGE_KEY = "lms.demo.v3";
+const STORAGE_KEY = "lms.demo.v4";
 const SESSION_KEY = "lms.session.v1";
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}`;
@@ -65,6 +66,10 @@ type Ctx = {
   moveLesson: (id: string, dir: -1 | 1) => void;
 
   enroll: (courseId: string) => void;
+  requestEnrollment: (courseId: string) => void;
+  approveEnrollment: (requestId: string) => void;
+  rejectEnrollment: (requestId: string) => void;
+  deleteEnrollment: (enrollmentId: string) => void;
   setLastLesson: (courseId: string, lessonId: string) => void;
   setLessonCompleted: (courseId: string, lessonId: string, completed: boolean) => void;
   setStudentActive: (studentId: string, active: boolean) => void;
@@ -343,6 +348,52 @@ export function LmsProvider({ children }: { children: ReactNode }) {
         return { ...d, enrollments: [...d.enrollments, enrollment] };
       });
     },
+    requestEnrollment: (courseId) => {
+      if (!currentUserId) return;
+      setData((d) => {
+        const existing = d.enrollmentRequests.find(
+          (r) => r.courseId === courseId && r.studentId === currentUserId && r.status === "pending",
+        );
+        if (existing) return d;
+        const request: EnrollmentRequest = {
+          id: uid("req"),
+          studentId: currentUserId,
+          courseId,
+          status: "pending",
+          requestedAt: nowIso(),
+          resolvedAt: null,
+        };
+        return { ...d, enrollmentRequests: [...d.enrollmentRequests, request] };
+      });
+    },
+    approveEnrollment: (requestId) => {
+      setData((d) => {
+        const request = d.enrollmentRequests.find((r) => r.id === requestId);
+        if (!request || request.status !== "pending") return d;
+        const updatedRequests = d.enrollmentRequests.map((r) =>
+          r.id === requestId ? { ...r, status: "approved" as const, resolvedAt: nowIso() } : r,
+        );
+        const alreadyEnrolled = d.enrollments.some(
+          (e) => e.courseId === request.courseId && e.studentId === request.studentId,
+        );
+        if (alreadyEnrolled) return { ...d, enrollmentRequests: updatedRequests };
+        const enrollment: Enrollment = {
+          id: uid("enr"),
+          studentId: request.studentId,
+          courseId: request.courseId,
+          status: "in_progress",
+          enrolledAt: nowIso(),
+          completedAt: null,
+          lastLessonId: null,
+          lastAccessedAt: nowIso(),
+        };
+        return {
+          ...d,
+          enrollmentRequests: updatedRequests,
+          enrollments: [...d.enrollments, enrollment],
+        };
+      });
+    },
     setLastLesson: (courseId, lessonId) => {
       if (!currentUserId) return;
       setData((d) => ({
@@ -488,6 +539,9 @@ export function useSelectors() {
 
     const studentsList = () => data.users.filter((u) => u.role === "student");
 
+    const enrollmentRequestOf = (studentId: string, courseId: string) =>
+      data.enrollmentRequests.find((r) => r.studentId === studentId && r.courseId === courseId) ?? null;
+
     return {
       sectionsOf,
       lessonsOfSection,
@@ -495,6 +549,7 @@ export function useSelectors() {
       publishedLessonsOfCourse,
       categoryName,
       enrollmentOf,
+      enrollmentRequestOf,
       completedLessonIds,
       courseProgress,
       studentsList,

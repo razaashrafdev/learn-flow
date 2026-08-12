@@ -4,7 +4,7 @@ import { toast } from "sonner";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, UserPlus, MoreHorizontal, Pencil, Trash2, CheckCircle2, XCircle, BookOpen } from "lucide-react";
+import { User, UserPlus, MoreHorizontal, Pencil, Trash2, CheckCircle2, XCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,14 +35,16 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import type { User as UserType } from "@/lib/lms/types";
+import { Pagination } from "@/components/lms/ui-bits";
+import { Progress } from "@/components/ui/progress";
 
 export const Route = createFileRoute("/admin/students")({
   head: () => ({
     meta: [
-      { title: "Students — Lumen LMS Admin" },
-      { name: "description", content: "Review Every Learner, Their Enrollments and Account Status on Lumen LMS." },
-      { property: "og:title", content: "Students — Lumen LMS Admin" },
-      { property: "og:description", content: "Manage Lumen LMS Learners and Their Accounts." },
+      { title: "Students — Hamza Visuals LMS Admin" },
+      { name: "description", content: "Review Every Learner, Their Enrollments and Account Status on Hamza Visuals LMS." },
+      { property: "og:title", content: "Students — Hamza Visuals LMS Admin" },
+      { property: "og:description", content: "Manage Hamza Visuals LMS Learners and Their Accounts." },
     ],
   }),
   component: AdminStudents,
@@ -71,6 +73,19 @@ function AdminStudents() {
   const students = allStudents.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const resetAddForm = () => setForm({ name: "", email: "", password: "", whatsapp: "" });
+
+  const overallProgress = (studentId: string) => {
+    const courseIds = data.enrollments.filter((e) => e.studentId === studentId).map((e) => e.courseId);
+    if (courseIds.length === 0) return { done: 0, total: 0, percent: 0 };
+    let done = 0;
+    let total = 0;
+    for (const id of courseIds) {
+      const p = s.courseProgress(studentId, id);
+      done += p.done;
+      total += p.total;
+    }
+    return { done, total, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
+  };
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -171,90 +186,91 @@ function AdminStudents() {
         <table className="w-full text-sm">
           <thead className="bg-surface text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
+              <th className="hidden px-5 py-3 font-semibold md:table-cell">S.No</th>
               <th className="px-3 py-3 font-semibold sm:px-5">Student</th>
               <th className="hidden px-5 py-3 font-semibold md:table-cell">Email</th>
-              <th className="hidden px-5 py-3 font-semibold md:table-cell">Enrolled</th>
+              <th className="hidden px-5 py-3 font-semibold md:table-cell">Progress</th>
               <th className="px-3 py-3 font-semibold sm:px-5">Joined</th>
               <th className="px-2 py-3 text-right font-semibold sm:px-5">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {students.map((u) => (
-              <tr key={u.id}>
-                <td className="max-w-[120px] px-3 py-3 sm:max-w-none sm:px-5">
-                  <span className="block truncate font-semibold">{u.name}</span>
-                </td>
-                <td className="hidden max-w-[220px] truncate px-5 py-3 text-muted-foreground md:table-cell">{u.email}</td>
-                <td className="hidden px-5 py-3 md:table-cell">{data.enrollments.filter((e) => e.studentId === u.id).length}</td>
-                <td className="whitespace-nowrap px-3 py-3 text-muted-foreground sm:px-5">{new Date(u.createdAt).toLocaleDateString()}</td>
-                <td className="px-2 py-3 sm:px-5">
-                  <div className="flex justify-end">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="md:hidden" onClick={() => setDetailsId(u.id)}>
-                          <BookOpen className="h-4 w-4 mr-2" />
-                          View
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => openEdit(u)}>
-                          <Pencil className="h-4 w-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {
-                          setStudentActive(u.id, u.active === false);
-                          toast.success(u.active === false ? "Student Activated" : "Student Deactivated");
-                        }}>
-                          {u.active === false ? <CheckCircle2 className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
-                          {u.active === false ? "Activate" : "Deactivate"}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive" onClick={() => setDeleteId(u.id)}>
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {students.map((u, i) => {
+              const prog = overallProgress(u.id);
+              return (
+                <tr key={u.id}>
+                  <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">{String(i + 1).padStart(2, "0")}</td>
+                  <td className="max-w-[120px] px-3 py-3 sm:max-w-none sm:px-5">
+                    <span className="block truncate font-semibold">{u.name}</span>
+                  </td>
+                  <td className="hidden max-w-[220px] truncate px-5 py-3 text-muted-foreground md:table-cell">{u.email}</td>
+                  <td className="hidden px-5 py-3 md:table-cell">
+                    {prog.total > 0 ? (
+                      <div className="min-w-[170px]">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                            {prog.percent}% complete
+                          </span>
+                          <span className="text-xs font-bold tabular-nums text-foreground">
+                            {prog.done}/{prog.total}
+                          </span>
+                        </div>
+                        <Progress value={prog.percent} className="mt-1.5 h-1.5" />
+                        <p className="mt-1 text-xs text-muted-foreground">overall across courses</p>
+                      </div>
+                    ) : (
+                      <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                        Not enrolled
+                      </span>
+                    )}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3 text-muted-foreground sm:px-5">{new Date(u.createdAt).toLocaleDateString()}</td>
+                  <td className="px-2 py-3 sm:px-5">
+                    <div className="flex justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setDetailsId(u.id)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEdit(u)}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => {
+                            setStudentActive(u.id, u.active === false);
+                            toast.success(u.active === false ? "Student Activated" : "Student Deactivated");
+                          }}>
+                            {u.active === false ? <CheckCircle2 className="h-4 w-4 mr-2" /> : <XCircle className="h-4 w-4 mr-2" />}
+                            {u.active === false ? "Activate" : "Deactivate"}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive" onClick={() => setDeleteId(u.id)}>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
 
-      {totalPages > 1 && (
-        <div className="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="hidden text-sm text-muted-foreground sm:block">
-            Showing {((page - 1) * PAGE_SIZE) + 1}–{Math.min(page * PAGE_SIZE, allStudents.length)} of {allStudents.length}
-          </p>
-          <div className="flex gap-1.5">
-            <Button variant="outline" size="sm" disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
-              <span className="sm:hidden">&lt;</span><span className="hidden sm:inline">Prev</span>
-            </Button>
-            {Array.from({ length: Math.min(totalPages, 3) }, (_, i) => {
-              let p: number;
-              if (totalPages <= 3) {
-                p = i + 1;
-              } else if (page <= 2) {
-                p = i + 1;
-              } else if (page >= totalPages - 1) {
-                p = totalPages - 2 + i;
-              } else {
-                p = page - 1 + i;
-              }
-              return (
-                <Button key={p} variant={p === page ? "default" : "outline"} size="sm" onClick={() => setPage(p)}>{p}</Button>
-              );
-            })}
-            <Button variant="outline" size="sm" disabled={page === totalPages} onClick={() => setPage((p) => p + 1)}>
-              <span className="sm:hidden">&gt;</span><span className="hidden sm:inline">Next</span>
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalItems={allStudents.length}
+        PAGE_SIZE={PAGE_SIZE}
+        setPage={setPage}
+      />
 
       <Dialog open={editOpen} onOpenChange={(o) => { setEditOpen(o); if (!o) setEditingStudent(null); }}>
         <DialogContent>

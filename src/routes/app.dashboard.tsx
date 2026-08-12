@@ -9,10 +9,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/dashboard")({
   head: () => ({
     meta: [
-      { title: "Your Dashboard — Lumen LMS" },
+      { title: "Your Dashboard — Hamza Visuals LMS" },
       { name: "description", content: "Track Your Enrolled Courses, Progress and Continue Learning." },
-      { property: "og:title", content: "Your Dashboard — Lumen LMS" },
-      { property: "og:description", content: "Track Your Progress and Continue Learning on Lumen." },
+      { property: "og:title", content: "Your Dashboard — Hamza Visuals LMS" },
+      { property: "og:description", content: "Track Your Progress and Continue Learning on Hamza Visuals." },
     ],
   }),
   component: StudentDashboard,
@@ -66,7 +66,7 @@ function StudentDashboard() {
             icon={Compass}
             title="You Haven't Started a Course Yet"
             description="Browse the Catalogue and Enroll in Something that Looks Useful."
-            action={{ label: "Browse Courses", to: "/app/courses" }}
+            action={{ label: "Browse Courses", to: "/" }}
           />
         ) : (
           <div className="grid gap-5 lg:grid-cols-3">

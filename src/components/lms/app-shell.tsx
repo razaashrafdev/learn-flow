@@ -10,7 +10,6 @@ import {
   Settings,
   Users,
   ClipboardList,
-  Compass,
   CheckCircle2,
   User,
   UserRound,
@@ -28,13 +27,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export type NavItem = { label: string; mobileLabel?: string; to: string; icon: typeof BookOpen; exact?: boolean };
 
 export const studentNav: NavItem[] = [
   { label: "Dashboard", to: "/app/dashboard", icon: LayoutGrid },
   { label: "My Courses", to: "/app/my-courses", icon: BookOpen },
-  { label: "Browse Courses", mobileLabel: "Browse", to: "/app/courses", icon: Compass },
   { label: "Completed", to: "/app/completed", icon: CheckCircle2 },
   { label: "Profile", to: "/app/profile", icon: UserRound },
 ];
@@ -83,7 +82,7 @@ export function AppShell({
   const handleSignOut = () => {
     signOut();
     toast.success("Signed Out");
-    navigate({ to: "/", replace: true });
+    navigate({ to: "/login", replace: true });
   };
 
   const sidebar = (
@@ -95,7 +94,7 @@ export function AppShell({
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
           <UserRound className="h-5 w-5" />
         </span>
-        {!collapsed && <span className="text-lg font-extrabold tracking-tight">Lumen</span>}
+        {!collapsed && <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>}
         <button
           type="button"
           onClick={() => setOpen(false)}
@@ -183,6 +182,7 @@ export function AppShell({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {actions}
+              <ThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button type="button" className="cursor-pointer">

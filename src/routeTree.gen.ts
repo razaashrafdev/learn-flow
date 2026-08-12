@@ -10,10 +10,16 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as R404RouteImport } from './routes/404'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminEnrollmentsRouteImport } from './routes/admin.enrollments'
@@ -24,6 +30,8 @@ import { Route as AppCompletedRouteImport } from './routes/app.completed'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppMyCoursesRouteImport } from './routes/app.my-courses'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as CoursesCourseIdRouteImport } from './routes/courses.$courseId'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
 import { Route as AdminCoursesCourseIdRouteImport } from './routes/admin.courses.$courseId'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
@@ -36,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const R404Route = R404RouteImport.update({
+  id: '/404',
+  path: '/404',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -46,14 +59,39 @@ const AppRoute = AppRouteImport.update({
   path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
+  id: '/terms-of-service',
+  path: '/terms-of-service',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -106,6 +144,16 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AppRoute,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CoursesRoute,
+} as any)
+const CoursesCourseIdRoute = CoursesCourseIdRouteImport.update({
+  id: '/$courseId',
+  path: '/$courseId',
+  getParentRoute: () => CoursesRoute,
+} as any)
 const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   id: '/courses/',
   path: '/courses/',
@@ -139,10 +187,16 @@ const AppLearnCourseIdRoute = AppLearnCourseIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/courses': typeof CoursesRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -151,8 +205,10 @@ export interface FileRoutesByFullPath {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
+  '/courses/$courseId': typeof CoursesCourseIdRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -162,8 +218,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -172,8 +233,10 @@ export interface FileRoutesByTo {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
+  '/courses/$courseId': typeof CoursesCourseIdRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/courses': typeof CoursesIndexRoute
   '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -184,10 +247,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/404': typeof R404Route
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/courses': typeof CoursesRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -196,8 +265,10 @@ export interface FileRoutesById {
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
+  '/courses/$courseId': typeof CoursesCourseIdRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
@@ -209,10 +280,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/404'
     | '/admin'
     | '/app'
+    | '/courses'
     | '/forgot-password'
+    | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
     | '/admin/settings'
@@ -221,8 +298,10 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
+    | '/courses/$courseId'
     | '/admin/'
     | '/app/'
+    | '/courses/'
     | '/admin/courses/$courseId'
     | '/admin/courses/new'
     | '/app/courses/$courseId'
@@ -232,8 +311,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/404'
     | '/forgot-password'
+    | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
     | '/admin/settings'
@@ -242,8 +326,10 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
+    | '/courses/$courseId'
     | '/admin'
     | '/app'
+    | '/courses'
     | '/admin/courses/$courseId'
     | '/admin/courses/new'
     | '/app/courses/$courseId'
@@ -253,10 +339,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/404'
     | '/admin'
     | '/app'
+    | '/courses'
     | '/forgot-password'
+    | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
     | '/admin/settings'
@@ -265,8 +357,10 @@ export interface FileRouteTypes {
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
+    | '/courses/$courseId'
     | '/admin/'
     | '/app/'
+    | '/courses/'
     | '/admin/courses/$courseId'
     | '/admin/courses/new'
     | '/app/courses/$courseId'
@@ -277,10 +371,16 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  R404Route: typeof R404Route
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  CoursesRoute: typeof CoursesRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
   RegisterRoute: typeof RegisterRoute
+  TermsOfServiceRoute: typeof TermsOfServiceRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -290,6 +390,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/404': {
+      id: '/404'
+      path: '/404'
+      fullPath: '/404'
+      preLoaderRoute: typeof R404RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -306,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/forgot-password': {
       id: '/forgot-password'
       path: '/forgot-password'
@@ -313,11 +427,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms-of-service': {
+      id: '/terms-of-service'
+      path: '/terms-of-service'
+      fullPath: '/terms-of-service'
+      preLoaderRoute: typeof TermsOfServiceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -389,6 +531,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/profile'
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/courses/': {
+      id: '/courses/'
+      path: '/'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof CoursesRoute
+    }
+    '/courses/$courseId': {
+      id: '/courses/$courseId'
+      path: '/$courseId'
+      fullPath: '/courses/$courseId'
+      preLoaderRoute: typeof CoursesCourseIdRouteImport
+      parentRoute: typeof CoursesRoute
     }
     '/admin/courses/': {
       id: '/admin/courses/'
@@ -483,12 +639,31 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface CoursesRouteChildren {
+  CoursesCourseIdRoute: typeof CoursesCourseIdRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
+}
+
+const CoursesRouteChildren: CoursesRouteChildren = {
+  CoursesCourseIdRoute: CoursesCourseIdRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
+}
+
+const CoursesRouteWithChildren =
+  CoursesRoute._addFileChildren(CoursesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  R404Route: R404Route,
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  CoursesRoute: CoursesRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
   RegisterRoute: RegisterRoute,
+  TermsOfServiceRoute: TermsOfServiceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

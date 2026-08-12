@@ -9,10 +9,10 @@ import { useLms, useSelectors } from "@/lib/lms/store";
 export const Route = createFileRoute("/app/my-courses")({
   head: () => ({
     meta: [
-      { title: "My Courses — Lumen LMS" },
+      { title: "My Courses — Hamza Visuals LMS" },
       { name: "description", content: "All the Courses You're Enrolled in, with Live Progress for Each." },
-      { property: "og:title", content: "My Courses — Lumen LMS" },
-      { property: "og:description", content: "Your Enrolled Courses and Progress on Lumen LMS." },
+      { property: "og:title", content: "My Courses — Hamza Visuals LMS" },
+      { property: "og:description", content: "Your Enrolled Courses and Progress on Hamza Visuals LMS." },
     ],
   }),
   component: MyCourses,
@@ -31,7 +31,7 @@ function MyCourses() {
           icon={BookOpen}
           title="You Haven't Enrolled in Any Courses"
           description="Once You Enroll, Your Courses and Progress Will Appear Here."
-          action={{ label: "Browse Courses", to: "/app/courses" }}
+          action={{ label: "Browse Courses", to: "/" }}
         />
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

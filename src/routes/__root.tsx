@@ -1,7 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  Link,
   createRootRouteWithContext,
   useRouter,
   HeadContent,
@@ -11,30 +10,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { LmsProvider } from "@/lib/lms/store";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { useIsMobile } from "@/hooks/use-mobile";
-
-function NotFoundComponent() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { NotFoundPage } from "@/components/not-found";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -63,7 +41,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/"
+            href="/login"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -79,14 +57,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lumen LMS — Learn at your own pace" },
+      { title: "Hamza Visuals LMS — Learn at your own pace" },
       {
         name: "description",
         content:
-          "Lumen LMS is a simple, modern learning platform for course creators and students, with YouTube-based lessons and automatic progress tracking.",
+          "Hamza Visuals LMS is a simple, modern learning platform for course creators and students, with YouTube-based lessons and automatic progress tracking.",
       },
-      { name: "author", content: "Lumen LMS" },
-      { property: "og:title", content: "Lumen LMS — Learn at your own pace" },
+      { name: "author", content: "Hamza Visuals LMS" },
+      { property: "og:title", content: "Hamza Visuals LMS — Learn at your own pace" },
       {
         property: "og:description",
         content: "A simple, modern learning platform with video lessons and progress tracking.",
@@ -107,13 +85,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   }),
   shellComponent: RootShell,
   component: RootComponent,
-  notFoundComponent: NotFoundComponent,
+  notFoundComponent: NotFoundPage,
   errorComponent: ErrorComponent,
 });
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
@@ -127,15 +105,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const isMobile = useIsMobile();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LmsProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-        <Toaster position="bottom-right" richColors />
-      </LmsProvider>
+      <ThemeProvider>
+        <LmsProvider>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+          <Toaster position="bottom-right" richColors />
+        </LmsProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
