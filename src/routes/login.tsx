@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { GraduationCap, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -11,13 +11,19 @@ import { Label } from "@/components/ui/label";
 import { useLms } from "@/lib/lms/store";
 import { AuthAside } from "@/components/lms/auth-aside";
 
+const loginSearchSchema = z.object({
+  redirect: z.string().optional(),
+});
+
 export const Route = createFileRoute("/login")({
+  validateSearch: loginSearchSchema.parse,
   head: () => ({
     meta: [
       { title: "Sign in — Hamza Visuals LMS" },
       {
         name: "description",
-        content: "Sign in to Hamza Visuals LMS to continue your courses or manage your learning platform.",
+        content:
+          "Sign in to Hamza Visuals LMS to continue your courses or manage your learning platform.",
       },
       { property: "og:title", content: "Sign in — Hamza Visuals LMS" },
       { property: "og:description", content: "Sign in to continue learning on Hamza Visuals LMS." },
@@ -34,22 +40,30 @@ const schema = z.object({
 function LoginPage() {
   const { signIn, currentUser, ready } = useLms();
   const navigate = useNavigate();
+  const search = useSearch({ from: "/login" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
+  const redirectPath = (r?: string) => (r && r.startsWith("/") && !r.startsWith("//") ? r : null);
+
   useEffect(() => {
     if (ready && currentUser) {
+      const redirect = redirectPath(search.redirect);
+      if (redirect) {
+        window.location.assign(redirect);
+        return;
+      }
       navigate({
         to: currentUser.role === "admin" ? "/admin/dashboard" : "/app/dashboard",
         replace: true,
       });
     }
-  }, [ready, currentUser, navigate]);
+  }, [ready, currentUser, navigate, search.redirect]);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = schema.safeParse({ email, password });
     if (!parsed.success) {
@@ -60,16 +74,14 @@ function LoginPage() {
     }
     setErrors({});
     setLoading(true);
-    window.setTimeout(() => {
-      const result = signIn(parsed.data.email, parsed.data.password, remember);
-      setLoading(false);
-      if (!result.ok) {
-        toast.error(result.error ?? "Unable to sign in");
-        setErrors({ password: result.error ?? "" });
-        return;
-      }
-      toast.success("Welcome back");
-    }, 350);
+    const result = await signIn(parsed.data.email, parsed.data.password, remember);
+    setLoading(false);
+    if (!result.ok) {
+      toast.error(result.error ?? "Unable to sign in");
+      setErrors({ password: result.error ?? "" });
+      return;
+    }
+    toast.success("Welcome back");
   };
 
   const quickFill = (e: string, p: string) => {
@@ -139,7 +151,10 @@ function LoginPage() {
                 />
                 Remember me
               </label>
-              <Link to="/forgot-password" className="text-sm font-semibold text-primary hover:underline">
+              <Link
+                to="/forgot-password"
+                className="text-sm font-semibold text-primary hover:underline"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -152,7 +167,11 @@ function LoginPage() {
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
             New to Hamza Visuals?{" "}
-            <Link to="/register" className="font-semibold text-primary hover:underline">
+            <Link
+              to="/register"
+              {...(search.redirect ? { search: { redirect: search.redirect } } : {})}
+              className="font-semibold text-primary hover:underline"
+            >
               Create a student account
             </Link>
           </p>
@@ -164,17 +183,17 @@ function LoginPage() {
             <div className="mt-3 grid gap-2">
               <button
                 type="button"
-                onClick={() => quickFill("admin@lms.dev", "admin123")}
+                onClick={() => quickFill("admin@lms.pk", "admin123")}
                 className="rounded-lg border border-border px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
               >
-                <span className="font-semibold">Admin</span> · admin@lms.dev / admin123
+                <span className="font-semibold">Admin</span> · admin@lms.pk / admin123
               </button>
               <button
                 type="button"
-                onClick={() => quickFill("jonah@student.dev", "student123")}
+                onClick={() => quickFill("raza@gmail.com", "87654321")}
                 className="rounded-lg border border-border px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
               >
-                <span className="font-semibold">Student</span> · jonah@student.dev / student123
+                <span className="font-semibold">Student</span> · raza@gmail.com / 87654321
               </button>
             </div>
           </div>

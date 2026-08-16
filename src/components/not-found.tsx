@@ -2,13 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { Compass, House, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { PublicHeader, PublicFooter } from "@/components/lms/ui-bits";
+import { PublicFooter } from "@/components/lms/ui-bits";
 
 export function NotFoundPage() {
   return (
     <div className="min-h-screen bg-background">
-      <PublicHeader hideNav />
-
       <main className="mx-auto flex min-h-[68vh] max-w-3xl flex-col items-center justify-center px-4 py-20 text-center sm:px-6">
         {/* Giant watermark number */}
         <div className="pointer-events-none select-none" aria-hidden="true">

@@ -116,13 +116,14 @@ function AdminCourses() {
                             <BookOpen className="h-4 w-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => navigate({ to: "/admin/courses/$courseId", params: { courseId: c.id } })}>
+                          <DropdownMenuItem onClick={() => navigate({ to: "/admin/courses/$slug", params: { slug: c.slug } })}>
                             <Pencil className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
-                            toggleCourseStatus(c.id);
-                            toast.success(c.status === "published" ? "Course Unpublished" : "Course Published");
+                            void toggleCourseStatus(c.id)
+                              .then(() => toast.success(c.status === "published" ? "Course Unpublished" : "Course Published"))
+                              .catch(() => toast.error("Could not update the course status"));
                           }}>
                             {c.status === "published" ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
                             {c.status === "published" ? "Unpublish" : "Publish"}
@@ -213,9 +214,13 @@ function AdminCourses() {
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
-                if (pendingDelete) deleteCourse(pendingDelete);
+                const id = pendingDelete;
                 setPendingDelete(null);
-                toast.success("Course Deleted");
+                if (id) {
+                  void deleteCourse(id)
+                    .then(() => toast.success("Course Deleted"))
+                    .catch(() => toast.error("Could not delete the course"));
+                }
               }}
             >
               Delete

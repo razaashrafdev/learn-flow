@@ -11,6 +11,7 @@ import {
   Users,
   ClipboardList,
   CheckCircle2,
+  FileText,
   User,
   UserRound,
   X,
@@ -35,12 +36,13 @@ export const studentNav: NavItem[] = [
   { label: "Dashboard", to: "/app/dashboard", icon: LayoutGrid },
   { label: "My Courses", to: "/app/my-courses", icon: BookOpen },
   { label: "Completed", to: "/app/completed", icon: CheckCircle2 },
-  { label: "Profile", to: "/app/profile", icon: UserRound },
+  { label: "Settings", to: "/app/profile", icon: Settings },
 ];
 
 export const adminNav: NavItem[] = [
   { label: "Dashboard", to: "/admin/dashboard", icon: LayoutGrid },
   { label: "Courses", to: "/admin/courses", icon: BookOpen },
+  { label: "Resources", to: "/admin/resources", icon: FileText },
   { label: "Students", to: "/admin/students", icon: Users },
   { label: "Enrollments", to: "/admin/enrollments", icon: ClipboardList },
   { label: "Settings", to: "/admin/settings", icon: Settings },
@@ -73,7 +75,13 @@ export function AppShell({
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem("admin.sidebar.collapsed") === "true"; } catch { return false; }
+  });
+
+  useEffect(() => {
+    try { localStorage.setItem("admin.sidebar.collapsed", String(collapsed)); } catch {}
+  }, [collapsed]);
 
   useEffect(() => {
     setOpen(false);
@@ -205,7 +213,7 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="flex-1 px-4 pb-24 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
+        <main className="flex-1 px-4 pb-32 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
           {children}
         </main>
       </div>
@@ -218,14 +226,13 @@ export function AppShell({
               key={item.to}
               to={item.to}
               className={cn(
-                "flex flex-1 flex-col items-center gap-1 py-3 text-[10px] font-medium transition-colors",
+                "flex flex-1 items-center justify-center py-3 transition-colors",
                 active
                   ? "text-primary"
                   : "text-muted-foreground",
               )}
             >
               <item.icon className="h-5 w-5" />
-              <span>{item.mobileLabel ?? item.label}</span>
             </Link>
           );
         })}

@@ -24,11 +24,11 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useLms, useSelectors } from "@/lib/lms/store";
-import { PublicHeader, PublicFooter } from "@/components/lms/ui-bits";
+import { PublicFooter } from "@/components/lms/ui-bits";
 import { cn } from "@/lib/utils";
 import type { Lesson } from "@/lib/lms/types";
 
-export const Route = createFileRoute("/courses/$courseId")({
+export const Route = createFileRoute("/courses/$slug")({
   head: () => ({
     meta: [
       { title: "Course Details — Hamza Visuals" },
@@ -105,17 +105,16 @@ function SectionTitle({ kicker, children }: { kicker?: string; children: ReactNo
 /* ---------------- page ---------------- */
 
 function PublicCourseDetails() {
-  const { courseId } = useParams({ from: "/courses/$courseId" });
+  const { slug } = useParams({ from: "/courses/$slug" });
   const { data, currentUser, enroll, requestEnrollment } = useLms();
   const s = useSelectors();
   const navigate = useNavigate();
 
-  const course = data.courses.find((c) => c.id === courseId);
+  const course = data.courses.find((c) => c.slug === slug);
 
   if (!course || course.status !== "published") {
     return (
       <div className="min-h-screen bg-background">
-        <PublicHeader hideNav />
         <main className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center text-center">
             <FileQuestion className="h-12 w-12 text-muted-foreground/50" />
@@ -159,41 +158,50 @@ function PublicCourseDetails() {
 
   const myEnrollment = currentUser ? s.enrollmentOf(currentUser.id, course.id) : null;
   const myEnrollmentRequest = currentUser ? s.enrollmentRequestOf(currentUser.id, course.id) : null;
-  const isPending = myEnrollmentRequest?.status === "pending";
-  const hasAccess = !!myEnrollment || (isPaid && myEnrollmentRequest?.status === "approved");
+  const isPending =
+    myEnrollmentRequest?.status === "pending" || myEnrollment?.accessStatus === "pending";
+  const hasAccess = !!myEnrollment && myEnrollment.accessStatus === "accepted";
 
   const enrollLabel = hasAccess
-    ? myEnrollment
-      ? "Start Learning"
-      : "Access Course"
+    ? "Start Learning"
     : isPaid && isPending
       ? "Pending Approval"
       : isPaid
-        ? "Request Enrollment"
-        : "Enroll Now";
+        ? "Click Here to Enroll"
+        : "Click Here to Enroll";
 
-  const handleEnroll = () => {
+  const handleEnroll = async () => {
     if (!currentUser) {
-      navigate({ to: "/login", search: { redirect: `/courses/${course.id}` } });
+      navigate({ to: "/register", search: { course: course.slug } });
       return;
     }
     if (isPaid && isPending) return;
-    if (isPaid && !hasAccess) {
-      requestEnrollment(course.id);
-      toast.success("Enrollment request sent — pending approval");
+    if (hasAccess) {
+      navigate({ to: "/app/learn/$slug", params: { slug: course.slug } });
       return;
     }
-    if (!hasAccess) {
-      enroll(course.id);
-      toast.success("You're enrolled — happy learning");
+    if (isPaid) {
+      requestEnrollment(course.id);
+      toast.success("Enrollment request sent — pending approval");
+      navigate({ to: "/app/my-courses" });
+      return;
     }
-    navigate({ to: "/app/learn/$courseId", params: { courseId: course.id } });
+    const ok = await enroll(course.id);
+    if (ok) {
+      toast.success("You're enrolled — happy learning");
+      navigate({ to: "/app/learn/$slug", params: { slug: course.slug } });
+    } else {
+      toast.error("Could not enroll. Please try again.");
+    }
   };
+
+  if (currentUser) {
+    navigate({ to: "/app/courses/$slug", params: { slug }, replace: true });
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <PublicHeader />
-
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <Link
           to="/courses"
@@ -434,8 +442,12 @@ function PublicCourseDetails() {
                     : isPaid && isPending
                       ? "Your request is pending admin approval"
                       : isPaid
-                        ? "Sign in to request enrollment"
-                        : "Sign in to enroll for free"}
+                        ? currentUser
+                          ? "Your enrollment request will be reviewed by an administrator"
+                          : "Sign in to request enrollment"
+                        : currentUser
+                          ? "Enroll free and start learning"
+                          : "Sign in to enroll for free"}
                 </p>
 
                 <dl className="mt-6 space-y-3.5 border-t border-border pt-6">
@@ -457,7 +469,7 @@ function PublicCourseDetails() {
                 ) : (
                   <p className="mt-5 flex items-center gap-2 rounded-xl bg-primary/5 p-3 text-xs text-muted-foreground">
                     <BookOpen className="h-4 w-4 shrink-0 text-primary" /> Learn at your own pace
-                    with lifetime notes
+                    with lifetime access
                   </p>
                 )}
               </div>

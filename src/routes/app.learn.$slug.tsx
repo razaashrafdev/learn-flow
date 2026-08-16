@@ -1,48 +1,100 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, ChevronLeft, ChevronRight, Circle, FileQuestion, PlayCircle } from "lucide-react";
+import {
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Circle,
+  ExternalLink,
+  FileQuestion,
+  Link2,
+  Loader2,
+  Lock,
+  PlayCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell, studentNav } from "@/components/lms/app-shell";
 import { EmptyState, ProgressRow } from "@/components/lms/ui-bits";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { apiCheckEnrollmentAccess, type AccessCheckResult } from "@/lib/api";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { youtubeEmbed } from "@/lib/lms/youtube";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/app/learn/$courseId")({
+export const Route = createFileRoute("/app/learn/$slug")({
   head: () => ({
     meta: [
       { title: "Learning — Hamza Visuals LMS" },
-      { name: "description", content: "Watch Your Video Lessons and Mark Them Complete as You Go." },
+      {
+        name: "description",
+        content: "Watch Your Video Lessons and Mark Them Complete as You Go.",
+      },
       { property: "og:title", content: "Learning — Hamza Visuals LMS" },
-      { property: "og:description", content: "Watch Lessons and Track Completion on Hamza Visuals LMS." },
+      {
+        property: "og:description",
+        content: "Watch Lessons and Track Completion on Hamza Visuals LMS.",
+      },
     ],
   }),
   component: LearnPage,
 });
 
 function LearnPage() {
-  const { courseId } = useParams({ from: "/app/learn/$courseId" });
-  const { data, currentUser, setLessonCompleted, setLastLesson } = useLms();
+  const { slug } = useParams({ from: "/app/learn/$slug" });
+  const { data, currentUser, setLessonCompleted, setLastLesson, syncEnrollments, syncCatalog } =
+    useLms();
   const s = useSelectors();
   const user = currentUser!;
+  const navigate = useNavigate();
 
-  const course = data.courses.find((c) => c.id === courseId);
+  const course = data.courses.find((c) => c.slug === slug);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [accessCheck, setAccessCheck] = useState<AccessCheckResult | null>(null);
+
+  useEffect(() => {
+    if (!course) return;
+    let cancelled = false;
+    setAccessCheck(null);
+    (async () => {
+      try {
+        const res = await apiCheckEnrollmentAccess(course.id);
+        if (cancelled) return;
+        if (res.access) {
+          await syncEnrollments();
+          await syncCatalog();
+        }
+        if (cancelled) return;
+        setAccessCheck(res);
+      } catch {
+        if (!cancelled) setAccessCheck({ access: false, status: "none" });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [course?.id, syncEnrollments, syncCatalog]);
+
   const enrollment = course ? s.enrollmentOf(user.id, course.id) : null;
   const sections = course ? s.sectionsOf(course.id) : [];
-  const lessons = useMemo(
-    () => (course ? s.publishedLessonsOfCourse(course.id) : []),
-    [course, s],
-  );
+  const lessons = useMemo(() => (course ? s.publishedLessonsOfCourse(course.id) : []), [course, s]);
   const done = course ? s.completedLessonIds(user.id, course.id) : new Set<string>();
-
-  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     if (activeId || lessons.length === 0) return;
     const last = enrollment?.lastLessonId;
-    const resume = lessons.find((l) => l.id === last) ?? lessons.find((l) => !done.has(l.id)) ?? lessons[0]!;
+    const resume =
+      lessons.find((l) => l.id === last) ?? lessons.find((l) => !done.has(l.id)) ?? lessons[0]!;
     setActiveId(resume.id);
   }, [activeId, lessons, enrollment, done]);
 
@@ -51,19 +103,62 @@ function LearnPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeId]);
 
-  if (!course || !enrollment) {
+  if (!course) {
     return (
-        <AppShell nav={studentNav} title="Not Available">
+      <AppShell nav={studentNav} title="Not Available">
         <EmptyState
           icon={FileQuestion}
-          title={course ? "You're Not Enrolled in This Course" : "Course Not Found"}
-          description={
-            course
-              ? "Enroll from the Course Page to Start Watching the Lessons."
-              : "This Course May Have Been Removed by the Administrator."
-          }
+          title="Course Not Found"
+          description="This course may have been removed by the administrator."
           action={{ label: "Back to Home", to: "/" }}
         />
+      </AppShell>
+    );
+  }
+
+  if (!accessCheck) {
+    return (
+      <AppShell nav={studentNav} title="Learning">
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
+      </AppShell>
+    );
+  }
+
+  if (!accessCheck.access) {
+    const status = accessCheck.status;
+    const reason =
+      status === "pending"
+        ? "Your enrollment is waiting for admin approval."
+        : status === "rejected"
+          ? "Your enrollment request was rejected by the administrator."
+          : "You need to enroll in this course to access the content.";
+    return (
+      <AppShell nav={studentNav} title="Course Locked">
+        <AlertDialog
+          open
+          onOpenChange={(o) => {
+            if (!o) void navigate({ to: "/app/my-courses" });
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Lock className="h-5 w-5" /> Course Access Restricted
+              </AlertDialogTitle>
+              <AlertDialogDescription>{reason}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel asChild>
+                <Link to="/app/my-courses">Go to My Courses</Link>
+              </AlertDialogCancel>
+              <AlertDialogAction asChild>
+                <Link to="/app/courses">Browse Courses</Link>
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </AppShell>
     );
   }
@@ -92,23 +187,23 @@ function LearnPage() {
   };
 
   return (
-    <AppShell nav={studentNav} title={course.title} subtitle={`${progress.done}/${progress.total} Lessons Complete`}>
+    <AppShell
+      nav={studentNav}
+      title={course.title}
+      subtitle={`${progress.done}/${progress.total} Lessons Complete`}
+    >
       <Link
-        to="/app/courses/$courseId"
-        params={{ courseId: course.id }}
+        to="/app/my-courses"
         className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground"
       >
-        <ChevronLeft className="h-4 w-4" /> Course Overview
+        <ChevronLeft className="h-4 w-4" /> Back
       </Link>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0">
           <div className="card-surface overflow-hidden">
-            <div
-              className="aspect-video w-full bg-foreground/90"
-              onContextMenu={handleContextMenu}
-            >
-              {active ? (
+            <div className="aspect-video w-full bg-foreground/90" onContextMenu={handleContextMenu}>
+              {active?.youtubeVideoId ? (
                 <iframe
                   key={active.id}
                   src={youtubeEmbed(active.youtubeVideoId)}
@@ -118,14 +213,44 @@ function LearnPage() {
                   allowFullScreen
                   referrerPolicy="no-referrer"
                 />
+              ) : active ? (
+                <div className="flex h-full items-center justify-center gap-2 px-6 text-center text-sm text-muted-foreground">
+                  <PlayCircle className="h-5 w-5" />
+                  Video unavailable — please refresh the page.
+                </div>
               ) : null}
             </div>
 
             <div className="p-5 sm:p-6">
               <h2 className="text-lg font-bold sm:text-xl">{active?.title ?? "No Lessons Yet"}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {active?.description ?? "The Administrator Hasn't Added Any Lessons to This Course."}
+                {active?.description ??
+                  "The Administrator Hasn't Added Any Lessons to This Course."}
               </p>
+
+              {active && active.resources && active.resources.length > 0 && (
+                <div className="mt-5 rounded-lg border border-border bg-muted/30 p-4">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Link2 className="h-4 w-4 text-primary" />
+                    Resources
+                  </div>
+                  <ul className="mt-3 space-y-2">
+                    {active.resources.map((res, idx) => (
+                      <li key={idx}>
+                        <a
+                          href={res}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-sm text-primary underline-offset-4 hover:underline"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+                          {res}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="mt-6 flex flex-row items-center gap-2">
                 <Button
@@ -134,7 +259,8 @@ function LearnPage() {
                   onClick={() => prev && setActiveId(prev.id)}
                   className="sm:w-auto"
                 >
-                  <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Previous</span>
+                  <ChevronLeft className="h-4 w-4" />{" "}
+                  <span className="hidden sm:inline">Previous</span>
                 </Button>
                 <Button
                   onClick={toggleComplete}
@@ -151,7 +277,8 @@ function LearnPage() {
                   onClick={() => next && setActiveId(next.id)}
                   className="sm:w-auto"
                 >
-                  <span className="hidden sm:inline">Next</span> <ChevronRight className="h-4 w-4" />
+                  <span className="hidden sm:inline">Next</span>{" "}
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -203,8 +330,12 @@ function LearnPage() {
                                 <Circle className="h-4 w-4 shrink-0 text-muted-foreground" />
                               )}
                               <span className="min-w-0 flex-1">
-                                <span className="block truncate text-sm font-medium">{lesson.title}</span>
-                                <span className="block text-xs text-muted-foreground">{lesson.duration}</span>
+                                <span className="block truncate text-sm font-medium">
+                                  {lesson.title}
+                                </span>
+                                <span className="block text-xs text-muted-foreground">
+                                  {lesson.duration}
+                                </span>
                               </span>
                             </button>
                           </li>

@@ -596,14 +596,14 @@ export function buildSeed(): LmsData {
     {
       id: "user-admin",
       name: "Sofia Marquez",
-      email: "admin@lms.dev",
+      email: "admin@lms.pk",
       password: "admin123",
       role: "admin",
       active: true,
       createdAt: iso(200),
     },
     ...[
-      "Jonah Whitfield",
+      "Ali Raza",
       "Amelie Dubois",
       "Ravi Shankar",
       "Nora Lindqvist",
@@ -621,7 +621,7 @@ export function buildSeed(): LmsData {
     ].map((name, i) => ({
       id: `user-student-${i + 1}`,
       name,
-      email: `${name.split(" ")[0]!.toLowerCase()}@student.dev`,
+      email: i === 0 ? "ali@student.pk" : `${name.split(" ")[0]!.toLowerCase()}@student.dev`,
       password: "student123",
       role: "student" as const,
       active: i !== 4,
@@ -676,6 +676,14 @@ export function buildSeed(): LmsData {
       const sectionId = `${courseId}-sec-${si + 1}`;
       sections.push({ id: sectionId, courseId, title: sec.title, order: si });
       sec.lessons.forEach((l, li) => {
+        const resources: string[] = [];
+        if (si === 0 && li === 0) {
+          resources.push("https://example.com/digital-marketing-guide.pdf");
+          resources.push("https://example.com/marketing-templates.zip");
+        }
+        if (si === 1 && li === 0) {
+          resources.push("https://example.com/seo-checklist.pdf");
+        }
         lessons.push({
           id: `${sectionId}-les-${li + 1}`,
           sectionId,
@@ -687,6 +695,7 @@ export function buildSeed(): LmsData {
           order: li,
           freePreview: si === 0 && li === 0,
           published: true,
+          ...(resources.length > 0 ? { resources } : {}),
         });
       });
     });
@@ -735,6 +744,7 @@ export function buildSeed(): LmsData {
       studentId,
       courseId,
       status: isComplete ? "completed" : "in_progress",
+      accessStatus: "accepted",
       enrolledAt: iso(45 - i * 4),
       completedAt: isComplete ? iso(3) : null,
       lastLessonId: completedLessons[completedLessons.length - 1]?.id ?? all[0]?.id ?? null,
@@ -761,5 +771,105 @@ export function buildSeed(): LmsData {
     enrollments,
     enrollmentRequests: [],
     progress,
+    resources: [
+      {
+        id: "res-1",
+        title: "Modern Dashboard UI Kit",
+        description:
+          "A clean and modern dashboard UI kit with 50+ components built for Figma and Figma.",
+        type: "UI Kit",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "12.5 MB",
+      },
+      {
+        id: "res-2",
+        title: "Social Media Post Templates",
+        description:
+          "20+ ready-to-use social media templates for Instagram, Facebook, and Twitter.",
+        type: "Template",
+        image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "8.3 MB",
+      },
+      {
+        id: "res-3",
+        title: "Complete Branding Guide",
+        description:
+          "Learn how to build a memorable brand identity from scratch with this comprehensive guide.",
+        type: "Guide",
+        image: "https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "2.1 MB",
+      },
+      {
+        id: "res-4",
+        title: "UI/UX Design Principles E-Book",
+        description:
+          "Master the fundamentals of user interface and experience design in 100 pages.",
+        type: "E-Book",
+        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "5.7 MB",
+      },
+      {
+        id: "res-5",
+        title: "Figma Prototyping Masterclass",
+        description: "A step-by-step video tutorial on creating advanced prototypes in Figma.",
+        type: "Video",
+        image: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "250 MB",
+      },
+      {
+        id: "res-6",
+        title: "Icon Pack — 500+ Icons",
+        description:
+          "A versatile icon set covering 50+ categories, available in SVG and PNG formats.",
+        type: "Graphic",
+        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "15.2 MB",
+      },
+      {
+        id: "res-7",
+        title: "Landing Page Wireframe Kit",
+        description:
+          "10 high-fidelity wireframe templates for SaaS, portfolio, and e-commerce landing pages.",
+        type: "UI Kit",
+        image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "6.8 MB",
+      },
+      {
+        id: "res-8",
+        title: "Color Palette Generator Guide",
+        description:
+          "Discover how to create harmonious color palettes that elevate your design work.",
+        type: "Guide",
+        image: "https://images.unsplash.com/photo-1525909002-1b05e0c869d8?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "1.4 MB",
+      },
+      {
+        id: "res-9",
+        title: "Motion Design Fundamentals",
+        description:
+          "Video course covering animation principles, easing, and micro-interactions for UI.",
+        type: "Video",
+        image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&h=400&fit=crop",
+        downloadUrl: "#",
+        fileSize: "380 MB",
+      },
+    ],
   };
+}
+
+/**
+ * Fresh data for a newly signed-up student: catalog stays, but no demo users,
+ * enrollments or progress from the seed bleed into their dashboard.
+ */
+export function buildEmptyData(): LmsData {
+  const seed = buildSeed();
+  return { ...seed, users: [], enrollments: [], enrollmentRequests: [], progress: [] };
 }

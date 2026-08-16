@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ImageUpload } from "@/components/lms/ui-bits";
 import type { Course, CourseLevel, CourseStatus, PricingType } from "@/lib/lms/types";
 
 export type CourseFormValues = {
@@ -24,29 +25,32 @@ export type CourseFormValues = {
   level: CourseLevel;
   pricingType: PricingType;
   status: CourseStatus;
+  price: number;
 };
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title Is Required").max(120),
   shortDescription: z.string().trim().min(10, "Write a Short Summary").max(200),
   description: z.string().trim().min(20, "Add a Fuller Description").max(4000),
-  thumbnail: z.string().trim().url("Enter a Valid Image URL").max(600),
+  thumbnail: z.string().trim().min(1, "Thumbnail is required").max(6000000),
   duration: z.string().trim().min(1, "Add a Duration").max(20),
   instructor: z.string().trim().min(2, "Add an Instructor Name").max(80),
   level: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]),
   pricingType: z.enum(["free", "paid"]),
+  price: z.number().min(0),
 });
 
 export const emptyCourse = (): CourseFormValues => ({
   title: "",
   shortDescription: "",
   description: "",
-  thumbnail: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800",
+  thumbnail: "",
   duration: "1h",
   instructor: "Hamza Bhatti",
   level: "Beginner",
   pricingType: "free",
   status: "draft",
+  price: 0,
 });
 
 export function toFormValues(course: Course): CourseFormValues {
@@ -60,6 +64,7 @@ export function toFormValues(course: Course): CourseFormValues {
     level: course.level,
     pricingType: course.pricingType,
     status: course.status,
+    price: course.price ?? 0,
   };
 }
 
@@ -94,9 +99,28 @@ export function CourseForm({
   return (
     <form onSubmit={submit} className="card-surface w-full space-y-5 p-6">
       <div className="space-y-1.5">
+        <Label>Thumbnail</Label>
+        <ImageUpload
+          value={values.thumbnail}
+          onChange={(v) => set("thumbnail", v)}
+          className="w-full"
+        />
+        {errors["thumbnail"] ? (
+          <p className="text-xs font-medium text-destructive">{errors["thumbnail"]}</p>
+        ) : null}
+      </div>
+
+      <div className="space-y-1.5">
         <Label htmlFor="title">Course Title</Label>
-        <Input id="title" value={values.title} maxLength={120} onChange={(e) => set("title", e.target.value)} />
-        {errors["title"] ? <p className="text-xs font-medium text-destructive">{errors["title"]}</p> : null}
+        <Input
+          id="title"
+          value={values.title}
+          maxLength={120}
+          onChange={(e) => set("title", e.target.value)}
+        />
+        {errors["title"] ? (
+          <p className="text-xs font-medium text-destructive">{errors["title"]}</p>
+        ) : null}
       </div>
 
       <div className="space-y-1.5">
@@ -114,29 +138,39 @@ export function CourseForm({
 
       <div className="space-y-1.5">
         <Label htmlFor="desc">Full Description</Label>
-        <Textarea id="desc" rows={5} value={values.description} maxLength={4000} onChange={(e) => set("description", e.target.value)} />
+        <Textarea
+          id="desc"
+          rows={5}
+          value={values.description}
+          maxLength={4000}
+          onChange={(e) => set("description", e.target.value)}
+        />
         {errors["description"] ? (
           <p className="text-xs font-medium text-destructive">{errors["description"]}</p>
         ) : null}
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="thumb">Thumbnail URL</Label>
-        <Input id="thumb" value={values.thumbnail} maxLength={600} onChange={(e) => set("thumbnail", e.target.value)} />
-        {errors["thumbnail"] ? <p className="text-xs font-medium text-destructive">{errors["thumbnail"]}</p> : null}
-      </div>
-
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="space-y-1.5">
           <Label htmlFor="duration">Duration</Label>
-          <Input id="duration" value={values.duration} maxLength={20} placeholder="6h" onChange={(e) => set("duration", e.target.value)} />
-          {errors["duration"] ? <p className="text-xs font-medium text-destructive">{errors["duration"]}</p> : null}
+          <Input
+            id="duration"
+            value={values.duration}
+            maxLength={20}
+            placeholder="6h"
+            onChange={(e) => set("duration", e.target.value)}
+          />
+          {errors["duration"] ? (
+            <p className="text-xs font-medium text-destructive">{errors["duration"]}</p>
+          ) : null}
         </div>
 
         <div className="space-y-1.5">
           <Label>Status</Label>
           <Select value={values.status} onValueChange={(v) => set("status", v as CourseStatus)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="draft">Draft</SelectItem>
               <SelectItem value="published">Published</SelectItem>
@@ -146,8 +180,13 @@ export function CourseForm({
 
         <div className="space-y-1.5">
           <Label>Pricing</Label>
-          <Select value={values.pricingType} onValueChange={(v) => set("pricingType", v as PricingType)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+          <Select
+            value={values.pricingType}
+            onValueChange={(v) => set("pricingType", v as PricingType)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
             <SelectContent>
               <SelectItem value="free">Free</SelectItem>
               <SelectItem value="paid">Paid</SelectItem>
@@ -155,14 +194,37 @@ export function CourseForm({
           </Select>
         </div>
 
+        {values.pricingType === "paid" && (
+          <div className="space-y-1.5">
+            <Label htmlFor="price">Price (Rs.)</Label>
+            <Input
+              id="price"
+              type="number"
+              min={0}
+              value={values.price || ""}
+              placeholder="999"
+              onChange={(e) => set("price", Number(e.target.value))}
+            />
+          </div>
+        )}
+
         <div className="space-y-1.5">
           <Label htmlFor="instructor">Instructor</Label>
-          <Input id="instructor" value={values.instructor} maxLength={80} onChange={(e) => set("instructor", e.target.value)} />
-          {errors["instructor"] ? <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p> : null}
+          <Input
+            id="instructor"
+            value={values.instructor}
+            maxLength={80}
+            onChange={(e) => set("instructor", e.target.value)}
+          />
+          {errors["instructor"] ? (
+            <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p>
+          ) : null}
         </div>
       </div>
 
-      <Button type="submit" className="w-full self-start sm:w-auto">{submitLabel}</Button>
+      <Button type="submit" className="w-full self-start sm:w-auto">
+        {submitLabel}
+      </Button>
     </form>
   );
 }

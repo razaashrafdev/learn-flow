@@ -3,6 +3,7 @@ import {
   Outlet,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,6 +14,7 @@ import { LmsProvider } from "@/lib/lms/store";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/components/not-found";
+import { SiteHeader } from "@/components/lms/site-header";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -74,12 +76,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
-      },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
     ],
   }),
@@ -103,13 +99,25 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const NO_HEADER_PREFIXES = ["/login", "/register", "/forgot-password", "/app", "/admin"];
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const showHeader = !NO_HEADER_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(p + "/"),
+  );
+  const activeSection = pathname.startsWith("/courses")
+    ? "courses"
+    : pathname.startsWith("/resources")
+      ? "resources"
+      : undefined;
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LmsProvider>
+          {showHeader ? <SiteHeader activeSection={activeSection} /> : null}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
           <Toaster position="bottom-right" richColors />
@@ -118,4 +126,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
