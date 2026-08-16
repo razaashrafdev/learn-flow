@@ -11,17 +11,19 @@ export function CourseCard({
   lessonCount,
   progress,
   footer,
+  pending,
 }: {
   course: Course;
   lessonCount: number;
   progress?: { percent: number; label?: string };
   footer?: { label: string; to: string; params?: Record<string, string> };
+  pending?: boolean;
 }) {
   return (
     <article className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-pop">
       <Link
-        to="/courses/$courseId"
-        params={{ courseId: course.id }}
+        to="/courses/$slug"
+        params={{ slug: course.slug }}
         className="relative block aspect-video overflow-hidden bg-muted"
       >
         <img
@@ -44,7 +46,7 @@ export function CourseCard({
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 text-base font-bold leading-snug">
-          <Link to="/courses/$courseId" params={{ courseId: course.id }}>
+          <Link to="/courses/$slug" params={{ slug: course.slug }}>
             {course.title}
           </Link>
         </h3>
@@ -72,14 +74,20 @@ export function CourseCard({
         ) : null}
 
         <div className="mt-5 pt-0">
-          <Button asChild className="w-full">
-            <Link
-              to={footer?.to ?? "/courses/$courseId"}
-              params={footer?.params ?? { courseId: course.id }}
-            >
-              {footer?.label ?? "View Details"}
-            </Link>
-          </Button>
+          {pending ? (
+            <Button className="w-full" disabled variant="outline">
+              Pending Approval
+            </Button>
+          ) : (
+            <Button asChild className="w-full">
+              <Link
+                to={footer?.to ?? "/courses/$slug"}
+                params={footer?.params ?? { slug: course.slug }}
+              >
+                {footer?.label ?? "View Details"}
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
     </article>
@@ -97,8 +105,8 @@ export function LandingCourseCard({
   return (
     <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <Link
-        to="/courses/$courseId"
-        params={{ courseId: course.id }}
+        to="/courses/$slug"
+        params={{ slug: course.slug }}
         className="relative block aspect-video overflow-hidden bg-muted"
       >
         <img
@@ -122,7 +130,7 @@ export function LandingCourseCard({
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary transition-colors">
-          <Link to="/courses/$courseId" params={{ courseId: course.id }}>
+          <Link to="/courses/$slug" params={{ slug: course.slug }}>
             {course.title}
           </Link>
         </h3>
@@ -142,7 +150,7 @@ export function LandingCourseCard({
 
         <div className="mt-5">
           <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            <Link to="/courses/$courseId" params={{ courseId: course.id }}>
+            <Link to="/courses/$slug" params={{ slug: course.slug }}>
               View Details <ChevronRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>

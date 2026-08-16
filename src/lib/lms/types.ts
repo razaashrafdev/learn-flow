@@ -4,7 +4,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   role: Role;
   avatar?: string;
   whatsapp?: string;
@@ -104,19 +104,29 @@ export type Lesson = {
   order: number;
   freePreview: boolean;
   published: boolean;
+  resources?: string[];
 };
 
 export type EnrollmentStatus = "in_progress" | "completed";
+
+/** Enrollment access lifecycle managed by the admin:
+ *  pending = waiting for approval, accepted = has access,
+ *  rejected = denied. */
+export type EnrollmentState = "pending" | "accepted" | "rejected";
 
 export type Enrollment = {
   id: string;
   studentId: string;
   courseId: string;
   status: EnrollmentStatus;
+  /** Access lifecycle status (server-side). `status` stays for progress. */
+  accessStatus: EnrollmentState;
   enrolledAt: string;
   completedAt?: string | null;
   lastLessonId?: string | null;
   lastAccessedAt?: string | null;
+  /** Payment screenshot URL submitted during registration (paid courses). */
+  paymentScreenshot?: string | null;
 };
 
 export type LessonProgress = {
@@ -128,6 +138,16 @@ export type LessonProgress = {
   completedAt?: string | null;
 };
 
+export type Resource = {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  image: string;
+  downloadUrl: string;
+  fileSize?: string;
+};
+
 export type LmsData = {
   users: User[];
   categories: Category[];
@@ -137,4 +157,5 @@ export type LmsData = {
   enrollments: Enrollment[];
   enrollmentRequests: EnrollmentRequest[];
   progress: LessonProgress[];
+  resources: Resource[];
 };

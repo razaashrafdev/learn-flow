@@ -31,10 +31,10 @@ function NewCourse() {
       <CourseForm
         initial={emptyCourse()}
         submitLabel="Create Course"
-        onSubmit={(values) => {
-          const course = createCourse({ ...values, categoryId: "" });
+        onSubmit={async (values) => {
+          const course = await createCourse({ ...values, categoryId: "" });
           toast.success("Course Created — Now Add Sections and Lessons");
-          navigate({ to: "/admin/courses/$courseId", params: { courseId: course.id } });
+          navigate({ to: "/admin/courses/$slug", params: { slug: course.slug } });
         }}
       />
     </AppShell>

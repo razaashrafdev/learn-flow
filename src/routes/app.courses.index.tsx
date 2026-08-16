@@ -86,15 +86,17 @@ function BrowseCourses() {
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {shown.map((course) => {
               const enrolled = currentUser ? s.enrollmentOf(currentUser.id, course.id) : null;
+              const isPending = enrolled?.accessStatus === "pending";
               return (
                 <CourseCard
                   key={course.id}
                   course={course}
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
+                  pending={isPending}
                   footer={
                     enrolled
-                      ? { label: "Continue Learning", to: "/app/learn/$courseId", params: { courseId: course.id } }
-                      : { label: "View Course", to: "/app/courses/$courseId", params: { courseId: course.id } }
+                      ? { label: "Continue Learning", to: "/app/learn/$slug", params: { slug: course.slug } }
+                      : { label: "View Course", to: "/app/courses/$slug", params: { slug: course.slug } }
                   }
                 />
               );

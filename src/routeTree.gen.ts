@@ -19,10 +19,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as TermsOfServiceRouteImport } from './routes/terms-of-service'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminEnrollmentsRouteImport } from './routes/admin.enrollments'
+import { Route as AdminResourcesRouteImport } from './routes/admin.resources'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminStudentsRouteImport } from './routes/admin.students'
 import { Route as AppIndexRouteImport } from './routes/app.index'
@@ -31,13 +33,13 @@ import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
 import { Route as AppMyCoursesRouteImport } from './routes/app.my-courses'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
-import { Route as CoursesCourseIdRouteImport } from './routes/courses.$courseId'
+import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
-import { Route as AdminCoursesCourseIdRouteImport } from './routes/admin.courses.$courseId'
+import { Route as AdminCoursesSlugRouteImport } from './routes/admin.courses.$slug'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
 import { Route as AppCoursesIndexRouteImport } from './routes/app.courses.index'
-import { Route as AppCoursesCourseIdRouteImport } from './routes/app.courses.$courseId'
-import { Route as AppLearnCourseIdRouteImport } from './routes/app.learn.$courseId'
+import { Route as AppCoursesSlugRouteImport } from './routes/app.courses.$slug'
+import { Route as AppLearnSlugRouteImport } from './routes/app.learn.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -89,6 +91,11 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsOfServiceRoute = TermsOfServiceRouteImport.update({
   id: '/terms-of-service',
   path: '/terms-of-service',
@@ -107,6 +114,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
 const AdminEnrollmentsRoute = AdminEnrollmentsRouteImport.update({
   id: '/enrollments',
   path: '/enrollments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminResourcesRoute = AdminResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -149,9 +161,9 @@ const CoursesIndexRoute = CoursesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => CoursesRoute,
 } as any)
-const CoursesCourseIdRoute = CoursesCourseIdRouteImport.update({
-  id: '/$courseId',
-  path: '/$courseId',
+const CoursesSlugRoute = CoursesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => CoursesRoute,
 } as any)
 const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
@@ -159,9 +171,9 @@ const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminCoursesCourseIdRoute = AdminCoursesCourseIdRouteImport.update({
-  id: '/courses/$courseId',
-  path: '/courses/$courseId',
+const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
@@ -174,14 +186,14 @@ const AppCoursesIndexRoute = AppCoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppCoursesCourseIdRoute = AppCoursesCourseIdRouteImport.update({
-  id: '/courses/$courseId',
-  path: '/courses/$courseId',
+const AppCoursesSlugRoute = AppCoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
   getParentRoute: () => AppRoute,
 } as any)
-const AppLearnCourseIdRoute = AppLearnCourseIdRouteImport.update({
-  id: '/learn/$courseId',
-  path: '/learn/$courseId',
+const AppLearnSlugRoute = AppLearnSlugRouteImport.update({
+  id: '/learn/$slug',
+  path: '/learn/$slug',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -196,23 +208,25 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
-  '/courses/$courseId': typeof CoursesCourseIdRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/courses/': typeof CoursesIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
-  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
-  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/app/courses/$slug': typeof AppCoursesSlugRoute
+  '/app/learn/$slug': typeof AppLearnSlugRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/app/courses/': typeof AppCoursesIndexRoute
 }
@@ -224,23 +238,25 @@ export interface FileRoutesByTo {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
-  '/courses/$courseId': typeof CoursesCourseIdRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/courses': typeof CoursesIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
-  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
-  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/app/courses/$slug': typeof AppCoursesSlugRoute
+  '/app/learn/$slug': typeof AppLearnSlugRoute
   '/admin/courses': typeof AdminCoursesIndexRoute
   '/app/courses': typeof AppCoursesIndexRoute
 }
@@ -256,23 +272,25 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/resources': typeof ResourcesRoute
   '/terms-of-service': typeof TermsOfServiceRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/enrollments': typeof AdminEnrollmentsRoute
+  '/admin/resources': typeof AdminResourcesRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/students': typeof AdminStudentsRoute
   '/app/completed': typeof AppCompletedRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/my-courses': typeof AppMyCoursesRoute
   '/app/profile': typeof AppProfileRoute
-  '/courses/$courseId': typeof CoursesCourseIdRoute
+  '/courses/$slug': typeof CoursesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/courses/': typeof CoursesIndexRoute
-  '/admin/courses/$courseId': typeof AdminCoursesCourseIdRoute
+  '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
-  '/app/courses/$courseId': typeof AppCoursesCourseIdRoute
-  '/app/learn/$courseId': typeof AppLearnCourseIdRoute
+  '/app/courses/$slug': typeof AppCoursesSlugRoute
+  '/app/learn/$slug': typeof AppLearnSlugRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/app/courses/': typeof AppCoursesIndexRoute
 }
@@ -289,23 +307,25 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/refund-policy'
     | '/register'
+    | '/resources'
     | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
+    | '/admin/resources'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
-    | '/courses/$courseId'
+    | '/courses/$slug'
     | '/admin/'
     | '/app/'
     | '/courses/'
-    | '/admin/courses/$courseId'
+    | '/admin/courses/$slug'
     | '/admin/courses/new'
-    | '/app/courses/$courseId'
-    | '/app/learn/$courseId'
+    | '/app/courses/$slug'
+    | '/app/learn/$slug'
     | '/admin/courses/'
     | '/app/courses/'
   fileRoutesByTo: FileRoutesByTo
@@ -317,23 +337,25 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/refund-policy'
     | '/register'
+    | '/resources'
     | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
+    | '/admin/resources'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
-    | '/courses/$courseId'
+    | '/courses/$slug'
     | '/admin'
     | '/app'
     | '/courses'
-    | '/admin/courses/$courseId'
+    | '/admin/courses/$slug'
     | '/admin/courses/new'
-    | '/app/courses/$courseId'
-    | '/app/learn/$courseId'
+    | '/app/courses/$slug'
+    | '/app/learn/$slug'
     | '/admin/courses'
     | '/app/courses'
   id:
@@ -348,23 +370,25 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/refund-policy'
     | '/register'
+    | '/resources'
     | '/terms-of-service'
     | '/admin/dashboard'
     | '/admin/enrollments'
+    | '/admin/resources'
     | '/admin/settings'
     | '/admin/students'
     | '/app/completed'
     | '/app/dashboard'
     | '/app/my-courses'
     | '/app/profile'
-    | '/courses/$courseId'
+    | '/courses/$slug'
     | '/admin/'
     | '/app/'
     | '/courses/'
-    | '/admin/courses/$courseId'
+    | '/admin/courses/$slug'
     | '/admin/courses/new'
-    | '/app/courses/$courseId'
-    | '/app/learn/$courseId'
+    | '/app/courses/$slug'
+    | '/app/learn/$slug'
     | '/admin/courses/'
     | '/app/courses/'
   fileRoutesById: FileRoutesById
@@ -380,6 +404,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   RegisterRoute: typeof RegisterRoute
+  ResourcesRoute: typeof ResourcesRoute
   TermsOfServiceRoute: typeof TermsOfServiceRoute
 }
 
@@ -455,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms-of-service': {
       id: '/terms-of-service'
       path: '/terms-of-service'
@@ -481,6 +513,13 @@ declare module '@tanstack/react-router' {
       path: '/enrollments'
       fullPath: '/admin/enrollments'
       preLoaderRoute: typeof AdminEnrollmentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/resources': {
+      id: '/admin/resources'
+      path: '/resources'
+      fullPath: '/admin/resources'
+      preLoaderRoute: typeof AdminResourcesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -539,11 +578,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesIndexRouteImport
       parentRoute: typeof CoursesRoute
     }
-    '/courses/$courseId': {
-      id: '/courses/$courseId'
-      path: '/$courseId'
-      fullPath: '/courses/$courseId'
-      preLoaderRoute: typeof CoursesCourseIdRouteImport
+    '/courses/$slug': {
+      id: '/courses/$slug'
+      path: '/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof CoursesRoute
     }
     '/admin/courses/': {
@@ -553,11 +592,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoursesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/courses/$courseId': {
-      id: '/admin/courses/$courseId'
-      path: '/courses/$courseId'
-      fullPath: '/admin/courses/$courseId'
-      preLoaderRoute: typeof AdminCoursesCourseIdRouteImport
+    '/admin/courses/$slug': {
+      id: '/admin/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/admin/courses/$slug'
+      preLoaderRoute: typeof AdminCoursesSlugRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/courses/new': {
@@ -574,18 +613,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCoursesIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/courses/$courseId': {
-      id: '/app/courses/$courseId'
-      path: '/courses/$courseId'
-      fullPath: '/app/courses/$courseId'
-      preLoaderRoute: typeof AppCoursesCourseIdRouteImport
+    '/app/courses/$slug': {
+      id: '/app/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/app/courses/$slug'
+      preLoaderRoute: typeof AppCoursesSlugRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/learn/$courseId': {
-      id: '/app/learn/$courseId'
-      path: '/learn/$courseId'
-      fullPath: '/app/learn/$courseId'
-      preLoaderRoute: typeof AppLearnCourseIdRouteImport
+    '/app/learn/$slug': {
+      id: '/app/learn/$slug'
+      path: '/learn/$slug'
+      fullPath: '/app/learn/$slug'
+      preLoaderRoute: typeof AppLearnSlugRouteImport
       parentRoute: typeof AppRoute
     }
   }
@@ -594,10 +633,11 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminEnrollmentsRoute: typeof AdminEnrollmentsRoute
+  AdminResourcesRoute: typeof AdminResourcesRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminStudentsRoute: typeof AdminStudentsRoute
   AdminIndexRoute: typeof AdminIndexRoute
-  AdminCoursesCourseIdRoute: typeof AdminCoursesCourseIdRoute
+  AdminCoursesSlugRoute: typeof AdminCoursesSlugRoute
   AdminCoursesNewRoute: typeof AdminCoursesNewRoute
   AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
 }
@@ -605,10 +645,11 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminEnrollmentsRoute: AdminEnrollmentsRoute,
+  AdminResourcesRoute: AdminResourcesRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminStudentsRoute: AdminStudentsRoute,
   AdminIndexRoute: AdminIndexRoute,
-  AdminCoursesCourseIdRoute: AdminCoursesCourseIdRoute,
+  AdminCoursesSlugRoute: AdminCoursesSlugRoute,
   AdminCoursesNewRoute: AdminCoursesNewRoute,
   AdminCoursesIndexRoute: AdminCoursesIndexRoute,
 }
@@ -621,8 +662,8 @@ interface AppRouteChildren {
   AppMyCoursesRoute: typeof AppMyCoursesRoute
   AppProfileRoute: typeof AppProfileRoute
   AppIndexRoute: typeof AppIndexRoute
-  AppCoursesCourseIdRoute: typeof AppCoursesCourseIdRoute
-  AppLearnCourseIdRoute: typeof AppLearnCourseIdRoute
+  AppCoursesSlugRoute: typeof AppCoursesSlugRoute
+  AppLearnSlugRoute: typeof AppLearnSlugRoute
   AppCoursesIndexRoute: typeof AppCoursesIndexRoute
 }
 
@@ -632,20 +673,20 @@ const AppRouteChildren: AppRouteChildren = {
   AppMyCoursesRoute: AppMyCoursesRoute,
   AppProfileRoute: AppProfileRoute,
   AppIndexRoute: AppIndexRoute,
-  AppCoursesCourseIdRoute: AppCoursesCourseIdRoute,
-  AppLearnCourseIdRoute: AppLearnCourseIdRoute,
+  AppCoursesSlugRoute: AppCoursesSlugRoute,
+  AppLearnSlugRoute: AppLearnSlugRoute,
   AppCoursesIndexRoute: AppCoursesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface CoursesRouteChildren {
-  CoursesCourseIdRoute: typeof CoursesCourseIdRoute
+  CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
-  CoursesCourseIdRoute: CoursesCourseIdRoute,
+  CoursesSlugRoute: CoursesSlugRoute,
   CoursesIndexRoute: CoursesIndexRoute,
 }
 
@@ -663,6 +704,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   RegisterRoute: RegisterRoute,
+  ResourcesRoute: ResourcesRoute,
   TermsOfServiceRoute: TermsOfServiceRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowLeft, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, ChevronDown, ChevronUp, Link2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
@@ -8,9 +8,16 @@ import { CourseForm, toFormValues } from "@/components/lms/course-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useLms } from "@/lib/lms/store";
 
-export const Route = createFileRoute("/admin/courses/$courseId")({
+export const Route = createFileRoute("/admin/courses/$slug")({
   head: () => ({
     meta: [
       { title: "Edit Course — Hamza Visuals LMS Admin" },
@@ -23,11 +30,19 @@ export const Route = createFileRoute("/admin/courses/$courseId")({
 });
 
 function EditCourse() {
-  const { courseId } = useParams({ from: "/admin/courses/$courseId" });
-  const { data, updateCourse, createSection, deleteSection, moveSection, createLesson, deleteLesson, moveLesson } = useLms();
-  const course = data.courses.find((c) => c.id === courseId);
+  const { slug } = useParams({ from: "/admin/courses/$slug" });
+  const { data, updateCourse, createSection, deleteSection, moveSection, createLesson, deleteLesson, moveLesson, updateLesson, syncCatalog } = useLms();
+  const course = data.courses.find((c) => c.slug === slug);
   const [sectionTitle, setSectionTitle] = useState("");
   const [lessonDraft, setLessonDraft] = useState<Record<string, { title: string; url: string; duration: string }>>({});
+
+  useEffect(() => {
+    void syncCatalog();
+  }, [syncCatalog]);
+
+  const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [resourcesLessonId, setResourcesLessonId] = useState<string | null>(null);
+  const [resourceLinks, setResourceLinks] = useState<string[]>([""]);
 
   if (!course) {
     return (
@@ -38,6 +53,28 @@ function EditCourse() {
   }
 
   const sections = data.sections.filter((s) => s.courseId === course.id).sort((a, b) => a.order - b.order);
+
+  const openResources = (lessonId: string) => {
+    const lesson = data.lessons.find((l) => l.id === lessonId);
+    setResourcesLessonId(lessonId);
+    setResourceLinks(lesson?.resources?.length ? [...lesson.resources] : [""]);
+    setResourcesOpen(true);
+  };
+
+  const saveResources = async () => {
+    if (!resourcesLessonId) return;
+    const filtered = resourceLinks.filter((l) => l.trim() !== "");
+    try {
+      await updateLesson(resourcesLessonId, { resources: filtered });
+      toast.success("Resources Saved");
+      setResourcesOpen(false);
+    } catch {
+      toast.error("Could not save the resources");
+    }
+  };
+
+  const addResourceLink = () => setResourceLinks([...resourceLinks, ""]);
+  const removeResourceLink = (idx: number) => setResourceLinks(resourceLinks.filter((_, i) => i !== idx));
 
   return (
     <AppShell nav={adminNav} title="Edit Course" subtitle={course.title}>
@@ -54,9 +91,13 @@ function EditCourse() {
           <CourseForm
             initial={toFormValues(course)}
             submitLabel="Save Changes"
-            onSubmit={(values) => {
-              updateCourse(course.id, values);
-              toast.success("Course Updated");
+            onSubmit={async (values) => {
+              try {
+                await updateCourse(course.id, values);
+                toast.success("Course Updated");
+              } catch {
+                toast.error("Could not update the course");
+              }
             }}
           />
         </TabsContent>
@@ -67,9 +108,9 @@ function EditCourse() {
             onSubmit={(e) => {
               e.preventDefault();
               if (sectionTitle.trim().length < 2) return;
-              createSection(course.id, sectionTitle.trim());
-              setSectionTitle("");
-              toast.success("Section Added");
+              void createSection(course.id, sectionTitle.trim())
+                .then(() => { setSectionTitle(""); toast.success("Section Added"); })
+                .catch(() => toast.error("Could not add the section"));
             }}
           >
             <Input
@@ -90,17 +131,17 @@ function EditCourse() {
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                   <h3 className="truncate font-bold">{section.title}</h3>
                   <div className="flex shrink-0 gap-1">
-                    <Button variant="ghost" size="icon" aria-label="Move section up" onClick={() => moveSection(section.id, -1)}>
+                    <Button variant="ghost" size="icon" aria-label="Move section up" onClick={() => void moveSection(section.id, -1).catch(() => toast.error("Could not move the section"))}>
                       <ChevronUp className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Move section down" onClick={() => moveSection(section.id, 1)}>
+                    <Button variant="ghost" size="icon" aria-label="Move section down" onClick={() => void moveSection(section.id, 1).catch(() => toast.error("Could not move the section"))}>
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       aria-label="Delete section"
-                      onClick={() => { deleteSection(section.id); toast.success("Section Deleted"); }}
+                      onClick={() => { void deleteSection(section.id).then(() => toast.success("Section Deleted")).catch(() => toast.error("Could not delete the section")); }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -115,13 +156,16 @@ function EditCourse() {
                         <p className="truncate text-xs text-muted-foreground">{l.duration} · {l.youtubeVideoId}</p>
                       </div>
                       <div className="flex shrink-0 gap-1">
-                        <Button variant="ghost" size="icon" aria-label="Move lesson up" onClick={() => moveLesson(l.id, -1)}>
+                        <Button variant="ghost" size="icon" aria-label="Add resources" onClick={() => openResources(l.id)}>
+                          <Link2 className="h-4 w-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon" aria-label="Move lesson up" onClick={() => void moveLesson(l.id, -1).catch(() => toast.error("Could not move the lesson"))}>
                           <ChevronUp className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Move lesson down" onClick={() => moveLesson(l.id, 1)}>
+                        <Button variant="ghost" size="icon" aria-label="Move lesson down" onClick={() => void moveLesson(l.id, 1).catch(() => toast.error("Could not move the lesson"))}>
                           <ChevronDown className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Delete lesson"                         onClick={() => { deleteLesson(l.id); toast.success("Lesson Deleted"); }}>
+                        <Button variant="ghost" size="icon" aria-label="Delete lesson" onClick={() => { void deleteLesson(l.id).then(() => toast.success("Lesson Deleted")).catch(() => toast.error("Could not delete the lesson")); }}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
@@ -131,9 +175,9 @@ function EditCourse() {
 
                 <form
                   className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_auto_auto]"
-                  onSubmit={(e) => {
+                  onSubmit={async (e) => {
                     e.preventDefault();
-                    const res = createLesson(section.id, {
+                    const res = await createLesson(section.id, {
                       title: draft.title.trim(),
                       description: "",
                       youtubeUrl: draft.url.trim(),
@@ -174,6 +218,41 @@ function EditCourse() {
           })}
         </TabsContent>
       </Tabs>
+
+      <Dialog open={resourcesOpen} onOpenChange={setResourcesOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Lesson Resources</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            {resourceLinks.map((link, idx) => (
+              <div key={idx} className="flex gap-2">
+                <Input
+                  value={link}
+                  placeholder="https://example.com/resource"
+                  onChange={(e) => {
+                    const updated = [...resourceLinks];
+                    updated[idx] = e.target.value;
+                    setResourceLinks(updated);
+                  }}
+                />
+                {resourceLinks.length > 1 && (
+                  <Button variant="ghost" size="icon" onClick={() => removeResourceLink(idx)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            <Button variant="outline" size="sm" onClick={addResourceLink} className="w-full">
+              <Plus className="mr-1 h-4 w-4" /> Add Link
+            </Button>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResourcesOpen(false)}>Cancel</Button>
+            <Button onClick={saveResources}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }

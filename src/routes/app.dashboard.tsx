@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookOpen, CheckCircle2, Compass, PlayCircle, TrendingUp } from "lucide-react";
+import { BookOpen, Compass, Lock, PlayCircle, TrendingUp } from "lucide-react";
 
 import { AppShell, studentNav } from "@/components/lms/app-shell";
 import { CardGridSkeleton, EmptyState, ProgressRow, StatCard } from "@/components/lms/ui-bits";
@@ -10,9 +10,15 @@ export const Route = createFileRoute("/app/dashboard")({
   head: () => ({
     meta: [
       { title: "Your Dashboard — Hamza Visuals LMS" },
-      { name: "description", content: "Track Your Enrolled Courses, Progress and Continue Learning." },
+      {
+        name: "description",
+        content: "Track Your Enrolled Courses, Progress and Continue Learning.",
+      },
       { property: "og:title", content: "Your Dashboard — Hamza Visuals LMS" },
-      { property: "og:description", content: "Track Your Progress and Continue Learning on Hamza Visuals." },
+      {
+        property: "og:description",
+        content: "Track Your Progress and Continue Learning on Hamza Visuals.",
+      },
     ],
   }),
   component: StudentDashboard,
@@ -26,6 +32,7 @@ function StudentDashboard() {
   const enrollments = data.enrollments.filter((e) => e.studentId === user.id);
   const completed = enrollments.filter((e) => e.status === "completed");
   const inProgress = enrollments.filter((e) => e.status === "in_progress");
+  const pending = enrollments.filter((e) => e.accessStatus === "pending");
   const overall = enrollments.length
     ? Math.round(
         enrollments.reduce((acc, e) => acc + s.courseProgress(user.id, e.courseId).percent, 0) /
@@ -34,6 +41,7 @@ function StudentDashboard() {
     : 0;
 
   const continueList = inProgress
+    .filter((e) => e.accessStatus !== "pending")
     .slice()
     .sort((a, b) => (b.lastAccessedAt ?? "").localeCompare(a.lastAccessedAt ?? ""))
     .slice(0, 3);
@@ -44,13 +52,66 @@ function StudentDashboard() {
       title={`Welcome back, ${user.name.split(" ")[0]}`}
       subtitle="Here's Where You Left Off."
     >
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <StatCard label="Enrolled Courses" value={enrollments.length} icon={BookOpen} />
-        <StatCard label="Completed" value={completed.length} icon={CheckCircle2} />
+        <StatCard
+          label="In Progress"
+          value={inProgress.length - pending.length}
+          icon={PlayCircle}
+        />
         <StatCard label="Overall Progress" value={`${overall}%`} icon={TrendingUp} />
-        <div className="hidden sm:block"><StatCard label="In Progress" value={inProgress.length} icon={PlayCircle} /></div>
       </div>
 
+      {/* Pending Approval Section */}
+      {pending.length > 0 && (
+        <section className="mt-9">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-lg font-bold flex items-center gap-2">
+              <Lock className="h-5 w-5 text-warning" /> Pending Admin Approval
+            </h2>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {pending.map((e) => {
+              const course = data.courses.find((c) => c.id === e.courseId);
+              if (!course) return null;
+              return (
+                <article
+                  key={e.id}
+                  className="card-surface flex flex-col overflow-hidden opacity-75"
+                >
+                  <div className="relative aspect-video overflow-hidden bg-muted">
+                    <img
+                      src={course.thumbnail}
+                      alt=""
+                      loading="lazy"
+                      className="h-full w-full object-cover grayscale"
+                    />
+                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="rounded-full bg-black/60 p-3">
+                        <Lock className="h-6 w-6 text-white" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="line-clamp-2 text-base font-bold">{course.title}</h3>
+                    <p className="mt-1.5 text-xs text-muted-foreground">
+                      Waiting for admin to verify payment and approve enrollment.
+                    </p>
+                    <div className="mt-auto pt-4">
+                      <div className="inline-flex items-center gap-1.5 rounded-full bg-warning/15 px-3 py-1.5 text-xs font-semibold text-warning">
+                        <Lock className="h-3 w-3" /> Locked — Pending Approval
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Continue Learning Section */}
       <section className="mt-9">
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold">Continue Learning</h2>
@@ -64,9 +125,15 @@ function StudentDashboard() {
         ) : continueList.length === 0 ? (
           <EmptyState
             icon={Compass}
-            title="You Haven't Started a Course Yet"
-            description="Browse the Catalogue and Enroll in Something that Looks Useful."
-            action={{ label: "Browse Courses", to: "/" }}
+            title={
+              pending.length > 0 ? "No Active Courses Yet" : "You Haven't Started a Course Yet"
+            }
+            description={
+              pending.length > 0
+                ? "Your pending courses will appear here once approved."
+                : "Browse the Catalogue and Enroll in Something that Looks Useful."
+            }
+            action={{ label: "Browse Courses", to: "/app/courses" }}
           />
         ) : (
           <div className="grid gap-5 lg:grid-cols-3">
@@ -96,7 +163,7 @@ function StudentDashboard() {
                       Next: {current?.title ?? "All Lessons Complete"}
                     </p>
                     <Button asChild className="mt-5 w-full">
-                      <Link to="/app/learn/$courseId" params={{ courseId: course.id }}>
+                      <Link to="/app/learn/$slug" params={{ slug: course.slug }}>
                         Continue Learning
                       </Link>
                     </Button>

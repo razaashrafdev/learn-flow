@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { LandingCourseCard } from "@/components/lms/course-card";
-import { PublicFooter, PublicHeader } from "@/components/lms/ui-bits";
+import { PublicFooter } from "@/components/lms/ui-bits";
 
 export const Route = createFileRoute("/courses/")({
   head: () => ({
@@ -45,8 +45,6 @@ function CoursesListing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PublicHeader activeSection="courses" hideNav />
-
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
           to="/"
