@@ -16,6 +16,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { ImageUpload } from "@/components/lms/ui-bits";
 import { useLms } from "@/lib/lms/store";
 import type { Resource } from "@/lib/lms/types";
@@ -47,6 +57,7 @@ function AdminResources() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [page, setPage] = useState(1);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     void syncCatalog();
@@ -77,7 +88,7 @@ function AdminResources() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title.trim() || !form.downloadUrl.trim()) {
-      toast.error("Title and Download URL are required");
+      toast.error("Title and URL are required");
       return;
     }
     const payload = {
@@ -90,15 +101,15 @@ function AdminResources() {
     try {
       if (editingId) {
         await updateResource(editingId, payload);
-        toast.success("Resource Updated");
+        toast.success("Resource updated successfully");
       } else {
         await addResource(payload);
-        toast.success("Resource Added");
+        toast.success("Resource added successfully");
       }
       resetForm();
       setDialogOpen(false);
     } catch {
-      toast.error("Could not save the resource");
+      toast.error("Could not save resource");
     }
   };
 
@@ -152,11 +163,7 @@ function AdminResources() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                          void deleteResource(r.id)
-                            .then(() => toast.success("Resource Deleted"))
-                            .catch(() => toast.error("Could not delete the resource"));
-                        }}
+                        onClick={() => setDeleteId(r.id)}
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
@@ -249,6 +256,32 @@ function AdminResources() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={!!deleteId} onOpenChange={(o) => !o && setDeleteId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete This Resource?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. The resource will be permanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (deleteId) {
+                  void deleteResource(deleteId)
+                    .then(() => toast.success("Resource deleted successfully"))
+                    .catch(() => toast.error("Could not delete resource"));
+                }
+                setDeleteId(null);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppShell>
   );
 }

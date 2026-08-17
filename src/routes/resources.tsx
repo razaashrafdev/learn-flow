@@ -55,6 +55,7 @@ function ResourcesPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search resources..."
                 className="pl-10"
+                maxLength={120}
               />
             </div>
           </div>
@@ -95,10 +96,9 @@ function ResourcesPage() {
                       {resource.description}
                     </p>
                     <div className="mt-4">
-                      <Button asChild size="sm" className="w-full">
+                      <Button asChild className="w-full text-base">
                         <a href={resource.downloadUrl} download>
-                          <Download className="mr-1.5 h-4 w-4" />
-                          Preview
+                          Click Here to Explore
                         </a>
                       </Button>
                     </div>

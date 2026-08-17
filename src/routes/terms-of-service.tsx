@@ -15,57 +15,50 @@ function TermsOfService() {
   return (
     <LegalPageLayout title="Terms of Service" lastUpdated="August 11, 2026">
       <section>
-        <h2 className="text-xl font-bold text-foreground">1. Acceptance of Terms</h2>
-        <p className="mt-3 leading-relaxed">
-          By accessing and using Hamza Visuals, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our platform.
+        <p className="leading-relaxed text-justify">
+          By accessing or using <strong>Hamza Visuals</strong>, you agree to these Terms of Service. These terms apply to our website, courses, learning platform, downloadable resources, student dashboard, community features, and related services.
         </p>
       </section>
       <section>
-        <h2 className="text-xl font-bold text-foreground">2. User Accounts</h2>
-        <p className="mt-3 leading-relaxed">
-          You are responsible for maintaining the confidentiality of your account credentials. You agree to notify us immediately of any unauthorized use of your account. You must be at least 13 years old to create an account.
+        <h2 className="mt-8 text-xl font-bold text-foreground">Using Hamza Visuals</h2>
+        <p className="mt-3 leading-relaxed text-justify">
+          Hamza Visuals provides practical courses and educational resources focused on graphic design, video editing, AI, and related creative skills. You may use the website and its services for personal learning and legitimate educational purposes.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          When you create an account, you are responsible for providing accurate information and keeping your login details secure. You are also responsible for all activity carried out through your account.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          Course access, lessons, downloads, and other learning materials are provided according to the terms of the specific course you enroll in. Where lifetime access is offered, it applies to the applicable course and its available materials.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          You may not copy, redistribute, resell, reproduce, or publicly share paid courses, lessons, downloads, templates, prompt packs, project files, or other protected materials without permission from Hamza Visuals.
         </p>
       </section>
       <section>
-        <h2 className="text-xl font-bold text-foreground">3. Course Access</h2>
-        <p className="mt-3 leading-relaxed">
-          Free courses are available immediately upon enrollment. Paid courses require payment and administrative approval before access is granted. Course content is for personal learning only and may not be redistributed.
+        <h2 className="mt-8 text-xl font-bold text-foreground">Courses, Payments and Content</h2>
+        <p className="mt-3 leading-relaxed text-justify">
+          Some courses and resources are free, while others may require payment. Course pricing, access, and included materials may vary by course and will be presented before enrollment.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          All course content, including videos, written materials, designs, resources, templates, and other educational material provided by Hamza Visuals, remains the property of Hamza Visuals or its respective rights holders unless stated otherwise.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          The skills and information provided through our courses are intended for educational purposes. We do not guarantee a specific income, freelance opportunity, employment outcome, or professional result. Your results depend on how you apply the skills you learn.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          Community discussions and Q&A sessions are intended to support learning. Users are expected to communicate respectfully and must not use these features for harmful, abusive, misleading, or unauthorized activities.
         </p>
       </section>
       <section>
-        <h2 className="text-xl font-bold text-foreground">4. User Conduct</h2>
-        <p className="mt-3 leading-relaxed">
-          You agree not to misuse the platform, attempt to access other users' accounts, distribute malware, or engage in any activity that could harm the platform or its users. Automated access is prohibited without prior written consent.
+        <h2 className="mt-8 text-xl font-bold text-foreground">Changes and Contact</h2>
+        <p className="mt-3 leading-relaxed text-justify">
+          We may update, modify, suspend, or discontinue parts of the website, courses, resources, or services when necessary. We may also update these Terms from time to time, and the latest version will be published on this page with an updated <strong>Last Updated</strong> date.
         </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">5. Intellectual Property</h2>
-        <p className="mt-3 leading-relaxed">
-          All course content, including videos, materials, and course structure, is owned by Hamza Visuals or its content creators. You are granted a limited, non-exclusive license to access and view the content for personal learning purposes.
+        <p className="mt-3 leading-relaxed text-justify">
+          If you have questions about these Terms of Service, your course access, or any of our services, please contact <strong>Hamza Visuals</strong> at <strong>support@hamzavisual.com</strong>.
         </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">6. Payments</h2>
-        <p className="mt-3 leading-relaxed">
-          Paid courses are subject to the pricing displayed at the time of purchase. All payments are processed securely. Refund requests are handled according to our Refund Policy.
-        </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">7. Limitation of Liability</h2>
-        <p className="mt-3 leading-relaxed">
-          Hamza Visuals is provided "as is" without warranties of any kind. We are not liable for any damages arising from your use of the platform, including but not limited to loss of data or learning progress.
-        </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">8. Changes to Terms</h2>
-        <p className="mt-3 leading-relaxed">
-          We reserve the right to modify these terms at any time. Changes will be effective upon posting. Continued use of the platform after changes constitutes acceptance of the new terms.
-        </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">9. Contact</h2>
-        <p className="mt-3 leading-relaxed">
-          For questions about these Terms of Service, please contact us through our official channels or email us at support@hamzavisuals.com.
+        <p className="mt-3 leading-relaxed text-justify">
+          By continuing to use Hamza Visuals after changes to these terms are published, you agree to the updated Terms of Service.
         </p>
       </section>
     </LegalPageLayout>

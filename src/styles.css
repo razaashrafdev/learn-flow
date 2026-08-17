@@ -2,10 +2,154 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Helvetica Now Text - Thin (100) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - ExtraLight (200) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-ExtraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Light (300) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Regular (400) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Medium (500) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Bold (700) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - ExtraBold (800) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-ExtraBold.ttf') format('truetype');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Black (900) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-Black.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Thin Italic (100) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-ThinItalic.ttf') format('truetype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - ExtraLight Italic (200) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-ExtLtIta.ttf') format('truetype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Light Italic (300) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Regular Italic (400) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-RegIta.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Medium Italic (500) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-MediumItalic.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Bold Italic (700) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - ExtraBold Italic (800) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-ExtBdIta.ttf') format('truetype');
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Helvetica Now Text - Black Italic (900) */
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url('/fonts/HelveticaNowText-BlackItalic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-sans: 'Helvetica Now', sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -52,86 +196,91 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --shadow-card: 0 1px 2px oklch(0.2 0.05 280 / 0.04), 0 8px 24px oklch(0.2 0.05 280 / 0.05);
-  --shadow-pop: 0 12px 40px oklch(0.35 0.18 275 / 0.16);
+  --shadow-card: 0 1px 3px rgba(12, 12, 12, 0.04), 0 4px 12px rgba(12, 12, 12, 0.04);
+  --shadow-pop: 0 8px 32px rgba(0, 118, 223, 0.15);
 }
 
 :root {
   --radius: 0.85rem;
-  --background: oklch(0.995 0.002 280);
-  --foreground: oklch(0.21 0.03 275);
-  --surface: oklch(0.978 0.005 285);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.21 0.03 275);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.21 0.03 275);
-  --primary: oklch(0.619 0.151 283);
-  --primary-foreground: oklch(0.99 0.005 280);
-  --primary-soft: oklch(0.95 0.03 280);
-  --secondary: oklch(0.965 0.008 285);
-  --secondary-foreground: oklch(0.3 0.04 275);
-  --muted: oklch(0.968 0.006 285);
-  --muted-foreground: oklch(0.53 0.025 278);
-  --accent: oklch(0.95 0.03 280);
-  --accent-foreground: oklch(0.42 0.2 274);
-  --destructive: oklch(0.58 0.22 25);
-  --destructive-foreground: oklch(0.99 0.005 280);
-  --success: oklch(0.62 0.15 155);
-  --success-foreground: oklch(0.99 0.005 280);
-  --warning: oklch(0.78 0.15 75);
-  --warning-foreground: oklch(0.25 0.05 60);
-  --border: oklch(0.92 0.008 285);
-  --input: oklch(0.92 0.008 285);
-  --ring: oklch(0.619 0.151 283);
-  --chart-1: oklch(0.619 0.151 283);
-  --chart-2: oklch(0.66 0.16 250);
-  --chart-3: oklch(0.62 0.15 155);
-  --chart-4: oklch(0.78 0.15 75);
-  --chart-5: oklch(0.6 0.2 330);
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0.32 0.03 275);
-  --sidebar-primary: oklch(0.619 0.151 283);
-  --sidebar-primary-foreground: oklch(0.99 0.005 280);
-  --sidebar-accent: oklch(0.95 0.03 280);
-  --sidebar-accent-foreground: oklch(0.42 0.2 274);
-  --sidebar-border: oklch(0.93 0.008 285);
-  --sidebar-ring: oklch(0.619 0.151 283);
+  --background: #FFFFFF;
+  --foreground: #0C0C0C;
+  --surface: #FAFAFA;
+  --card: #FFFFFF;
+  --card-foreground: #0C0C0C;
+  --popover: #FFFFFF;
+  --popover-foreground: #0C0C0C;
+  --primary: #0076DF;
+  --primary-foreground: #FFFFFF;
+  --primary-soft: rgba(0, 118, 223, 0.08);
+  --secondary: #F5F5F5;
+  --secondary-foreground: #0C0C0C;
+  --muted: #F8F8F8;
+  --muted-foreground: #444444;
+  --accent: rgba(0, 118, 223, 0.06);
+  --accent-foreground: #0076DF;
+  --destructive: #0C0C0C;
+  --destructive-foreground: #FFFFFF;
+  --success: #0076DF;
+  --success-foreground: #FFFFFF;
+  --warning: #0076DF;
+  --warning-foreground: #FFFFFF;
+  --border: rgba(12, 12, 12, 0.12);
+  --input: rgba(12, 12, 12, 0.15);
+  --ring: #0076DF;
+  --chart-1: #0076DF;
+  --chart-2: #0C0C0C;
+  --chart-3: rgba(0, 118, 223, 0.6);
+  --chart-4: rgba(12, 12, 12, 0.5);
+  --chart-5: rgba(0, 118, 223, 0.3);
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #0C0C0C;
+  --sidebar-primary: #0076DF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(0, 118, 223, 0.06);
+  --sidebar-accent-foreground: #0076DF;
+  --sidebar-border: rgba(12, 12, 12, 0.12);
+  --sidebar-ring: #0076DF;
 }
 
 .dark {
-  --background: oklch(0.17 0.02 275);
-  --foreground: oklch(0.97 0.005 280);
-  --surface: oklch(0.21 0.025 275);
-  --card: oklch(0.22 0.025 275);
-  --card-foreground: oklch(0.97 0.005 280);
-  --popover: oklch(0.22 0.025 275);
-  --popover-foreground: oklch(0.97 0.005 280);
-  --primary: oklch(0.619 0.151 283);
-  --primary-foreground: oklch(0.16 0.02 275);
-  --primary-soft: oklch(0.28 0.06 276);
-  --secondary: oklch(0.27 0.03 275);
-  --secondary-foreground: oklch(0.97 0.005 280);
-  --muted: oklch(0.27 0.03 275);
-  --muted-foreground: oklch(0.72 0.02 280);
-  --accent: oklch(0.3 0.06 276);
-  --accent-foreground: oklch(0.9 0.05 280);
-  --destructive: oklch(0.65 0.2 25);
-  --destructive-foreground: oklch(0.99 0.005 280);
-  --success: oklch(0.68 0.14 155);
-  --success-foreground: oklch(0.16 0.02 275);
-  --warning: oklch(0.8 0.14 75);
-  --warning-foreground: oklch(0.2 0.03 60);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: oklch(0.619 0.151 283);
-  --sidebar: oklch(0.2 0.025 275);
-  --sidebar-foreground: oklch(0.93 0.01 280);
-  --sidebar-primary: oklch(0.619 0.151 283);
-  --sidebar-primary-foreground: oklch(0.16 0.02 275);
-  --sidebar-accent: oklch(0.3 0.06 276);
-  --sidebar-accent-foreground: oklch(0.92 0.04 280);
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: oklch(0.619 0.151 283);
+  --background: #0C0C0C;
+  --foreground: #FFFFFF;
+  --surface: #161616;
+  --card: #141414;
+  --card-foreground: #FFFFFF;
+  --popover: #141414;
+  --popover-foreground: #FFFFFF;
+  --primary: #0076DF;
+  --primary-foreground: #FFFFFF;
+  --primary-soft: rgba(0, 118, 223, 0.12);
+  --secondary: #1A1A1A;
+  --secondary-foreground: #FFFFFF;
+  --muted: #1A1A1A;
+  --muted-foreground: #888888;
+  --accent: rgba(0, 118, 223, 0.1);
+  --accent-foreground: #0076DF;
+  --destructive: #FFFFFF;
+  --destructive-foreground: #0C0C0C;
+  --success: #0076DF;
+  --success-foreground: #FFFFFF;
+  --warning: #0076DF;
+  --warning-foreground: #FFFFFF;
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: #0076DF;
+  --chart-1: #0076DF;
+  --chart-2: #FFFFFF;
+  --chart-3: rgba(0, 118, 223, 0.7);
+  --chart-4: rgba(255, 255, 255, 0.5);
+  --chart-5: rgba(0, 118, 223, 0.4);
+  --sidebar: #0C0C0C;
+  --sidebar-foreground: #FFFFFF;
+  --sidebar-primary: #0076DF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: rgba(0, 118, 223, 0.1);
+  --sidebar-accent-foreground: #0076DF;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #0076DF;
 }
 
 @layer base {
@@ -159,6 +308,88 @@
   }
 }
 
+/* Typography Hierarchy */
+@layer base {
+  /* Hero / Main Headings - ExtraBold (800) */
+  h1 {
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  /* Section Headings - Bold (700) */
+  h2 {
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  /* Subheadings - Semibold/Medium (600/500) */
+  h3 {
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Body Text - Regular (400) */
+  p {
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* Strong/Bold Text */
+  strong {
+    font-weight: 700;
+  }
+
+  /* Links - Medium (500) */
+  a {
+    font-weight: 500;
+  }
+}
+
+/* Typography Utility Classes */
+@utility font-thin {
+  font-weight: 100;
+}
+
+@utility font-extralight {
+  font-weight: 200;
+}
+
+@utility font-light {
+  font-weight: 300;
+}
+
+@utility font-regular {
+  font-weight: 400;
+}
+
+@utility font-medium {
+  font-weight: 500;
+}
+
+@utility font-semibold {
+  font-weight: 600;
+}
+
+@utility font-bold {
+  font-weight: 700;
+}
+
+@utility font-extrabold {
+  font-weight: 800;
+}
+
+@utility font-black {
+  font-weight: 900;
+}
+
 @utility card-surface {
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -169,30 +400,253 @@
 [data-sonner-toaster] {
   left: auto !important;
   right: 16px !important;
+  bottom: 16px !important;
+  top: auto !important;
   transform: none !important;
   justify-content: flex-end !important;
 }
+
+/* Mobile toast positioning */
+@media (max-width: 640px) {
+  [data-sonner-toaster] {
+    left: auto !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    top: auto !important;
+    width: calc(100vw - 16px) !important;
+    max-width: none !important;
+  }
+}
+
 [data-sonner-toaster] [data-sonner-toast] {
-  color: #000 !important;
+  color: #0C0C0C !important;
   width: 30% !important;
   min-width: 280px !important;
   max-width: 420px !important;
 }
+
+/* Mobile toast width */
+@media (max-width: 640px) {
+  [data-sonner-toaster] [data-sonner-toast] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
 [data-sonner-toaster] [data-sonner-toast] svg {
-  color: #000 !important;
+  color: #0C0C0C !important;
 }
 [data-sonner-toaster] [data-sonner-toast] [data-description] {
-  color: #000 !important;
+  color: #0C0C0C !important;
 }
 [data-sonner-toaster] [data-sonner-toast][data-type="success"],
 [data-sonner-toaster] [data-sonner-toast][data-type="error"],
 [data-sonner-toaster] [data-sonner-toast][data-type="info"],
 [data-sonner-toaster] [data-sonner-toast][data-type="warning"] {
-  color: #000 !important;
+  color: #0C0C0C !important;
 }
 [data-sonner-toaster] [data-sonner-toast][data-type="success"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="error"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="info"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="warning"] svg {
-  color: #000 !important;
+  color: #0C0C0C !important;
+}
+
+/* Page Transition Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Main content transition */
+#root {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Smooth page transitions */
+.page-transition {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Route change animation */
+.route-transition-enter {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.route-transition-exit {
+  animation: fadeOut 0.2s ease-in forwards;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Smooth transitions for interactive elements */
+a, button, [role="button"] {
+  transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+/* Remove hover effect on CTA section */
+#cta:hover {
+  filter: none;
+  opacity: 1;
+}
+
+/* Focus visible transitions */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  transition: outline-offset 0.15s ease-out;
+}
+
+/* Light Mode Button Refinements */
+:root .bg-primary {
+  background-color: #0076DF !important;
+}
+
+:root .bg-primary:hover {
+  background-color: #005BB5 !important;
+}
+
+:root .text-primary {
+  color: #0076DF !important;
+}
+
+/* Service card hover - icon should be white on hover */
+:root .group:hover .group-hover\:text-primary-foreground {
+  color: #FFFFFF !important;
+}
+
+/* All buttons with hover:bg-primary should have white text on hover */
+a:hover.bg-primary,
+button:hover.bg-primary,
+[class*="hover:bg-primary"]:hover {
+  color: #FFFFFF !important;
+}
+
+/* Light Mode Card Enhancement */
+:root .card-surface {
+  border: 1px solid rgba(12, 12, 12, 0.12);
+  box-shadow: 0 1px 3px rgba(12, 12, 12, 0.04), 0 4px 12px rgba(12, 12, 12, 0.03);
+}
+
+:root .card-surface:hover {
+  box-shadow: 0 2px 6px rgba(12, 12, 12, 0.06), 0 8px 24px rgba(12, 12, 12, 0.05);
+}
+
+/* Light Mode Footer Enhancement */
+:root footer {
+  background-color: #FAFAFA;
+  border-top: 1px solid rgba(12, 12, 12, 0.12);
+}
+
+:root footer h4 {
+  color: #0C0C0C;
+}
+
+:root footer a {
+  color: #444444;
+  transition: color 0.2s ease;
+}
+
+:root footer a:hover {
+  color: #0076DF;
+}
+
+/* Dark Mode Footer - Keep Original */
+.dark footer {
+  background-color: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.dark footer h4 {
+  color: var(--foreground);
+}
+
+.dark footer a {
+  color: var(--muted-foreground);
+}
+
+.dark footer a:hover {
+  color: var(--foreground);
+}
+
+/* Light Mode Input Enhancement */
+:root input,
+:root textarea,
+:root select {
+  border-color: rgba(12, 12, 12, 0.15);
+}
+
+:root input:focus,
+:root textarea:focus,
+:root select:focus {
+  border-color: #0076DF;
+  box-shadow: 0 0 0 2px rgba(0, 118, 223, 0.15);
+}
+
+/* Light Mode Badge Enhancement */
+:root .bg-muted {
+  background-color: #F8F8F8 !important;
+}
+
+/* Dark Mode Badge - Keep Original */
+.dark .bg-muted {
+  background-color: var(--muted) !important;
+}
+
+/* Light Mode Border Contrast */
+:root hr,
+:root [class*="border-"] {
+  border-color: rgba(12, 12, 12, 0.12);
+}
+
+/* Dark Mode Border - Keep Original */
+.dark hr,
+.dark [class*="border-"] {
+  border-color: var(--border);
 }

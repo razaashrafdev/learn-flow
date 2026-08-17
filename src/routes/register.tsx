@@ -19,7 +19,7 @@ import { useLms } from "@/lib/lms/store";
 import { storePaymentScreenshot } from "@/lib/lms/store";
 import { ImageUpload } from "@/components/lms/ui-bits";
 
-const WHATSAPP_URL = "https://wa.me/923001234567";
+const WHATSAPP_URL = "https://wa.me/923308923780";
 
 const registerSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -128,7 +128,7 @@ function RegisterPage() {
     );
     setLoading(false);
     if (!result.ok) {
-      toast.error(result.error ?? "Could not create the account");
+      toast.error(result.error ?? "Could not create account");
       setErrors({ email: result.error ?? "" });
       return;
     }
@@ -145,10 +145,10 @@ function RegisterPage() {
       <div className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-5 py-12 sm:px-10">
         <div className="w-full">
           <Link
-            to="/courses"
+            to="/"
             className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ChevronLeft className="h-4 w-4" /> Back to Courses
+            <ChevronLeft className="h-4 w-4" /> Back to Home
           </Link>
 
           <h1 className="text-2xl font-extrabold tracking-tight">Enroll in Your Course</h1>
@@ -280,7 +280,7 @@ function RegisterPage() {
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Submit your enrollment
+              Submit Your Enrollment
             </Button>
           </form>
 

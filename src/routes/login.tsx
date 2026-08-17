@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { GraduationCap, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -9,7 +9,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLms } from "@/lib/lms/store";
-import { AuthAside } from "@/components/lms/auth-aside";
 
 const loginSearchSchema = z.object({
   redirect: z.string().optional(),
@@ -77,11 +76,11 @@ function LoginPage() {
     const result = await signIn(parsed.data.email, parsed.data.password, remember);
     setLoading(false);
     if (!result.ok) {
-      toast.error(result.error ?? "Unable to sign in");
+      toast.error(result.error ?? "Sign in failed. Please try again");
       setErrors({ password: result.error ?? "" });
       return;
     }
-    toast.success("Welcome back");
+    toast.success("Signed in successfully");
   };
 
   const quickFill = (e: string, p: string) => {
@@ -90,15 +89,21 @@ function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="min-h-screen">
       <div className="flex items-center justify-center px-5 py-12 sm:px-10">
         <div className="w-full max-w-sm">
-          <div className="mb-8 flex items-center gap-2.5">
+          <div className="mb-8 flex justify-start lg:justify-center">
             <Link to="/" className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-                <GraduationCap className="h-5 w-5" />
-              </span>
-              <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>
+              <img
+                src="/images/Black-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto dark:hidden"
+              />
+              <img
+                src="/images/White-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto hidden dark:block"
+              />
             </Link>
           </div>
 
@@ -161,7 +166,7 @@ function LoginPage() {
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Sign in
+              Sign In
             </Button>
           </form>
 
@@ -199,8 +204,6 @@ function LoginPage() {
           </div>
         </div>
       </div>
-
-      <AuthAside />
     </div>
   );
 }

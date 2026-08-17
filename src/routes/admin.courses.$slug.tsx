@@ -66,10 +66,10 @@ function EditCourse() {
     const filtered = resourceLinks.filter((l) => l.trim() !== "");
     try {
       await updateLesson(resourcesLessonId, { resources: filtered });
-      toast.success("Resources Saved");
+      toast.success("Resources saved successfully");
       setResourcesOpen(false);
     } catch {
-      toast.error("Could not save the resources");
+      toast.error("Could not save resources");
     }
   };
 
@@ -94,9 +94,9 @@ function EditCourse() {
             onSubmit={async (values) => {
               try {
                 await updateCourse(course.id, values);
-                toast.success("Course Updated");
+                toast.success("Course updated successfully");
               } catch {
-                toast.error("Could not update the course");
+                toast.error("Could not update course");
               }
             }}
           />
@@ -109,8 +109,8 @@ function EditCourse() {
               e.preventDefault();
               if (sectionTitle.trim().length < 2) return;
               void createSection(course.id, sectionTitle.trim())
-                .then(() => { setSectionTitle(""); toast.success("Section Added"); })
-                .catch(() => toast.error("Could not add the section"));
+                .then(() => { setSectionTitle(""); toast.success("Section added successfully"); })
+                .catch(() => toast.error("Could not add section"));
             }}
           >
             <Input
@@ -131,17 +131,17 @@ function EditCourse() {
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                   <h3 className="truncate font-bold">{section.title}</h3>
                   <div className="flex shrink-0 gap-1">
-                    <Button variant="ghost" size="icon" aria-label="Move section up" onClick={() => void moveSection(section.id, -1).catch(() => toast.error("Could not move the section"))}>
+                    <Button variant="ghost" size="icon" aria-label="Move section up" onClick={() => void moveSection(section.id, -1).catch(() => toast.error("Could not move section"))}>
                       <ChevronUp className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" aria-label="Move section down" onClick={() => void moveSection(section.id, 1).catch(() => toast.error("Could not move the section"))}>
+                    <Button variant="ghost" size="icon" aria-label="Move section down" onClick={() => void moveSection(section.id, 1).catch(() => toast.error("Could not move section"))}>
                       <ChevronDown className="h-4 w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       aria-label="Delete section"
-                      onClick={() => { void deleteSection(section.id).then(() => toast.success("Section Deleted")).catch(() => toast.error("Could not delete the section")); }}
+                      onClick={() => { void deleteSection(section.id).then(() => toast.success("Section deleted successfully")).catch(() => toast.error("Could not delete section")); }}
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
@@ -159,13 +159,13 @@ function EditCourse() {
                         <Button variant="ghost" size="icon" aria-label="Add resources" onClick={() => openResources(l.id)}>
                           <Link2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Move lesson up" onClick={() => void moveLesson(l.id, -1).catch(() => toast.error("Could not move the lesson"))}>
+                        <Button variant="ghost" size="icon" aria-label="Move lesson up" onClick={() => void moveLesson(l.id, -1).catch(() => toast.error("Could not move lesson"))}>
                           <ChevronUp className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Move lesson down" onClick={() => void moveLesson(l.id, 1).catch(() => toast.error("Could not move the lesson"))}>
+                        <Button variant="ghost" size="icon" aria-label="Move lesson down" onClick={() => void moveLesson(l.id, 1).catch(() => toast.error("Could not move lesson"))}>
                           <ChevronDown className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" aria-label="Delete lesson" onClick={() => { void deleteLesson(l.id).then(() => toast.success("Lesson Deleted")).catch(() => toast.error("Could not delete the lesson")); }}>
+                        <Button variant="ghost" size="icon" aria-label="Delete lesson" onClick={() => { void deleteLesson(l.id).then(() => toast.success("Lesson deleted successfully")).catch(() => toast.error("Could not delete lesson")); }}>
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
@@ -177,6 +177,8 @@ function EditCourse() {
                   className="mt-3 grid gap-2 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_auto_auto]"
                   onSubmit={async (e) => {
                     e.preventDefault();
+                    if (!draft.title.trim()) { toast.error("Lesson title is required"); return; }
+                    if (!draft.url.trim()) { toast.error("YouTube URL is required"); return; }
                     const res = await createLesson(section.id, {
                       title: draft.title.trim(),
                       description: "",
@@ -185,9 +187,9 @@ function EditCourse() {
                       freePreview: false,
                       published: true,
                     });
-                    if (!res.ok) { toast.error(res.error ?? "Could Not Add Lesson"); return; }
+                    if (!res.ok) { toast.error(res.error ?? "Could not add lesson"); return; }
                     setLessonDraft({ ...lessonDraft, [section.id]: { title: "", url: "", duration: "10:00" } });
-                    toast.success("Lesson Added");
+                    toast.success("Lesson added successfully");
                   }}
                 >
                   <Input
@@ -230,6 +232,7 @@ function EditCourse() {
                 <Input
                   value={link}
                   placeholder="https://example.com/resource"
+                  maxLength={600}
                   onChange={(e) => {
                     const updated = [...resourceLinks];
                     updated[idx] = e.target.value;

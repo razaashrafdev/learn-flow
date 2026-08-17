@@ -1,6 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { ChevronRight, Star, Palette, Brush, Layers, BrainCircuit, ArrowRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, Star, Palette, Brush, ArrowRight, ChevronLeft, Camera, ShoppingBag, Video, Lightbulb, GraduationCap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,28 +34,48 @@ export const Route = createFileRoute("/")({
   component: LandingPage,
 });
 
-const WHATSAPP_URL = "https://wa.me/923001234567";
+const WHATSAPP_URL = "https://wa.me/923308923780";
 
 const services = [
   {
     icon: Palette,
-    title: "UI/UX Design",
-    description: "User-centered interfaces that delight users and drive business results.",
+    title: "Graphic Designing",
+    description: "Create stunning visuals that capture attention and communicate your message.",
   },
   {
     icon: Brush,
-    title: "Logo Design",
-    description: "Memorable brand marks that capture your essence and stand the test of time.",
-  },
-  {
-    icon: Layers,
     title: "Branding",
-    description: "Complete brand systems that tell your story across every touchpoint.",
+    description: "Build a powerful brand identity that stands out and resonates with your audience.",
   },
   {
-    icon: BrainCircuit,
-    title: "AI Integration",
-    description: "Intelligent features powered by the latest AI and machine learning technologies.",
+    icon: Camera,
+    title: "AI Photography",
+    description: "Leverage AI to create professional-quality photographs and product imagery.",
+  },
+  {
+    icon: ShoppingBag,
+    title: "Ecommerce Photography",
+    description: "Specialized product photography that drives sales and elevates your online store.",
+  },
+  {
+    icon: Video,
+    title: "UGC Ads",
+    description: "Create authentic user-generated content ads that convert and build trust.",
+  },
+  {
+    icon: Video,
+    title: "AI Videos",
+    description: "Produce engaging video content using cutting-edge AI tools and techniques.",
+  },
+  {
+    icon: Lightbulb,
+    title: "AI Powered Designs",
+    description: "Harness the power of AI to create innovative and eye-catching designs.",
+  },
+  {
+    icon: GraduationCap,
+    title: "Mentorship",
+    description: "Get personalized guidance from industry experts to accelerate your creative career.",
   },
 ];
 
@@ -83,7 +103,7 @@ const testimonials = [
     name: "Memoona Talpur",
     role: "Brand Designer",
     content:
-      "Before this session, I struggled to get consistent results from AI for logo and brand design. Sir Hamza Bhatti's course taught me how to structure prompts and guide AI effectively. It gave me the clarity and system to create better designs with AI.",
+      "Before this session, I experimented with AI for logo and brand design but struggled with consistent results. After Sir Hamza Bhatti's course, I learned how to structure prompts and guide AI properly. It gave me the clarity and system to use AI effectively in design.",
     rating: 5,
     image: "/testimonials/3.png",
   },
@@ -92,7 +112,7 @@ const testimonials = [
     name: "Hamza Azeem",
     role: "Logo Designer",
     content:
-      "I only knew the basics and struggled to get consistent results. The session taught me structured JSON prompts, image manipulation, and professional brand presentations. It was practical, informative, and helped me create much better AI visuals.",
+      "I only knew the basics of AI tools, and my results were mostly random. I learned advanced techniques like structured prompts, image manipulation, and creating strong brand presentations with AI. It taught me how to guide AI properly and create much better visuals for professional design projects.",
     rating: 5,
     image: "/testimonials/4.png",
   },
@@ -110,9 +130,54 @@ const testimonials = [
     name: "Samreen Yaseen",
     role: "Brand Designer",
     content:
-      "I had little understanding of AI prompting and image generation. His session taught me how to structure prompts, use camera angles, and add details to get better results. I highly recommend it to anyone wanting to use AI more effectively.",
+      "I had very little understanding of AI prompting and image generation. I didn't know how to structure prompts for better results. I learned prompt writing, camera angles, and detailed descriptions. It completely changed my approach, and now I can create better images and use AI more effectively.",
     rating: 5,
     image: "/testimonials/6.png",
+  },
+  {
+    id: 7,
+    name: "Imran Khan",
+    role: "Visual Designer",
+    content:
+      "The session taught me the foundations of prompting, image prompts, and new AI tools. Since then, I've been using ReveAI, Whisk AI, ImageFX, and Nano Banana to improve my social media designs, mockups, logos, and branding. Sir Hamza guidance made graphic design much easier.",
+    rating: 5,
+    image: "/testimonials/7.png",
+  },
+  {
+    id: 8,
+    name: "Seerat Yousaf",
+    role: "Graphic Designer",
+    content:
+      "I've used many AI models before but was still confused about advanced prompting. I was mostly replacing things in images, I started creating images from scratch with much better control. I even applied what I learned to my job project, and it made a huge difference in the final results.",
+    rating: 5,
+    image: "/testimonials/8.png",
+  },
+  {
+    id: 9,
+    name: "Muhammad Wajid",
+    role: "Brand Designer",
+    content:
+      "I used to generate AI images but didn't understand the fundamentals behind them. I had no idea about camera angles, prompt structure, or how to clearly communicate with AI. After this course, everything became clear. I learned how to create better images with more control.",
+    rating: 5,
+    image: "/testimonials/9.png",
+  },
+  {
+    id: 10,
+    name: "Mehrub Fayyaz",
+    role: "Graphic Designer",
+    content:
+      "Before this session, my prompts felt like guesswork. After learning the system behind prompting, I finally understood how to guide AI instead of hoping for the best. The session gave me clarity, confidence, and much better results. If you're considering it, I'd definitely recommend it.",
+    rating: 5,
+    image: "/testimonials/10.png",
+  },
+  {
+    id: 11,
+    name: "Bint E Adam",
+    role: "Graphic Designer",
+    content:
+      "I often struggled to get the right responses from ChatGPT. After learning prompt engineering, everything changed. I now know how to write clear, targeted prompts that give precise answers. The sessions are engaging and practical, and have completely improved how I use AI in my daily work.",
+    rating: 5,
+    image: "/testimonials/11.png",
   },
 ];
 
@@ -168,10 +233,30 @@ const stats = [
 function LandingPage() {
   const { data, ready } = useLms();
   const s = useSelectors();
-  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const slidesPerView = 3;
+  const [slidesPerView, setSlidesPerView] = useState(3);
   const maxSlide = Math.max(0, testimonials.length - slidesPerView);
+
+  useEffect(() => {
+    const updateSlidesPerView = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        setSlidesPerView(1);
+      } else if (width < 1024) {
+        setSlidesPerView(2);
+      } else {
+        setSlidesPerView(3);
+      }
+    };
+
+    updateSlidesPerView();
+    window.addEventListener("resize", updateSlidesPerView);
+    return () => window.removeEventListener("resize", updateSlidesPerView);
+  }, []);
+
+  useEffect(() => {
+    setCurrentSlide(0);
+  }, [slidesPerView]);
 
   const prevSlide = useCallback(() => {
     setCurrentSlide((prev) => Math.max(0, prev - 1));
@@ -187,7 +272,9 @@ function LandingPage() {
   );
 
   const landingCourses = useMemo(() => {
-    return publishedCourses.slice(0, 6);
+    return [...publishedCourses]
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .slice(0, 3);
   }, [publishedCourses]);
 
   useEffect(() => {
@@ -200,33 +287,25 @@ function LandingPage() {
     }
   }, []);
 
-  const handleCourseClick = (slug: string) => {
-    navigate({ to: "/courses/$slug", params: { slug } });
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section id="home" className="relative overflow-hidden bg-background">
         <div className="absolute inset-0 opacity-[0.03] [background:radial-gradient(80%_50%_at_50%_-20%,var(--color-primary),transparent)] dark:opacity-[0.05]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+        <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-10 sm:px-6 sm:pt-20 sm:pb-16 lg:px-8 lg:pt-24 lg:pb-20">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-xs font-medium text-muted-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
               Trained 1000+ Students in Design and AI
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-              Design and AI Skills
-              <br />
-              <span className="text-primary">You Can Actually Use in Real Work</span>
+              AI Skills That Work in <br className="hidden sm:block" />
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent blur-[0.5px]">the Real World</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Hamza Visuals teaches graphic design, video editing, and practical AI skills through
-              hands-on courses taught in Urdu. Whether you're starting out, freelancing, or working
-              a full-time job, you'll learn through real projects — not long lectures — so you can
-              apply what you learn right away.
+              Hamza Visuals teaches graphic design, video editing, and practical AI through hands-on courses. Learn through real projects and apply knowledge right away.
             </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="px-8">
                 <Link to="/courses">
                   Explore Courses <ArrowRight className="ml-2 h-4 w-4" />
@@ -306,44 +385,41 @@ function LandingPage() {
             </div>
           ) : (
             <>
-              {/* Mobile: 3 courses */}
+              {/* Mobile: all courses */}
               <div className="mt-10 grid gap-6 sm:hidden">
-                {landingCourses.slice(0, 3).map((course) => {
+                {landingCourses.map((course) => {
                   const lessonCount = s.publishedLessonsOfCourse(course.id).length;
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
                       lessonCount={lessonCount}
-                      onClick={() => handleCourseClick(course.id)}
                     />
                   );
                 })}
               </div>
-              {/* Tablet: 3 courses */}
-              <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-3 lg:hidden">
-                {landingCourses.slice(0, 3).map((course) => {
+              {/* Tablet: all courses */}
+              <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:hidden">
+                {landingCourses.map((course) => {
                   const lessonCount = s.publishedLessonsOfCourse(course.id).length;
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
                       lessonCount={lessonCount}
-                      onClick={() => handleCourseClick(course.id)}
                     />
                   );
                 })}
               </div>
-              {/* Desktop: 3 courses */}
+              {/* Desktop: all courses */}
               <div className="mt-10 hidden gap-6 lg:grid lg:grid-cols-3">
-                {landingCourses.slice(0, 3).map((course) => {
+                {landingCourses.map((course) => {
                   const lessonCount = s.publishedLessonsOfCourse(course.id).length;
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
                       lessonCount={lessonCount}
-                      onClick={() => handleCourseClick(course.id)}
                     />
                   );
                 })}
@@ -367,7 +443,7 @@ function LandingPage() {
               Testimonials
             </p>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              What Our Students Say
+              Our Students Say
             </h2>
             <p className="mt-4 text-muted-foreground">
               Join thousands of learners who have transformed their careers.
@@ -396,7 +472,7 @@ function LandingPage() {
                 {testimonials.map((testimonial) => (
                   <div
                     key={testimonial.id}
-                    className="w-1/3 flex-shrink-0 px-3"
+                    className="w-full flex-shrink-0 px-3 sm:w-1/2 lg:w-1/3"
                   >
                     <div className="card-surface p-6 transition-shadow hover:shadow-lg h-full">
                       <div className="flex gap-1">
@@ -462,9 +538,9 @@ function LandingPage() {
 
           <Accordion type="single" collapsible className="mx-auto mt-12 max-w-3xl">
             {faqs.map((faq) => (
-              <AccordionItem key={faq.question} value={faq.question}>
-                <AccordionTrigger>{faq.question}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">{faq.answer}</AccordionContent>
+              <AccordionItem key={faq.question} value={faq.question} className="px-2 sm:px-0">
+                <AccordionTrigger className="text-base sm:text-lg">{faq.question}</AccordionTrigger>
+                <AccordionContent className="text-sm sm:text-base text-muted-foreground">{faq.answer}</AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
@@ -472,25 +548,25 @@ function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-[oklch(0.16_0.03_278)] mx-4 sm:mx-6 lg:mx-8 my-16 sm:my-20">
+      <section id="cta" className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 my-16 sm:my-20">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[oklch(0.62_0.21_278/0.32)]" />
-          <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[oklch(0.62_0.21_278/0.18)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-12%,oklch(1_0_0/0.06),transparent_62%)] dark:bg-[radial-gradient(120%_60%_at_50%_-12%,oklch(0.62_0.21_278/0.18),transparent_62%)]" />
+          <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.25)]" />
+          <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.15)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(255,255,255,0.06),transparent_62%)] dark:bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(0,118,223,0.2),transparent_62%)]" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
           <h2 className="text-3xl font-extrabold tracking-tight text-primary-foreground dark:text-white sm:text-4xl">
-            Start Wherever You're Comfortable
+            Start Where You're Comfortable
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/70 dark:text-white/70">
-            Explore the full course library, or start with a free course and see how the teaching
-            style works for you.
+            Explore the full course library, or start with a free course to experience my teaching
+            style and see what works best for you.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button asChild size="lg" className="px-8">
-              <Link to="/register">Get Started Free</Link>
+              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-primary-foreground/25 text-primary-foreground dark:border-white/25 dark:text-white hover:bg-primary-foreground/10 dark:hover:bg-white/10">
+            <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
               <Link to="/courses">Browse Courses</Link>
             </Button>
           </div>
@@ -516,7 +592,7 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
         rel="noopener noreferrer"
         className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
       >
-        Learn more <ChevronRight className="h-4 w-4" />
+        Explore More <ChevronRight className="h-4 w-4" />
       </a>
     </div>
   );

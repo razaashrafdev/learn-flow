@@ -21,9 +21,9 @@ export const Route = createFileRoute("/app/completed")({
   head: () => ({
     meta: [
       { title: "Completed Courses — Hamza Visuals LMS" },
-      { name: "description", content: "Every Course You've Finished on Hamza Visuals LMS, Ready to Revisit Any Time." },
+      { name: "description", content: "Every course you've finished on Hamza Visuals LMS, ready to revisit any time." },
       { property: "og:title", content: "Completed Courses — Hamza Visuals LMS" },
-      { property: "og:description", content: "Courses You've Finished on Hamza Visuals LMS." },
+      { property: "og:description", content: "Courses you've finished on Hamza Visuals LMS." },
     ],
   }),
   component: CompletedCourses,
@@ -57,7 +57,7 @@ function CompletedCourses() {
   const submitFeedback = () => {
     if (!feedbackCourseId || rating === 0) return;
     addReview(feedbackCourseId, rating, reviewText);
-    toast.success("Feedback submitted — thank you!");
+    toast.success("Feedback submitted successfully");
     setFeedbackOpen(false);
   };
 
@@ -66,8 +66,8 @@ function CompletedCourses() {
       {completed.length === 0 ? (
         <EmptyState
           icon={CheckCircle2}
-          title="No Completed Courses Yet"
-          description="Finish Every Lesson in a Course and It Will Show Up Here."
+          title="No completed courses yet"
+          description="Finish every lesson in a course and it will show up here."
           action={{ label: "Go to My Courses", to: "/app/my-courses" }}
         />
       ) : (
@@ -82,6 +82,7 @@ function CompletedCourses() {
                   course={course}
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
                   progress={{ percent: 100, label: "Completed" }}
+                  appLink
                   footer={{ label: "Review Course", to: "/app/learn/$slug", params: { slug: course.slug } }}
                 />
                 {!reviewed && (
@@ -137,7 +138,11 @@ function CompletedCourses() {
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Tell others about your experience..."
                 rows={4}
+                maxLength={250}
               />
+              <p className="mt-1 text-xs text-muted-foreground text-right">
+                {reviewText.length}/250 characters
+              </p>
             </div>
           </div>
           <DialogFooter>

@@ -13,9 +13,9 @@ export const Route = createFileRoute("/app/courses/")({
   head: () => ({
     meta: [
       { title: "Browse Courses — Hamza Visuals LMS" },
-      { name: "description", content: "Search and Filter the Full Hamza Visuals LMS Course Catalogue." },
+      { name: "description", content: "Search and filter the full Hamza Visuals LMS course catalogue." },
       { property: "og:title", content: "Browse Courses — Hamza Visuals LMS" },
-      { property: "og:description", content: "Search the Hamza Visuals LMS Course Catalogue." },
+      { property: "og:description", content: "Search the Hamza Visuals LMS course catalogue." },
     ],
   }),
   component: BrowseCourses,
@@ -56,7 +56,7 @@ function BrowseCourses() {
               setQuery(e.target.value);
               setVisible(PAGE_SIZE);
             }}
-            placeholder="Search by Title or Description"
+            placeholder="Search by title or description"
             className="pl-9"
             aria-label="Search Courses"
           />
@@ -68,8 +68,8 @@ function BrowseCourses() {
       ) : shown.length === 0 ? (
         <EmptyState
           icon={SearchX}
-          title="No Courses Match Your Search"
-          description="Try a Different Search Term, or Clear the Search."
+          title="No courses match your search"
+          description="Try a different search term, or clear the search."
           action={
             <Button
               variant="outline"
@@ -93,6 +93,7 @@ function BrowseCourses() {
                   course={course}
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
                   pending={isPending}
+                  appLink
                   footer={
                     enrolled
                       ? { label: "Continue Learning", to: "/app/learn/$slug", params: { slug: course.slug } }

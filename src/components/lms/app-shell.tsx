@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   FileText,
   User,
-  UserRound,
   X,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -89,7 +88,7 @@ export function AppShell({
 
   const handleSignOut = () => {
     signOut();
-    toast.success("Signed Out");
+    toast.success("Signed out successfully");
     navigate({ to: "/login", replace: true });
   };
 
@@ -99,10 +98,16 @@ export function AppShell({
       collapsed ? "w-[68px]" : "w-64"
     )}>
       <div className={cn("flex items-center gap-2.5 px-5 py-5", collapsed && "justify-center px-0")}>
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
-          <UserRound className="h-5 w-5" />
-        </span>
-        {!collapsed && <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>}
+        <img
+          src="/images/Black-Logo.png"
+          alt="Hamza Visuals"
+          className="h-9 w-auto shrink-0 dark:hidden"
+        />
+        <img
+          src="/images/White-Logo.png"
+          alt="Hamza Visuals"
+          className="h-9 w-auto shrink-0 hidden dark:block"
+        />
         <button
           type="button"
           onClick={() => setOpen(false)}

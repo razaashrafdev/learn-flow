@@ -10,15 +10,6 @@ import {
   Eye,
   Filter,
   Trash2,
-  ExternalLink,
-  Lock,
-  Unlock,
-  User,
-  Mail,
-  Phone,
-  CreditCard,
-  Calendar,
-  Clock,
 } from "lucide-react";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
@@ -42,7 +33,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useLms, useSelectors, getPaymentScreenshot } from "@/lib/lms/store";
-import type { EnrollmentState, Enrollment } from "@/lib/lms/types";
+import type { EnrollmentState } from "@/lib/lms/types";
 
 export const Route = createFileRoute("/admin/enrollments")({
   head: () => ({
@@ -94,7 +85,7 @@ function AdminEnrollments() {
       await setEnrollmentStatus(id, status);
       toast.success(message);
     } catch {
-      toast.error("Could not update the enrollment");
+      toast.error("Could not update enrollment");
     }
   };
 
@@ -174,7 +165,7 @@ function AdminEnrollments() {
               return (
                 <tr key={e.id}>
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">
-                    {String(i + 1).padStart(2, "0")}
+                    {String((page - 1) * PAGE_SIZE + i + 1).padStart(2, "0")}
                   </td>
                   <td className="max-w-[120px] px-3 py-3 sm:max-w-none sm:px-5">
                     <span className="block truncate font-medium">{student?.name ?? "Unknown"}</span>
@@ -237,8 +228,8 @@ function AdminEnrollments() {
           enrollmentId={detailsId}
           onClose={() => setDetailsId(null)}
           data={data}
-          onApprove={(id) => runStatus(id, "accepted", "Enrollment Approved")}
-          onReject={(id) => runStatus(id, "rejected", "Enrollment Rejected")}
+          onApprove={(id) => runStatus(id, "accepted", "Enrollment approved successfully")}
+          onReject={(id) => runStatus(id, "rejected", "Enrollment rejected successfully")}
         />
       )}
 
@@ -265,7 +256,7 @@ function AdminEnrollments() {
                     onClick={() => {
                       setConfirmAction(null);
                       deleteEnrollment(target!.id);
-                      toast.success("Enrollment Deleted");
+                      toast.success("Enrollment deleted successfully");
                     }}
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   >
@@ -278,7 +269,7 @@ function AdminEnrollments() {
         })()}
 
       {/* Edit Status Dialog */}
-      {editId && <EditStatusDialog enrollmentId={editId} onClose={() => setEditId(null)} data={data} onSave={(id, status) => { runStatus(id, status, `Enrollment ${status === "accepted" ? "Approved" : "Rejected"}`); setEditId(null); }} />}
+      {editId && <EditStatusDialog enrollmentId={editId} onClose={() => setEditId(null)} data={data} onSave={(id, status) => { runStatus(id, status, `Enrollment ${status === "accepted" ? "approved" : "rejected"} successfully`); setEditId(null); }} />}
     </AppShell>
   );
 }
