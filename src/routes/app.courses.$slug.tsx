@@ -126,10 +126,10 @@ function CourseDetails() {
     }
     const ok = await enroll(course.id);
     if (ok) {
-      toast.success("You're enrolled — happy learning");
+      toast.success("Enrollment completed successfully");
       navigate({ to: "/app/learn/$slug", params: { slug: course.slug } });
     } else {
-      toast.error("Could not enroll. Please try again.");
+      toast.error("Enrollment failed. Please try again");
     }
   };
 
@@ -137,11 +137,11 @@ function CourseDetails() {
     setEnrollLoading(true);
     try {
       requestEnrollment(course.id, screenshotUrl);
-      toast.success("Enrollment request sent — pending approval");
+      toast.success("Enrollment request sent successfully");
       setPaymentModalOpen(false);
       navigate({ to: "/app/my-courses" });
     } catch {
-      toast.error("Could not enroll. Please try again.");
+      toast.error("Enrollment failed. Please try again");
     } finally {
       setEnrollLoading(false);
     }
@@ -163,11 +163,11 @@ function CourseDetails() {
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-8">
         {/* ---------- Hero ---------- */}
-        <section className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-[oklch(0.16_0.03_278)] lg:col-span-2">
+        <section className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-[#0C0C0C] lg:col-span-2">
           <div aria-hidden className="pointer-events-none absolute inset-0">
-            <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[oklch(0.62_0.21_278/0.32)]" />
-            <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[oklch(0.62_0.21_278/0.18)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-12%,oklch(1_0_0/0.06),transparent_62%)] dark:bg-[radial-gradient(120%_60%_at_50%_-12%,oklch(0.62_0.21_278/0.18),transparent_62%)]" />
+            <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.32)]" />
+            <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.18)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(255,255,255,0.06),transparent_62%)] dark:bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(0,118,223,0.18),transparent_62%)]" />
           </div>
 
           <div className="relative p-6 sm:p-8 lg:p-10">
@@ -204,7 +204,7 @@ function CourseDetails() {
                         className={cn(
                           "h-4 w-4",
                           i < Math.round(rating)
-                            ? "fill-[#fbbf24] text-[#fbbf24]"
+                            ? "fill-[#FFFFFF] text-[#FFFFFF]"
                             : "fill-transparent text-primary-foreground/25 dark:text-white/25",
                         )}
                       />

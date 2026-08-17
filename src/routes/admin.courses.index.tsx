@@ -47,9 +47,10 @@ function AdminCourses() {
   const [detailsId, setDetailsId] = useState<string | null>(null);
 
   const PAGE_SIZE = 10;
-  const allCourses = data.courses.filter((c) =>
-    c.title.toLowerCase().includes(query.trim().toLowerCase()),
-  );
+  const allCourses = data.courses
+    .slice()
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .filter((c) => c.title.toLowerCase().includes(query.trim().toLowerCase()));
   const totalPages = Math.max(1, Math.ceil(allCourses.length / PAGE_SIZE));
   const courses = allCourses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -122,8 +123,8 @@ function AdminCourses() {
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => {
                             void toggleCourseStatus(c.id)
-                              .then(() => toast.success(c.status === "published" ? "Course Unpublished" : "Course Published"))
-                              .catch(() => toast.error("Could not update the course status"));
+                              .then(() => toast.success(c.status === "published" ? "Course unpublished successfully" : "Course published successfully"))
+                              .catch(() => toast.error("Could not update course status"));
                           }}>
                             {c.status === "published" ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
                             {c.status === "published" ? "Unpublish" : "Publish"}
@@ -218,8 +219,8 @@ function AdminCourses() {
                 setPendingDelete(null);
                 if (id) {
                   void deleteCourse(id)
-                    .then(() => toast.success("Course Deleted"))
-                    .catch(() => toast.error("Could not delete the course"));
+                    .then(() => toast.success("Course deleted successfully"))
+                    .catch(() => toast.error("Could not delete course"));
                 }
               }}
             >

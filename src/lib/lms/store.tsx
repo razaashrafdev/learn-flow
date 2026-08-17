@@ -367,11 +367,12 @@ export function LmsProvider({ children }: { children: ReactNode }) {
 
     updateProfile: async (patch) => {
       if (!currentUser) return { ok: false, error: "Not signed in." };
-      const profilePatch: { name: string; email: string; whatsapp?: string } = {
+      const profilePatch: { name: string; email: string; whatsapp?: string; avatar?: string } = {
         name: patch.name ?? currentUser.name,
         email: patch.email ?? currentUser.email,
       };
       if (patch.whatsapp !== undefined) profilePatch.whatsapp = patch.whatsapp;
+      if (patch.avatar !== undefined) profilePatch.avatar = patch.avatar;
       const result = await apiUpdateProfile(profilePatch);
       if (!result.ok) return { ok: false, error: result.error };
       if (currentUserId) {
@@ -380,6 +381,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
           email: result.user.email,
         };
         if (result.user.whatsapp !== undefined) userPatch.whatsapp = result.user.whatsapp;
+        if (result.user.avatar !== undefined) userPatch.avatar = result.user.avatar;
         patchUser(currentUserId, userPatch);
         setCurrentUser((u) => (u ? { ...u, ...userPatch } : u));
       }

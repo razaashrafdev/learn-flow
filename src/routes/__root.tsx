@@ -15,6 +15,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/components/not-found";
 import { SiteHeader } from "@/components/lms/site-header";
+import { PageTransition } from "@/components/page-transition";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -43,7 +44,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             Try again
           </button>
           <a
-            href="/login"
+            href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
@@ -76,7 +77,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/images/favicon.PNG" },
     ],
   }),
   shellComponent: RootShell,
@@ -119,7 +120,9 @@ function RootComponent() {
         <LmsProvider>
           {showHeader ? <SiteHeader activeSection={activeSection} /> : null}
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <Outlet />
+          <PageTransition>
+            <Outlet />
+          </PageTransition>
           <Toaster position="bottom-right" richColors />
         </LmsProvider>
       </ThemeProvider>

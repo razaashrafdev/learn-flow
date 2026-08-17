@@ -32,9 +32,13 @@ function NewCourse() {
         initial={emptyCourse()}
         submitLabel="Create Course"
         onSubmit={async (values) => {
-          const course = await createCourse({ ...values, categoryId: "" });
-          toast.success("Course Created — Now Add Sections and Lessons");
-          navigate({ to: "/admin/courses/$slug", params: { slug: course.slug } });
+          try {
+            const course = await createCourse({ ...values, categoryId: "" });
+            toast.success("Course created successfully");
+            navigate({ to: "/admin/courses/$slug", params: { slug: course.slug } });
+          } catch {
+            toast.error("Could not create course. Please try again.");
+          }
         }}
       />
     </AppShell>

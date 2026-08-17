@@ -15,66 +15,29 @@ function RefundPolicy() {
   return (
     <LegalPageLayout title="Refund Policy" lastUpdated="August 11, 2026">
       <section>
-        <h2 className="text-xl font-bold text-foreground">1. Refund Eligibility</h2>
-        <p className="mt-3 leading-relaxed">
-          We offer refunds for paid courses within 30 days of purchase, provided that you have not completed more than 20% of the course content. Free courses are not subject to refunds as no payment is required.
+        <p className="leading-relaxed text-justify">
+          At <strong>Hamza Visuals</strong>, we want you to have a positive learning experience with our courses. This Refund Policy explains how refunds are handled for paid courses and services purchased through our website.
         </p>
       </section>
       <section>
-        <h2 className="text-xl font-bold text-foreground">2. How to Request a Refund</h2>
-        <p className="mt-3 leading-relaxed">
-          To request a refund, please contact our support team with your account email, course name, and reason for the refund request. We will process your request within 5-7 business days.
+        <h2 className="mt-8 text-xl font-bold text-foreground">Refund Eligibility</h2>
+        <p className="mt-3 leading-relaxed text-justify">
+          Refunds are available only where a refund is permitted under the terms presented at the time of purchase. Because our courses provide immediate access to digital lessons, resources, downloads, templates, and other learning materials, access to course content may affect refund eligibility.
+        </p>
+        <p className="mt-3 leading-relaxed text-justify">
+          If you believe you have a valid reason for requesting a refund, please contact us with your order details and reason for the request. Each request will be reviewed according to the applicable course terms.
         </p>
       </section>
       <section>
-        <h2 className="text-xl font-bold text-foreground">3. Refund Processing</h2>
-        <p className="mt-3 leading-relaxed">
-          Approved refunds will be processed to the original payment method within 5-10 business days. You will receive an email confirmation once the refund has been processed.
+        <h2 className="mt-8 text-xl font-bold text-foreground">Refund Process</h2>
+        <p className="mt-3 leading-relaxed text-justify">
+          Approved refunds will be processed through the original payment method where possible. The time required for the refund to appear in your account may depend on the payment provider or financial institution.
         </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">4. Non-Refundable Items</h2>
-        <ul className="mt-3 space-y-2">
-          <li className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            Free courses and enrolled content
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            Courses completed beyond 20% progress
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            Requests made after 30 days of purchase
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-            Accounts terminated for violation of Terms of Service
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">5. Subscription Refunds</h2>
-        <p className="mt-3 leading-relaxed">
-          If you have an active subscription, you may cancel at any time. Your access will continue until the end of the current billing period. No partial refunds are provided for unused portions of a billing period.
+        <p className="mt-3 leading-relaxed text-justify">
+          Once a refund is approved, access to the relevant course, lessons, downloads, and other associated resources may be removed. Hamza Visuals reserves the right to update this Refund Policy when necessary, and any changes will be published on this page with an updated <strong>Last Updated</strong> date.
         </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">6. Disputed Charges</h2>
-        <p className="mt-3 leading-relaxed">
-          If you believe you were charged in error, please contact us immediately. We will investigate and resolve any billing disputes promptly. Chargebacks filed without contacting us first may result in account suspension.
-        </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">7. Changes to This Policy</h2>
-        <p className="mt-3 leading-relaxed">
-          We reserve the right to update this Refund Policy at any time. Changes will be effective upon posting. The refund policy in effect at the time of your purchase will apply to your transaction.
-        </p>
-      </section>
-      <section>
-        <h2 className="text-xl font-bold text-foreground">8. Contact Us</h2>
-        <p className="mt-3 leading-relaxed">
-          For refund requests or questions about this policy, please contact us through our official channels or email us at support@hamzavisuals.com. We are committed to resolving any issues promptly.
+        <p className="mt-3 leading-relaxed text-justify">
+          For refund-related questions or requests, please contact <strong>Hamza Visuals</strong> at <strong>support@hamzavisual.com</strong>.
         </p>
       </section>
     </LegalPageLayout>

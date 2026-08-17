@@ -12,12 +12,12 @@ export const Route = createFileRoute("/app/dashboard")({
       { title: "Your Dashboard — Hamza Visuals LMS" },
       {
         name: "description",
-        content: "Track Your Enrolled Courses, Progress and Continue Learning.",
+        content: "Track your enrolled courses, progress and continue learning.",
       },
       { property: "og:title", content: "Your Dashboard — Hamza Visuals LMS" },
       {
         property: "og:description",
-        content: "Track Your Progress and Continue Learning on Hamza Visuals.",
+        content: "Track your progress and continue learning on Hamza Visuals.",
       },
     ],
   }),
@@ -33,10 +33,12 @@ function StudentDashboard() {
   const completed = enrollments.filter((e) => e.status === "completed");
   const inProgress = enrollments.filter((e) => e.status === "in_progress");
   const pending = enrollments.filter((e) => e.accessStatus === "pending");
-  const overall = enrollments.length
+  const overall = enrollments.filter((e) => e.accessStatus !== "pending").length
     ? Math.round(
-        enrollments.reduce((acc, e) => acc + s.courseProgress(user.id, e.courseId).percent, 0) /
-          enrollments.length,
+        enrollments
+          .filter((e) => e.accessStatus !== "pending")
+          .reduce((acc, e) => acc + s.courseProgress(user.id, e.courseId).percent, 0) /
+          enrollments.filter((e) => e.accessStatus !== "pending").length,
       )
     : 0;
 
@@ -50,7 +52,7 @@ function StudentDashboard() {
     <AppShell
       nav={studentNav}
       title={`Welcome back, ${user.name.split(" ")[0]}`}
-      subtitle="Here's Where You Left Off."
+      subtitle="Here's where you left off."
     >
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
         <StatCard label="Enrolled Courses" value={enrollments.length} icon={BookOpen} />
@@ -131,7 +133,7 @@ function StudentDashboard() {
             description={
               pending.length > 0
                 ? "Your pending courses will appear here once approved."
-                : "Browse the Catalogue and Enroll in Something that Looks Useful."
+                : "Browse the catalogue and enroll in something that looks useful."
             }
             action={{ label: "Browse Courses", to: "/app/courses" }}
           />

@@ -11,9 +11,9 @@ export const Route = createFileRoute("/app/my-courses")({
   head: () => ({
     meta: [
       { title: "My Courses — Hamza Visuals LMS" },
-      { name: "description", content: "All the Courses You're Enrolled in, with Live Progress for Each." },
+      { name: "description", content: "All the courses you're enrolled in, with live progress for each." },
       { property: "og:title", content: "My Courses — Hamza Visuals LMS" },
-      { property: "og:description", content: "Your Enrolled Courses and Progress on Hamza Visuals LMS." },
+      { property: "og:description", content: "Your enrolled courses and progress on Hamza Visuals LMS." },
     ],
   }),
   component: MyCourses,
@@ -39,8 +39,8 @@ function MyCourses() {
       {enrollments.length === 0 ? (
         <EmptyState
           icon={BookOpen}
-          title="You Haven't Enrolled in Any Courses"
-          description="Once You Enroll, Your Courses and Progress Will Appear Here."
+          title="You haven't enrolled in any courses"
+          description="Once you enroll, your courses and progress will appear here."
           action={{ label: "Browse Courses", to: "/app/courses" }}
         />
       ) : (
@@ -56,9 +56,10 @@ function MyCourses() {
                 course={course}
                 lessonCount={s.publishedLessonsOfCourse(course.id).length}
                 pending={isPending}
+                appLink
                 {...(!isPending && { progress: { percent: progress.percent, label: `${progress.done}/${progress.total} lessons complete` } })}
                 footer={{
-                  label: e.status === "completed" ? "Review Course" : "Continue Learning",
+                  label: "Continue Learning",
                   to: "/app/learn/$slug",
                   params: { slug: course.slug },
                 }}

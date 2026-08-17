@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, GraduationCap, MailCheck } from "lucide-react";
+import { ArrowLeft, MailCheck } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -40,11 +40,17 @@ function ForgotPasswordPage() {
   return (
     <div className="grid min-h-screen place-items-center px-5 py-12">
       <div className="w-full max-w-sm">
-        <div className="mb-8 flex items-center gap-2.5">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <span className="text-lg font-extrabold tracking-tight">Hamza Visuals</span>
+        <div className="mb-8 flex justify-start lg:justify-center">
+          <img
+            src="/images/Black-Logo.png"
+            alt="Hamza Visuals"
+            className="h-9 w-auto dark:hidden"
+          />
+          <img
+            src="/images/White-Logo.png"
+            alt="Hamza Visuals"
+            className="h-9 w-auto hidden dark:block"
+          />
         </div>
 
         {sent ? (
@@ -78,7 +84,7 @@ function ForgotPasswordPage() {
                 {error ? <p className="text-xs font-medium text-destructive">{error}</p> : null}
               </div>
               <Button type="submit" className="w-full">
-                Send reset link
+                Send Reset Link
               </Button>
             </form>
           </>

@@ -311,6 +311,7 @@ export async function apiUpdateProfile(patch: {
   name: string;
   email: string;
   whatsapp?: string;
+  avatar?: string;
 }): Promise<{ ok: true; user: User } | { ok: false; error: string }> {
   try {
     const body = await request<{ user: User }>("/api/settings/profile", {

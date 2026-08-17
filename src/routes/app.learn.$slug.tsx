@@ -38,12 +38,12 @@ export const Route = createFileRoute("/app/learn/$slug")({
       { title: "Learning — Hamza Visuals LMS" },
       {
         name: "description",
-        content: "Watch Your Video Lessons and Mark Them Complete as You Go.",
+        content: "Watch your video lessons and mark them complete as you go.",
       },
       { property: "og:title", content: "Learning — Hamza Visuals LMS" },
       {
         property: "og:description",
-        content: "Watch Lessons and Track Completion on Hamza Visuals LMS.",
+        content: "Watch lessons and track completion on Hamza Visuals LMS.",
       },
     ],
   }),
@@ -175,10 +175,10 @@ function LearnPage() {
     setLessonCompleted(course.id, active.id, !isDone);
     if (!isDone) {
       const willFinish = progress.done + 1 >= progress.total;
-      toast.success(willFinish ? "Course Completed — Nice Work!" : "Lesson Marked as Complete");
+      toast.success(willFinish ? "Course completed successfully" : "Lesson completed successfully");
       if (next) setActiveId(next.id);
     } else {
-      toast.info("Lesson Marked as Not Complete");
+      toast.info("Lesson marked as incomplete");
     }
   };
 
@@ -225,7 +225,7 @@ function LearnPage() {
               <h2 className="text-lg font-bold sm:text-xl">{active?.title ?? "No Lessons Yet"}</h2>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 {active?.description ??
-                  "The Administrator Hasn't Added Any Lessons to This Course."}
+                  "The administrator hasn't added any lessons to this course."}
               </p>
 
               {active && active.resources && active.resources.length > 0 && (

@@ -94,6 +94,8 @@ function AdminStudents() {
   const PAGE_SIZE = 10;
   const allStudents = s
     .studentsList()
+    .slice()
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .filter((u) => (u.name + u.email).toLowerCase().includes(query.trim().toLowerCase()));
   const totalPages = Math.max(1, Math.ceil(allStudents.length / PAGE_SIZE));
   const students = allStudents.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -131,7 +133,7 @@ function AdminStudents() {
     }
     resetAddForm();
     setAddOpen(false);
-    toast.success("Student Added");
+    toast.success("Student added successfully");
   };
 
   const openEdit = (student: UserType) => {
@@ -175,7 +177,7 @@ function AdminStudents() {
     }
     setEditOpen(false);
     setEditingStudent(null);
-    toast.success("Student Updated");
+    toast.success("Student updated successfully");
   };
 
   return (
@@ -289,7 +291,7 @@ function AdminStudents() {
               return (
                 <tr key={u.id}>
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">
-                    {String(i + 1).padStart(2, "0")}
+                    {String((page - 1) * PAGE_SIZE + i + 1).padStart(2, "0")}
                   </td>
                   <td className="max-w-[120px] px-3 py-3 sm:max-w-none sm:px-5">
                     <span className="block truncate font-semibold">{u.name}</span>
@@ -335,7 +337,7 @@ function AdminStudents() {
                             onClick={() => {
                               void setStudentActive(u.id, u.active === false).then(() =>
                                 toast.success(
-                                  u.active === false ? "Student Activated" : "Student Deactivated",
+                                  u.active === false ? "Student activated successfully" : "Student deactivated successfully",
                                 ),
                               );
                             }}
@@ -555,7 +557,7 @@ function AdminStudents() {
             <AlertDialogAction
               onClick={() => {
                 if (deleteId) {
-                  void deleteStudent(deleteId).then(() => toast.success("Student Deleted"));
+                  void deleteStudent(deleteId).then(() => toast.success("Student deleted successfully")).catch(() => toast.error("Could not delete student"));
                 }
                 setDeleteId(null);
               }}

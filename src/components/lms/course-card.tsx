@@ -12,17 +12,20 @@ export function CourseCard({
   progress,
   footer,
   pending,
+  appLink,
 }: {
   course: Course;
   lessonCount: number;
   progress?: { percent: number; label?: string };
   footer?: { label: string; to: string; params?: Record<string, string> };
   pending?: boolean;
+  appLink?: boolean;
 }) {
+  const detailTo = appLink ? "/app/courses/$slug" : "/courses/$slug";
   return (
     <article className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-pop">
       <Link
-        to="/courses/$slug"
+        to={detailTo}
         params={{ slug: course.slug }}
         className="relative block aspect-video overflow-hidden bg-muted"
       >
@@ -46,7 +49,7 @@ export function CourseCard({
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 text-base font-bold leading-snug">
-          <Link to="/courses/$slug" params={{ slug: course.slug }}>
+          <Link to={detailTo} params={{ slug: course.slug }}>
             {course.title}
           </Link>
         </h3>
@@ -100,7 +103,6 @@ export function LandingCourseCard({
 }: {
   course: Course;
   lessonCount: number;
-  onClick?: () => void;
 }) {
   return (
     <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">

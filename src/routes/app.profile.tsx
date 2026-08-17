@@ -7,6 +7,7 @@ import { AppShell, studentNav } from "@/components/lms/app-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ImageUpload } from "@/components/lms/ui-bits";
 import { useLms } from "@/lib/lms/store";
 
 export const Route = createFileRoute("/app/profile")({
@@ -61,26 +62,26 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
     });
     if (!profileResult.ok) {
       setErrors({ email: profileResult.error ?? "" });
-      toast.error(profileResult.error ?? "Could Not Update Settings");
+      toast.error(profileResult.error ?? "Could not update settings");
       return;
     }
 
     if (pw.next || pw.confirm || pw.current) {
       const fe: Record<string, string> = {};
-      if (pw.next.length < 8) fe["next"] = "Use at Least 8 Characters";
-      if (pw.next !== pw.confirm) fe["confirm"] = "Passwords Do Not Match";
+      if (pw.next.length < 8) fe["next"] = "Use at least 8 characters";
+      if (pw.next !== pw.confirm) fe["confirm"] = "Passwords do not match";
       setPwErrors(fe);
       if (Object.keys(fe).length) return;
       const result = await changePassword(pw.current, pw.next);
       if (!result.ok) {
         setPwErrors({ current: result.error ?? "" });
-        toast.error(result.error ?? "Could Not Change Password");
+        toast.error(result.error ?? "Could not change password");
         return;
       }
       setPw({ current: "", next: "", confirm: "" });
-      toast.success("Settings Updated & Password Changed");
+      toast.success("Settings and password updated");
     } else {
-      toast.success("Settings Updated");
+      toast.success("Settings updated successfully");
     }
   };
 
@@ -116,6 +117,15 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
                 {errors["email"]}
               </p>
             ) : null}
+          </div>
+          <div className="grid gap-1.5 sm:grid-cols-[160px_1fr] sm:items-center">
+            <Label>Profile Photo</Label>
+            <ImageUpload
+              value={form.avatar}
+              onChange={(url) => setForm({ ...form, avatar: url })}
+              placeholder="Upload profile photo"
+              className="sm:col-start-2"
+            />
           </div>
         </div>
 
