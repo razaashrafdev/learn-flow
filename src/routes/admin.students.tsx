@@ -459,7 +459,7 @@ function AdminStudents() {
           const isActive = u.active !== false;
           return (
             <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-              <AlertDialogContent className="gap-0 p-0 overflow-hidden sm:max-w-md">
+              <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md max-h-[90vh]">
                 <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 pt-6 pb-4">
                   <h2 className="text-center text-lg font-bold tracking-tight">{u.name}</h2>
                   <p className="mt-0.5 text-center text-sm text-muted-foreground">{u.email}</p>

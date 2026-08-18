@@ -7,7 +7,6 @@ import { AppShell, studentNav } from "@/components/lms/app-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ImageUpload } from "@/components/lms/ui-bits";
 import { useLms } from "@/lib/lms/store";
 
 export const Route = createFileRoute("/app/profile")({
@@ -28,7 +27,6 @@ export const Route = createFileRoute("/app/profile")({
 const profileSchema = z.object({
   name: z.string().trim().min(2, "Enter Your Full Name").max(80),
   email: z.string().trim().email("Enter a Valid Email Address").max(255),
-  avatar: z.string().trim().max(500).optional().or(z.literal("")),
 });
 
 export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: string }) {
@@ -37,7 +35,6 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
   const [form, setForm] = useState({
     name: user.name,
     email: user.email,
-    avatar: user.avatar ?? "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [pw, setPw] = useState({ current: "", next: "", confirm: "" });
@@ -58,7 +55,6 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
     const profileResult = await updateProfile({
       name: parsed.data.name,
       email: parsed.data.email,
-      avatar: parsed.data.avatar ?? "",
     });
     if (!profileResult.ok) {
       setErrors({ email: profileResult.error ?? "" });
@@ -117,15 +113,6 @@ export function ProfileForms({ nav, title }: { nav: typeof studentNav; title: st
                 {errors["email"]}
               </p>
             ) : null}
-          </div>
-          <div className="grid gap-1.5 sm:grid-cols-[160px_1fr] sm:items-center">
-            <Label>Profile Photo</Label>
-            <ImageUpload
-              value={form.avatar}
-              onChange={(url) => setForm({ ...form, avatar: url })}
-              placeholder="Upload profile photo"
-              className="sm:col-start-2"
-            />
           </div>
         </div>
 

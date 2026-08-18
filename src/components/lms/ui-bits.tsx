@@ -258,7 +258,7 @@ export function PublicFooter() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Hamza Visuals teaches practical design, video editing <br />
+              Hamza Visuals teaches practical design, video editing <br className="max-sm:hidden" />
               and AI through project based courses.
             </p>
             <div className="mt-4 flex items-center gap-3">
@@ -266,7 +266,7 @@ export function PublicFooter() {
                 href="https://www.facebook.com/hamzavisuals1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <Facebook className="h-4 w-4" />
               </a>
@@ -274,7 +274,7 @@ export function PublicFooter() {
                 href="https://www.instagram.com/hamza.visuals1/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <Instagram className="h-4 w-4" />
               </a>
@@ -282,7 +282,7 @@ export function PublicFooter() {
                 href="https://www.threads.com/@hamza.visuals1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <svg
                   role="img"
@@ -298,7 +298,7 @@ export function PublicFooter() {
                 href="https://www.pinterest.com/hamzavisuals1/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -316,15 +316,15 @@ export function PublicFooter() {
                 href="https://www.youtube.com/@Hamza.Visuals1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <Youtube className="h-4 w-4" />
               </a>
               <a
-                href="https://www.behance.net/hamzavisuals"
+                href="#"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="grid h-8 w-8 place-items-center rounded-lg bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -350,6 +350,16 @@ export function PublicFooter() {
                 </Link>
               </li>
               <li>
+                <Link
+                  to="/courses"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Courses
+                </Link>
+              </li>
+              <li>
                 <a
                   href="/"
                   onClick={handleServicesClick}
@@ -360,15 +370,9 @@ export function PublicFooter() {
               </li>
               <li>
                 <Link
-                  to="/courses"
-                  className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Courses
-                </Link>
-              </li>
-              <li>
-                <Link
                   to="/resources"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                   Resources
@@ -481,7 +485,7 @@ export function ImageUpload({
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute -right-2 -top-2 rounded-full bg-destructive p-0.5 text-destructive-foreground"
+            className="absolute -right-2 -top-2 [border-radius:5px] bg-destructive p-0.5 text-destructive-foreground"
           >
             <XCircle className="h-4 w-4" />
           </button>
@@ -492,7 +496,7 @@ export function ImageUpload({
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
           className={cn(
-            "flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed bg-muted/50 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-muted disabled:cursor-wait disabled:opacity-60",
+            "flex flex-col items-center justify-center gap-2 [border-radius:5px] border-2 border-dashed bg-muted/50 text-muted-foreground transition-colors hover:border-primary/50 hover:bg-muted disabled:cursor-wait disabled:opacity-60",
             isFullWidth ? "h-40 w-full" : "h-32 w-48",
           )}
         >

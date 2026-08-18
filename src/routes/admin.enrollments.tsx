@@ -297,7 +297,7 @@ function EnrollmentDetailDialog({
 
   return (
     <AlertDialog open onOpenChange={(o) => !o && onClose()}>
-      <AlertDialogContent className="gap-0 p-0 overflow-hidden sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md max-h-[90vh]">
         <div className="px-6 pt-6 pb-4">
           <h2 className="text-lg font-bold tracking-tight">Student Details</h2>
         </div>
@@ -418,7 +418,7 @@ function EditStatusDialog({
       <AlertDialogContent className="sm:max-w-sm">
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="absolute right-4 top-4 [border-radius:5px] opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <XCircle className="h-4 w-4" />
           <span className="sr-only">Close</span>

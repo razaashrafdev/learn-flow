@@ -43,7 +43,7 @@ function PrivacyPolicy() {
           We may update this Privacy Policy from time to time. Any changes will be published on this page with an updated <strong>Last Updated</strong> date.
         </p>
         <p className="mt-3 leading-relaxed text-justify">
-          For privacy-related questions or requests, contact <strong>Hamza Visuals</strong> at <strong>support@hamzavisual.com</strong>.
+          For privacy-related questions or requests, contact <strong>Hamza Visuals</strong> at <strong>hamzaa.visuals@gmail.com</strong>.
         </p>
       </section>
     </LegalPageLayout>

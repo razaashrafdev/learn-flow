@@ -393,8 +393,23 @@
 @utility card-surface {
   background-color: var(--card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   box-shadow: var(--shadow-card);
+}
+
+/* Global: all buttons = 5px border radius */
+button,
+[role="button"],
+a[role="button"],
+.btn,
+[type="submit"],
+[type="reset"] {
+  border-radius: 5px !important;
+}
+
+/* Catch anchors rendered via Button asChild */
+a.inline-flex {
+  border-radius: 5px !important;
 }
 
 [data-sonner-toaster] {

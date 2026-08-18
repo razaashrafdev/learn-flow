@@ -83,11 +83,6 @@ function LoginPage() {
     toast.success("Signed in successfully");
   };
 
-  const quickFill = (e: string, p: string) => {
-    setEmail(e);
-    setPassword(p);
-  };
-
   return (
     <div className="min-h-screen">
       <div className="flex items-center justify-center px-5 py-12 sm:px-10">
@@ -180,28 +175,6 @@ function LoginPage() {
               Create a student account
             </Link>
           </p>
-
-          <div className="mt-8 rounded-xl border border-dashed border-border p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Demo accounts
-            </p>
-            <div className="mt-3 grid gap-2">
-              <button
-                type="button"
-                onClick={() => quickFill("admin@lms.pk", "admin123")}
-                className="rounded-lg border border-border px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
-              >
-                <span className="font-semibold">Admin</span> · admin@lms.pk / admin123
-              </button>
-              <button
-                type="button"
-                onClick={() => quickFill("raza@gmail.com", "87654321")}
-                className="rounded-lg border border-border px-3 py-2 text-left text-sm transition-colors hover:bg-muted"
-              >
-                <span className="font-semibold">Student</span> · raza@gmail.com / 87654321
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
