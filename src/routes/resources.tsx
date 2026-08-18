@@ -40,9 +40,9 @@ function ResourceModal({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+    <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto [border-radius:5px] border border-border bg-background shadow-xl"
+        className="relative mx-4 w-full max-w-lg max-h-[85vh] overflow-y-auto [border-radius:5px] border border-border bg-background shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -119,7 +119,7 @@ function ResourcesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <section className="bg-background py-10 sm:py-14">
+      <section className="relative bg-background py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-md">
             <div className="relative">
@@ -196,14 +196,14 @@ function ResourcesPage() {
             </div>
           )}
         </div>
-      </section>
 
-      {selectedResource && (
-        <ResourceModal
-          resource={selectedResource}
-          onClose={() => setSelectedResource(null)}
-        />
-      )}
+        {selectedResource && (
+          <ResourceModal
+            resource={selectedResource}
+            onClose={() => setSelectedResource(null)}
+          />
+        )}
+      </section>
 
       <PublicFooter />
     </div>
