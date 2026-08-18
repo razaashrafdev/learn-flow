@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -42,6 +42,7 @@ function LoginPage() {
   const search = useSearch({ from: "/login" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -84,98 +85,101 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen">
-      <div className="flex items-center justify-center px-5 py-12 sm:px-10">
-        <div className="w-full max-w-sm">
-          <div className="mb-8 flex justify-start lg:justify-center">
-            <Link to="/" className="flex items-center gap-2.5">
-              <img
-                src="/images/Black-Logo.png"
-                alt="Hamza Visuals"
-                className="h-9 w-auto dark:hidden"
-              />
-              <img
-                src="/images/White-Logo.png"
-                alt="Hamza Visuals"
-                className="h-9 w-auto hidden dark:block"
-              />
-            </Link>
+    <div className="flex min-h-screen items-center justify-center px-5">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 flex justify-center">
+          <Link to="/" className="flex items-center gap-2.5">
+            <img
+              src="/images/Black-Logo.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto dark:hidden"
+            />
+            <img
+              src="/images/White-Logo.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto hidden dark:block"
+            />
+          </Link>
+        </div>
+
+        <h1 className="text-2xl font-extrabold tracking-tight">Sign in to your account</h1>
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Continue where you left off, or manage your platform.
+        </p>
+
+        <form onSubmit={submit} noValidate className="mt-8 space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              maxLength={255}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={!!errors["email"]}
+              placeholder="you@example.com"
+            />
+            {errors["email"] ? (
+              <p className="text-xs font-medium text-destructive">{errors["email"]}</p>
+            ) : null}
           </div>
-
-          <h1 className="text-2xl font-extrabold tracking-tight">Sign in to your account</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Continue where you left off, or manage your platform.
-          </p>
-
-          <form onSubmit={submit} noValidate className="mt-8 space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                maxLength={255}
-                onChange={(e) => setEmail(e.target.value)}
-                aria-invalid={!!errors["email"]}
-                placeholder="you@example.com"
-              />
-              {errors["email"] ? (
-                <p className="text-xs font-medium text-destructive">{errors["email"]}</p>
-              ) : null}
-            </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                maxLength={128}
-                onChange={(e) => setPassword(e.target.value)}
-                aria-invalid={!!errors["password"]}
-                placeholder="••••••••"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  value={password}
+                  maxLength={128}
+                  onChange={(e) => setPassword(e.target.value)}
+                  aria-invalid={!!errors["password"]}
+                  placeholder="••••••••"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
               {errors["password"] ? (
                 <p className="text-xs font-medium text-destructive">{errors["password"]}</p>
               ) : null}
             </div>
 
-            <div className="flex items-center justify-between gap-3">
-              <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
-                <Checkbox
-                  checked={remember}
-                  onCheckedChange={(v) => setRemember(v === true)}
-                  aria-label="Remember me"
-                />
-                Remember me
-              </label>
-              <Link
-                to="/forgot-password"
-                className="text-sm font-semibold text-primary hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
+          <div className="flex items-center gap-2">
+            <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+              <Checkbox
+                checked={remember}
+                onCheckedChange={(v) => setRemember(v === true)}
+                aria-label="Remember me"
+              />
+              Remember me
+            </label>
+          </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Sign In
-            </Button>
-          </form>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            Sign In
+          </Button>
+        </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            New to Hamza Visuals?{" "}
-            <Link
-              to="/register"
-              {...(search.redirect ? { search: { redirect: search.redirect } } : {})}
-              className="font-semibold text-primary hover:underline"
-            >
-              Create a student account
-            </Link>
-          </p>
-        </div>
+        <p className="mt-6 text-center text-sm text-muted-foreground">
+          New to Hamza Visuals?{" "}
+          <Link
+            to="/register"
+            {...(search.redirect ? { search: { redirect: search.redirect } } : {})}
+            className="font-semibold text-primary hover:underline"
+          >
+            Create a student account
+          </Link>
+        </p>
       </div>
     </div>
   );
