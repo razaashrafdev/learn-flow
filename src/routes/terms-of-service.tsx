@@ -55,7 +55,7 @@ function TermsOfService() {
           We may update, modify, suspend, or discontinue parts of the website, courses, resources, or services when necessary. We may also update these Terms from time to time, and the latest version will be published on this page with an updated <strong>Last Updated</strong> date.
         </p>
         <p className="mt-3 leading-relaxed text-justify">
-          If you have questions about these Terms of Service, your course access, or any of our services, please contact <strong>Hamza Visuals</strong> at <strong>support@hamzavisual.com</strong>.
+          If you have questions about these Terms of Service, your course access, or any of our services, please contact <strong>Hamza Visuals</strong> at <strong>hamzaa.visuals@gmail.com</strong>.
         </p>
         <p className="mt-3 leading-relaxed text-justify">
           By continuing to use Hamza Visuals after changes to these terms are published, you agree to the updated Terms of Service.

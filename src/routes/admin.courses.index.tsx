@@ -159,7 +159,7 @@ function AdminCourses() {
         const enrolled = data.enrollments.filter((e) => e.courseId === c.id).length;
         return (
           <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-            <AlertDialogContent className="gap-0 p-0 overflow-hidden sm:max-w-md">
+            <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md max-h-[90vh]">
               <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 pt-6 pb-4">
                 <h2 className="text-center text-lg font-bold tracking-tight">{c.title}</h2>
               </div>

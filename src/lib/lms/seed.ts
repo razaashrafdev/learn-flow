@@ -866,10 +866,19 @@ export function buildSeed(): LmsData {
 }
 
 /**
- * Fresh data for a newly signed-up student: catalog stays, but no demo users,
- * enrollments or progress from the seed bleed into their dashboard.
+ * Returns a completely empty LmsData object.
+ * All data should come from the backend API — no seed/fallback data.
  */
 export function buildEmptyData(): LmsData {
-  const seed = buildSeed();
-  return { ...seed, users: [], enrollments: [], enrollmentRequests: [], progress: [] };
+  return {
+    users: [],
+    categories: [],
+    courses: [],
+    sections: [],
+    lessons: [],
+    enrollments: [],
+    enrollmentRequests: [],
+    progress: [],
+    resources: [],
+  };
 }

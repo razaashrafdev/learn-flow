@@ -12,7 +12,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       size="icon"
       onClick={toggleTheme}
       className={cn(
-        "h-9 w-9 rounded-xl transition-colors",
+        "h-9 w-9 [border-radius:5px] transition-colors",
         "hover:bg-muted hover:text-foreground",
         className,
       )}

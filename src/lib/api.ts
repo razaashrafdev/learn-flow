@@ -11,7 +11,9 @@ import type {
 
 const API_URL: string =
   (import.meta as unknown as { env?: Record<string, string> }).env?.["VITE_API_URL"] ??
-  "http://localhost:5000";
+  (typeof window !== "undefined"
+    ? `http://${window.location.hostname}:5000`
+    : "http://localhost:5000");
 
 const TOKEN_KEY = "lms.token.v1";
 
@@ -117,6 +119,29 @@ export type Catalog = {
 export async function apiFetchCatalog(): Promise<Catalog | null> {
   try {
     return await request<Catalog>("/api/courses");
+  } catch {
+    return null;
+  }
+}
+
+export async function apiFetchResources(): Promise<Resource[]> {
+  try {
+    const res = await request<{ resources: Resource[] }>("/api/resources");
+    return res.resources;
+  } catch {
+    return [];
+  }
+}
+
+export type CourseDetail = {
+  course: Course & { reviews: Course["reviews"] };
+  sections: Section[];
+  lessons: Lesson[];
+};
+
+export async function apiFetchCourseBySlug(slug: string): Promise<CourseDetail | null> {
+  try {
+    return await request<CourseDetail>(`/api/courses/slug/${encodeURIComponent(slug)}`);
   } catch {
     return null;
   }

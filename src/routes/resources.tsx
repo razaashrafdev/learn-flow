@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Download, Search } from "lucide-react";
+import { Download, Search, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PublicFooter } from "@/components/lms/ui-bits";
-import { useLms } from "@/lib/lms/store";
+import { apiFetchResources } from "@/lib/api";
+import type { Resource } from "@/lib/lms/types";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
@@ -28,15 +29,88 @@ export const Route = createFileRoute("/resources")({
   component: ResourcesPage,
 });
 
+let _resourcesCache: { data: Resource[]; ts: number } | null = null;
+const RESOURCES_CACHE_MS = 15_000;
+
+function ResourceModal({
+  resource,
+  onClose,
+}: {
+  resource: Resource;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+      <div
+        className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto [border-radius:5px] border border-border bg-background shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute right-3 top-3 z-10 [border-radius:5px] bg-background/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {resource.image ? (
+          <img
+            src={resource.image}
+            alt={resource.title}
+            className="h-48 w-full object-cover"
+          />
+        ) : (
+          <div className="flex h-48 w-full items-center justify-center bg-muted">
+            <Download className="h-12 w-12 text-muted-foreground/40" />
+          </div>
+        )}
+
+        <div className="p-5">
+          <span className="inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary backdrop-blur-sm">
+            {resource.type}
+          </span>
+          <h2 className="mt-2 text-lg font-bold">{resource.title}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {resource.description}
+          </p>
+          <div className="mt-5">
+            <Button asChild className="w-full">
+              <a href={resource.downloadUrl} target="_blank" rel="noopener noreferrer">
+                <Download className="mr-1.5 h-4 w-4" /> Download
+              </a>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ResourcesPage() {
-  const { data, syncCatalog } = useLms();
+  const [resources, setResources] = useState<Resource[]>(() =>
+    _resourcesCache && Date.now() - _resourcesCache.ts < RESOURCES_CACHE_MS
+      ? _resourcesCache.data
+      : [],
+  );
+  const [loading, setLoading] = useState(resources.length === 0);
   const [query, setQuery] = useState("");
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
 
   useEffect(() => {
-    void syncCatalog();
-  }, [syncCatalog]);
+    if (_resourcesCache && Date.now() - _resourcesCache.ts < RESOURCES_CACHE_MS) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    apiFetchResources().then((r) => {
+      if (cancelled) return;
+      _resourcesCache = { data: r, ts: Date.now() };
+      setResources(r);
+      setLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, []);
 
-  const filteredResources = data.resources.filter(
+  const filteredResources = resources.filter(
     (r) =>
       r.title.toLowerCase().includes(query.toLowerCase()) ||
       r.description.toLowerCase().includes(query.toLowerCase()) ||
@@ -60,7 +134,19 @@ function ResourcesPage() {
             </div>
           </div>
 
-          {filteredResources.length === 0 ? (
+          {loading ? (
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="card-surface animate-pulse overflow-hidden">
+                  <div className="aspect-video bg-muted" />
+                  <div className="p-5 space-y-3">
+                    <div className="h-5 w-3/4 rounded bg-muted" />
+                    <div className="h-4 w-full rounded bg-muted" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredResources.length === 0 ? (
             <div className="mt-14 text-center">
               <Search className="mx-auto h-12 w-12 text-muted-foreground/50" />
               <p className="mt-4 text-lg font-semibold">No resources found</p>
@@ -86,7 +172,7 @@ function ResourcesPage() {
                         <Download className="h-10 w-10 text-muted-foreground/40" />
                       </div>
                     )}
-                    <span className="absolute right-2 top-2 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground">
+                    <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
                       {resource.type}
                     </span>
                   </div>
@@ -96,10 +182,12 @@ function ResourcesPage() {
                       {resource.description}
                     </p>
                     <div className="mt-4">
-                      <Button asChild className="w-full text-base">
-                        <a href={resource.downloadUrl} download>
-                          Click Here to Explore
-                        </a>
+                      <Button
+                        variant="outline"
+                        className="w-full text-xs"
+                        onClick={() => setSelectedResource(resource)}
+                      >
+                        Click Here to Explore
                       </Button>
                     </div>
                   </div>
@@ -109,6 +197,13 @@ function ResourcesPage() {
           )}
         </div>
       </section>
+
+      {selectedResource && (
+        <ResourceModal
+          resource={selectedResource}
+          onClose={() => setSelectedResource(null)}
+        />
+      )}
 
       <PublicFooter />
     </div>

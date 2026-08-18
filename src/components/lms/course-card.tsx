@@ -37,10 +37,10 @@ export function CourseCard({
         />
         <span
           className={cn(
-            "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold",
+            "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
             course.pricingType === "free"
-              ? "bg-success text-success-foreground"
-              : "bg-warning text-warning-foreground",
+              ? "bg-success/80 text-success-foreground"
+              : "bg-warning/80 text-warning-foreground",
           )}
         >
           {course.pricingType === "free" ? "FREE" : "PAID"}
@@ -109,6 +109,8 @@ export function LandingCourseCard({
       <Link
         to="/courses/$slug"
         params={{ slug: course.slug }}
+        target="_blank"
+        rel="noopener noreferrer"
         className="relative block aspect-video overflow-hidden bg-muted"
       >
         <img
@@ -120,10 +122,10 @@ export function LandingCourseCard({
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <span
           className={cn(
-            "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold",
+            "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
             course.pricingType === "free"
-              ? "bg-success text-success-foreground"
-              : "bg-warning text-warning-foreground",
+              ? "bg-success/80 text-success-foreground"
+              : "bg-warning/80 text-warning-foreground",
           )}
         >
           {course.pricingType === "free" ? "FREE" : "PAID"}
@@ -132,7 +134,7 @@ export function LandingCourseCard({
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary transition-colors">
-          <Link to="/courses/$slug" params={{ slug: course.slug }}>
+          <Link to="/courses/$slug" params={{ slug: course.slug }} target="_blank" rel="noopener noreferrer">
             {course.title}
           </Link>
         </h3>
@@ -152,7 +154,7 @@ export function LandingCourseCard({
 
         <div className="mt-5">
           <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            <Link to="/courses/$slug" params={{ slug: course.slug }}>
+            <Link to="/courses/$slug" params={{ slug: course.slug }} target="_blank" rel="noopener noreferrer">
               View Details <ChevronRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>

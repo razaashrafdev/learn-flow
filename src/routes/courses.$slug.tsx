@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate, useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   BookOpen,
   ChevronLeft,
@@ -24,9 +25,10 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useLms, useSelectors } from "@/lib/lms/store";
+import { apiFetchCourseBySlug, type CourseDetail } from "@/lib/api";
 import { PublicFooter } from "@/components/lms/ui-bits";
 import { cn } from "@/lib/utils";
-import type { Lesson } from "@/lib/lms/types";
+import type { Course, Lesson, Section } from "@/lib/lms/types";
 
 export const Route = createFileRoute("/courses/$slug")({
   head: () => ({
@@ -82,7 +84,7 @@ function Stars({ value, className }: { value: number; className?: string }) {
           className={cn(
             "h-4 w-4",
             i < Math.round(value)
-              ? "fill-warning text-warning"
+              ? "fill-yellow-500 text-yellow-500"
               : "fill-transparent text-muted-foreground/30",
           )}
         />
@@ -104,15 +106,67 @@ function SectionTitle({ kicker, children }: { kicker?: string; children: ReactNo
 
 /* ---------------- page ---------------- */
 
+let _courseDetailCache: { slug: string; data: CourseDetail; ts: number } | null = null;
+const COURSE_DETAIL_CACHE_MS = 15_000;
+
 function PublicCourseDetails() {
   const { slug } = useParams({ from: "/courses/$slug" });
   const { data, currentUser, enroll, requestEnrollment } = useLms();
   const s = useSelectors();
   const navigate = useNavigate();
 
-  const course = data.courses.find((c) => c.slug === slug);
+  // Try store first
+  const storeCourse = data.courses.find((c) => c.slug === slug && c.status === "published");
 
-  if (!course || course.status !== "published") {
+  // Fallback: direct API fetch
+  const [remote, setRemote] = useState<CourseDetail | null>(() => {
+    if (storeCourse) return null;
+    if (_courseDetailCache && _courseDetailCache.slug === slug && Date.now() - _courseDetailCache.ts < COURSE_DETAIL_CACHE_MS) {
+      return _courseDetailCache.data;
+    }
+    return null;
+  });
+  const [apiLoading, setApiLoading] = useState(!storeCourse && !remote);
+
+  useEffect(() => {
+    if (storeCourse || remote) {
+      setApiLoading(false);
+      return;
+    }
+    let cancelled = false;
+    apiFetchCourseBySlug(slug).then((detail) => {
+      if (cancelled || !detail) return;
+      _courseDetailCache = { slug, data: detail, ts: Date.now() };
+      setRemote(detail);
+      setApiLoading(false);
+    });
+    return () => { cancelled = true; };
+  }, [slug, storeCourse, remote]);
+
+  const loading = apiLoading && !storeCourse;
+
+  // Merge: prefer store data, fallback to API data
+  const course: (Course & { reviews?: Course["reviews"] }) | undefined = storeCourse ?? remote?.course;
+  const apiSections: Section[] = remote?.sections ?? [];
+  const apiLessons: Lesson[] = remote?.lessons ?? [];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 w-48 rounded bg-muted" />
+            <div className="h-64 rounded-xl bg-muted" />
+            <div className="h-5 w-3/4 rounded bg-muted" />
+            <div className="h-5 w-1/2 rounded bg-muted" />
+          </div>
+        </main>
+        <PublicFooter />
+      </div>
+    );
+  }
+
+  if (!course) {
     return (
       <div className="min-h-screen bg-background">
         <main className="mx-auto max-w-4xl px-4 py-20 sm:px-6 lg:px-8">
@@ -132,13 +186,19 @@ function PublicCourseDetails() {
     );
   }
 
-  const courseSections = s.sectionsOf(course.id);
-  const lessonsList = s.publishedLessonsOfCourse(course.id);
+  // Use store selectors if course is in store, otherwise use API data
+  const courseSections = storeCourse ? s.sectionsOf(course.id) : apiSections;
+  const lessonsList = storeCourse
+    ? s.publishedLessonsOfCourse(course.id)
+    : apiLessons.filter((l) => {
+        const sectionIds = apiSections.filter((sec) => sec.courseId === course.id).map((sec) => sec.id);
+        return sectionIds.includes(l.sectionId) && l.published;
+      });
   const isPaid = course.pricingType === "paid";
   const rating = course.rating ?? 0;
   const reviewCount = course.reviewCount ?? 0;
   const enrolledCount =
-    course.studentCount ?? data.enrollments.filter((e) => e.courseId === course.id).length;
+    course.studentCount ?? (storeCourse ? data.enrollments.filter((e) => e.courseId === course.id).length : 0);
   const reviews = course.reviews ?? [];
   const totalDuration = formatTotalDuration(lessonsList) || course.duration;
 

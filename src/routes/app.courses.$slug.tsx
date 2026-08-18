@@ -163,7 +163,7 @@ function CourseDetails() {
 
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-8">
         {/* ---------- Hero ---------- */}
-        <section className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-[#0C0C0C] lg:col-span-2">
+        <section className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] lg:col-span-2">
           <div aria-hidden className="pointer-events-none absolute inset-0">
             <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.32)]" />
             <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.18)]" />
@@ -326,8 +326,8 @@ function CourseDetails() {
                               className={cn(
                                 "h-4 w-4",
                                 i < Math.round(r.rating)
-                                  ? "fill-warning text-warning"
-                                  : "fill-transparent text-muted-foreground/30",
+                            ? "fill-yellow-500 text-yellow-500"
+                            : "fill-transparent text-muted-foreground/30",
                               )}
                             />
                           ))}

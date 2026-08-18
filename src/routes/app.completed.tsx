@@ -123,7 +123,7 @@ function CompletedCourses() {
                     <Star
                       className={`h-7 w-7 ${
                         star <= (hoverRating || rating)
-                          ? "fill-warning text-warning"
+                          ? "fill-yellow-500 text-yellow-500"
                           : "fill-transparent text-muted-foreground/30"
                       }`}
                     />

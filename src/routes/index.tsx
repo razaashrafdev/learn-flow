@@ -74,7 +74,7 @@ const services = [
   },
   {
     icon: GraduationCap,
-    title: "Mentorship",
+    title: "1:1 Mentorship",
     description: "Get personalized guidance from industry experts to accelerate your creative career.",
   },
 ];
@@ -185,7 +185,7 @@ const faqs = [
   {
     question: "Are the courses suitable for beginners?",
     answer:
-      "Yes. Most courses start from the basics and build up, with simple, jargon-free explanations.",
+      "Yes. all courses start from the basics and build up, with simple, jargon-free explanations.",
   },
   {
     question: "What language are the courses taught in?",
@@ -199,12 +199,12 @@ const faqs = [
   {
     question: "Are there free courses available?",
     answer:
-      "Yes. CapCut, Canva, Basics of AI Image Generation, and Master ChatGPT are all free — a good way to try the teaching style before enrolling in a premium course.",
+      "Yes. Free courses are also available — a good way to try the teaching style before enrolling in a premium course.",
   },
   {
     question: "Do I get downloadable resources with my courses?",
     answer:
-      "Most courses include downloadable resources such as templates, prompt packs, or project files you can reuse.",
+      "All include downloadable resources such as templates, prompt packs, or project files you can reuse.",
   },
   {
     question: "How do the monthly Q&A sessions work?",
@@ -300,19 +300,19 @@ function LandingPage() {
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
               AI Skills That Work in <br className="hidden sm:block" />
-              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent blur-[0.5px]">the Real World</span>
+              <span className="bg-primary bg-clip-text text-transparent">the Real World</span>
             </h1>
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
               Hamza Visuals teaches graphic design, video editing, and practical AI through hands-on courses. Learn through real projects and apply knowledge right away.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="px-8">
-                <Link to="/courses">
-                  Explore Courses <ArrowRight className="ml-2 h-4 w-4" />
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">
+                  Explore Courses <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/app/my-courses">My Learning</Link>
+                <Link to="/app/my-courses" target="_blank" rel="noopener noreferrer">My Learning</Link>
               </Button>
             </div>
           </div>
@@ -324,30 +324,6 @@ function LandingPage() {
                 <p className="text-2xl font-extrabold text-primary sm:text-3xl">{stat.value}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section id="services" className="bg-muted/30 py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-              Our Services
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Everything You Need to Grow
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              From design to development, we deliver end-to-end digital solutions that help
-              businesses scale and succeed in the modern world.
-            </p>
-          </div>
-
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((service) => (
-              <ServiceCard key={service.title} service={service} />
             ))}
           </div>
         </div>
@@ -427,10 +403,36 @@ function LandingPage() {
             </>
           )}
 
-          <div className="mt-8 text-center">
-            <Button asChild className="bg-blue-600 text-white shadow hover:bg-blue-700">
-              <Link to="/courses">View All Courses</Link>
-            </Button>
+          {publishedCourses.length >= 4 && (
+            <div className="mt-8 text-center">
+                <Button asChild className="bg-blue-600 text-white shadow hover:bg-blue-700">
+                  <Link to="/courses" target="_blank" rel="noopener noreferrer">View All Courses</Link>
+                </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="bg-muted/30 py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+              Our Services
+            </p>
+            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Everything You Need to Grow
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              From idea to design, we deliver end-to-end digital solutions that help
+              businesses scale and succeed in the modern world.
+            </p>
+          </div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => (
+              <ServiceCard key={service.title} service={service} />
+            ))}
           </div>
         </div>
       </section>
@@ -443,7 +445,7 @@ function LandingPage() {
               Testimonials
             </p>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Our Students Say
+              What Our Students Say
             </h2>
             <p className="mt-4 text-muted-foreground">
               Join thousands of learners who have transformed their careers.
@@ -455,7 +457,7 @@ function LandingPage() {
             <button
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className="absolute -left-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background shadow-md transition-all hover:bg-primary hover:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed sm:-left-5 sm:h-12 sm:w-12"
+              className="absolute -left-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center [border-radius:5px] border border-border bg-background shadow-md transition-all hover:bg-primary hover:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed sm:-left-5 sm:h-12 sm:w-12"
               aria-label="Previous testimonials"
             >
               <ChevronLeft className="h-5 w-5" />
@@ -477,7 +479,7 @@ function LandingPage() {
                     <div className="card-surface p-6 transition-shadow hover:shadow-lg h-full">
                       <div className="flex gap-1">
                         {Array.from({ length: testimonial.rating }).map((_, i) => (
-                          <Star key={i} className="h-4 w-4 fill-warning text-warning" />
+                          <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                         ))}
                       </div>
                       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
@@ -514,7 +516,7 @@ function LandingPage() {
             <button
               onClick={nextSlide}
               disabled={currentSlide >= maxSlide}
-              className="absolute -right-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-background shadow-md transition-all hover:bg-primary hover:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed sm:-right-5 sm:h-12 sm:w-12"
+              className="absolute -right-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center [border-radius:5px] border border-border bg-background shadow-md transition-all hover:bg-primary hover:text-primary-foreground disabled:opacity-40 disabled:cursor-not-allowed sm:-right-5 sm:h-12 sm:w-12"
               aria-label="Next testimonials"
             >
               <ChevronRight className="h-5 w-5" />
@@ -548,7 +550,7 @@ function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="relative overflow-hidden rounded-3xl border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 my-16 sm:my-20">
+      <section id="cta" className="relative overflow-hidden [border-radius:15px] border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 my-16 sm:my-20">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.25)]" />
           <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.15)]" />
@@ -567,7 +569,7 @@ function LandingPage() {
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
             </Button>
             <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
-              <Link to="/courses">Browse Courses</Link>
+              <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
             </Button>
           </div>
         </div>
@@ -581,7 +583,7 @@ function LandingPage() {
 function ServiceCard({ service }: { service: (typeof services)[number] }) {
   return (
     <div className="group relative card-surface p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="flex h-12 w-12 items-center justify-center [border-radius:5px] bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
         <service.icon className="h-6 w-6" />
       </div>
       <h3 className="mt-5 text-base font-bold">{service.title}</h3>
@@ -590,7 +592,7 @@ function ServiceCard({ service }: { service: (typeof services)[number] }) {
         href={WHATSAPP_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+        className="mt-5 inline-flex items-center gap-1.5 [border-radius:5px] border border-border px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
       >
         Explore More <ChevronRight className="h-4 w-4" />
       </a>

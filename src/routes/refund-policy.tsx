@@ -37,7 +37,7 @@ function RefundPolicy() {
           Once a refund is approved, access to the relevant course, lessons, downloads, and other associated resources may be removed. Hamza Visuals reserves the right to update this Refund Policy when necessary, and any changes will be published on this page with an updated <strong>Last Updated</strong> date.
         </p>
         <p className="mt-3 leading-relaxed text-justify">
-          For refund-related questions or requests, please contact <strong>Hamza Visuals</strong> at <strong>support@hamzavisual.com</strong>.
+          For refund-related questions or requests, please contact <strong>Hamza Visuals</strong> at <strong>hamzaa.visuals@gmail.com</strong>.
         </p>
       </section>
     </LegalPageLayout>

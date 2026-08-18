@@ -20,7 +20,7 @@ export function NotFoundPage() {
         </span>
 
         <h1 className="mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Lost in the learning maze?
+          Something went wrong?
         </h1>
 
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">

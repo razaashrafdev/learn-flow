@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { buildSeed, buildEmptyData } from "./seed";
+import { buildEmptyData } from "./seed";
 import {
   apiLogin,
   apiLogout,
@@ -60,6 +60,7 @@ import type {
 const STORAGE_KEY_BASE = "lms.demo.v7";
 const SESSION_KEY = "lms.session.v1";
 const dataKey = (userId: string) => `${STORAGE_KEY_BASE}.${userId}`;
+const CATALOG_CACHE_MS = 10_000;
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}`;
 const nowIso = () => new Date().toISOString();
@@ -93,17 +94,7 @@ const upsertEnrollment = (list: Enrollment[], next: Enrollment): Enrollment[] =>
   return [...others, next];
 };
 
-const readData = (userId: string): LmsData | null => {
-  try {
-    const raw = localStorage.getItem(dataKey(userId));
-    return raw ? (JSON.parse(raw) as LmsData) : null;
-  } catch {
-    return null;
-  }
-};
-
-const initialDataFor = (user: User): LmsData =>
-  readData(user.id) ?? (user.role === "admin" ? buildSeed() : buildEmptyData());
+const initialDataFor = (_user: User): LmsData => buildEmptyData();
 
 type Ctx = {
   ready: boolean;
@@ -216,12 +207,16 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const syncCatalog = useCallback(async () => {
+  const lastCatalogSync = useRef(0);
+
+  const syncCatalog = useCallback(async (force = false) => {
+    if (!force && Date.now() - lastCatalogSync.current < CATALOG_CACHE_MS) return;
     const catalog = await apiFetchCatalog();
     if (!catalog) return;
+    lastCatalogSync.current = Date.now();
     setData((d) => ({
       ...d,
-      categories: catalog.categories.length ? catalog.categories : d.categories,
+      categories: catalog.categories,
       courses: catalog.courses,
       sections: catalog.sections,
       lessons: catalog.lessons,
@@ -272,8 +267,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
         if (me.ok) {
           setCurrentUser(me.user);
           setData(initialDataFor(me.user));
-          await syncCatalog();
-          await syncEnrollments();
+          await Promise.all([syncCatalog(true), syncEnrollments()]);
           if (session !== me.user.id) {
             try {
               localStorage.setItem(SESSION_KEY, me.user.id);
@@ -282,7 +276,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
             }
           }
         } else {
-          await syncCatalog();
+          await syncCatalog(true);
           try {
             localStorage.removeItem(SESSION_KEY);
             sessionStorage.removeItem(SESSION_KEY);
@@ -319,8 +313,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       persistSession(result.user.id, remember);
       setCurrentUser(result.user);
       setData(initialDataFor(result.user));
-      await syncCatalog();
-      await syncEnrollments();
+      await Promise.all([syncCatalog(true), syncEnrollments()]);
       return { ok: true };
     },
     [syncCatalog, syncEnrollments],

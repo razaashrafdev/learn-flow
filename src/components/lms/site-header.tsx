@@ -69,13 +69,13 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
 
   const desktopNavClass = (isActive: boolean) =>
     cn(
-      "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+      "[border-radius:5px] px-3 py-2 text-sm font-medium transition-colors",
       isActive ? "text-foreground font-semibold" : "text-muted-foreground hover:bg-muted hover:text-foreground",
     );
 
   const mobileNavClass = (isActive: boolean) =>
     cn(
-      "rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors",
+      "[border-radius:5px] px-3 py-2.5 text-left text-sm font-medium transition-colors",
       isActive ? "text-foreground font-semibold" : "text-muted-foreground hover:bg-muted hover:text-foreground",
     );
 
@@ -97,15 +97,12 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
 
         {/* Desktop Nav */}
         <nav className="hidden items-center gap-1 md:flex">
-          <Link to="/" className={desktopNavClass(getActiveState("home"))}>
-            Home
-          </Link>
           <a
             href="/"
-            onClick={(e) => handleSectionClick(e, "services")}
-            className={desktopNavClass(getActiveState("services"))}
+            onClick={(e) => handleSectionClick(e, "home")}
+            className={desktopNavClass(getActiveState("home"))}
           >
-            Services
+            Home
           </a>
           <a
             href="/"
@@ -116,12 +113,19 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           </a>
           <a
             href="/"
+            onClick={(e) => handleSectionClick(e, "services")}
+            className={desktopNavClass(getActiveState("services"))}
+          >
+            Services
+          </a>
+          <a
+            href="/"
             onClick={(e) => handleSectionClick(e, "testimonials")}
             className={desktopNavClass(getActiveState("testimonials"))}
           >
             Testimonials
           </a>
-          <Link to="/resources" className={desktopNavClass(getActiveState("resources", "/resources"))}>
+          <Link to="/resources" target="_blank" rel="noopener noreferrer" className={desktopNavClass(getActiveState("resources", "/resources"))}>
             Resources
           </Link>
         </nav>
@@ -135,10 +139,10 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           ) : (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link to="/login">Sign In</Link>
+                <Link to="/login" target="_blank" rel="noopener noreferrer">Sign In</Link>
               </Button>
               <Button asChild size="sm" className="hidden sm:inline-flex">
-                <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer">Mentorship</a>
+                <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer" style={{ borderRadius: "5px" }}>Mentorship</a>
               </Button>
             </>
           )}
@@ -147,7 +151,7 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+            className="[border-radius:5px] p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -159,15 +163,12 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
       {mobileMenuOpen && (
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <nav className="flex flex-col gap-1">
-            <Link to="/" onClick={() => setMobileMenuOpen(false)} className={mobileNavClass(getActiveState("home"))}>
-              Home
-            </Link>
             <a
               href="/"
-              onClick={(e) => handleSectionClick(e, "services")}
-              className={mobileNavClass(getActiveState("services"))}
+              onClick={(e) => { handleSectionClick(e, "home"); setMobileMenuOpen(false); }}
+              className={mobileNavClass(getActiveState("home"))}
             >
-              Services
+              Home
             </a>
             <a
               href="/"
@@ -178,6 +179,13 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
             </a>
             <a
               href="/"
+              onClick={(e) => handleSectionClick(e, "services")}
+              className={mobileNavClass(getActiveState("services"))}
+            >
+              Services
+            </a>
+            <a
+              href="/"
               onClick={(e) => handleSectionClick(e, "testimonials")}
               className={mobileNavClass(getActiveState("testimonials"))}
             >
@@ -185,6 +193,8 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
             </a>
             <Link
               to="/resources"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
               className={mobileNavClass(getActiveState("resources", "/resources"))}
             >
@@ -198,10 +208,10 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
             ) : (
               <>
                 <Button asChild variant="ghost" className="justify-start">
-                  <Link to="/login">Sign In</Link>
+                  <Link to="/login" target="_blank" rel="noopener noreferrer">Sign In</Link>
                 </Button>
                 <Button asChild className="justify-start">
-                  <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer">Mentorship</a>
+                  <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer" style={{ borderRadius: "5px" }}>Mentorship</a>
                 </Button>
               </>
             )}

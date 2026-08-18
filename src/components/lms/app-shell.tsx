@@ -1,5 +1,6 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import {
   BookOpen,
   LayoutGrid,
@@ -111,7 +112,7 @@ export function AppShell({
         <button
           type="button"
           onClick={() => setOpen(false)}
-          className="ml-auto rounded-md p-1.5 text-muted-foreground hover:bg-muted lg:hidden"
+          className="ml-auto [border-radius:5px] p-1.5 text-muted-foreground hover:bg-muted lg:hidden"
           aria-label="Close Navigation"
         >
           <X className="h-4 w-4" />
@@ -127,7 +128,7 @@ export function AppShell({
               to={item.to}
               title={collapsed ? item.label : undefined}
               className={cn(
-                "flex items-center gap-3 rounded-lg py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 [border-radius:5px] py-2.5 text-sm font-medium transition-colors",
                 collapsed ? "justify-center px-2" : "px-3",
                 active
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
@@ -147,7 +148,7 @@ export function AppShell({
           onClick={handleSignOut}
           title={collapsed ? "Logout" : undefined}
           className={cn(
-            "flex w-full items-center gap-3 rounded-lg py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
+            "flex w-full items-center gap-3 [border-radius:5px] py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
             collapsed ? "justify-center px-2" : "px-3"
           )}
         >
@@ -159,13 +160,14 @@ export function AppShell({
   );
 
   return (
+    <>
     <div className="flex min-h-screen w-full bg-background">
       <aside className="sticky top-0 hidden h-screen lg:block">{sidebar}</aside>
 
       {open ? (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="absolute inset-0 bg-foreground/40"
+            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
             onClick={() => setOpen(false)}
             aria-hidden
           />
@@ -222,27 +224,33 @@ export function AppShell({
           {children}
         </main>
       </div>
-
-      <nav className="fixed bottom-4 left-4 right-4 z-40 flex rounded-2xl border border-border bg-background/95 shadow-lg backdrop-blur lg:hidden">
-        {nav.map((item) => {
-          const active = pathname === item.to || pathname.startsWith(item.to + "/");
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={cn(
-                "flex flex-1 items-center justify-center py-3 transition-colors",
-                active
-                  ? "text-primary"
-                  : "text-muted-foreground",
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-30 h-24 bg-gradient-to-t from-background to-transparent lg:hidden" />
     </div>
+
+      {createPortal(
+        <>
+          <nav className="fixed bottom-4 left-4 right-4 z-[999] flex [border-radius:5px] border border-border bg-background/80 shadow-lg backdrop-blur-lg lg:hidden">
+            {nav.map((item) => {
+              const active = pathname === item.to || pathname.startsWith(item.to + "/");
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex flex-1 items-center justify-center py-3 transition-colors",
+                    active
+                      ? "text-primary"
+                      : "text-muted-foreground",
+                  )}
+                >
+                  <item.icon className="h-6 w-6" />
+                </Link>
+              );
+            })}
+          </nav>
+          <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-[998] h-24 bg-gradient-to-t from-background to-transparent lg:hidden" />
+        </>,
+        document.body,
+      )}
+    </>
   );
 }
