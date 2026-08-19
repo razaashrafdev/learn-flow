@@ -26,7 +26,7 @@ import {
 import { toast } from "sonner";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { apiFetchCourseBySlug, type CourseDetail } from "@/lib/api";
-import { PublicFooter } from "@/components/lms/ui-bits";
+import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Section } from "@/lib/lms/types";
 
@@ -205,10 +205,10 @@ function PublicCourseDetails() {
   const defaultOpen = courseSections[0];
   const defaultValue = defaultOpen ? [defaultOpen.id] : [];
 
-  const includeRows: readonly (readonly [LucideIcon, string, string])[] = [
+  const includeRows: readonly (readonly [LucideIcon, string, string | React.ReactNode])[] = [
     [PlayCircle, "Lessons", `${lessonsList.length} lessons`],
     [Clock, "Duration", totalDuration],
-    [UserRound, "Instructor", course.instructor],
+    [UserRound, "Instructor", <Link to="/about" key="instructor" className="hover:text-primary transition-colors">{course.instructor}</Link>],
   ];
 
   const discountPercent =
@@ -338,12 +338,13 @@ function PublicCourseDetails() {
           {/* ---------- Left content column ---------- */}
           <div className="mt-6 min-w-0 space-y-6 lg:mt-8">
             {/* Course Curriculum */}
-            <section id="curriculum" className="card-surface scroll-mt-24 p-6 sm:p-8">
-              <SectionTitle kicker="Syllabus">Course Curriculum</SectionTitle>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {courseSections.length} sections · {lessonsList.length} lessons · {totalDuration}{" "}
-                total
-              </p>
+            <FadeInSection>
+              <section id="curriculum" className="card-surface scroll-mt-24 p-6 sm:p-8">
+                <SectionTitle kicker="Syllabus">Course Curriculum</SectionTitle>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {courseSections.length} sections · {lessonsList.length} lessons · {totalDuration}{" "}
+                  total
+                </p>
 
               {courseSections.length === 0 ? (
                 <p className="mt-6 text-sm text-muted-foreground">No lessons added yet.</p>
@@ -401,10 +402,12 @@ function PublicCourseDetails() {
                 </Accordion>
               )}
             </section>
+            </FadeInSection>
 
             {/* Reviews */}
-            <section className="card-surface p-6 sm:p-8">
-              <SectionTitle kicker="Feedback">Student Reviews</SectionTitle>
+            <FadeInSection delay={100}>
+              <section className="card-surface p-6 sm:p-8">
+                <SectionTitle kicker="Feedback">Student Reviews</SectionTitle>
 
               {reviews.length > 0 ? (
                 <ul className="mt-6 space-y-4">
@@ -437,6 +440,7 @@ function PublicCourseDetails() {
                 </div>
               )}
             </section>
+            </FadeInSection>
           </div>
 
           {/* ---------- Right: sticky enrollment card ---------- */}

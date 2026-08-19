@@ -10,12 +10,54 @@ import {
 } from "lucide-react";
 import { apiUploadImage } from "@/lib/api";
 import type { LucideIcon } from "lucide-react";
-import { useState, useRef, type ReactNode } from "react";
+import { useState, useRef, useEffect, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+
+export function FadeInSection({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setTimeout(() => setVisible(true), delay);
+          obs.unobserve(el);
+        }
+      },
+      { threshold: 0.15 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [delay]);
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "transition-all duration-700 ease-out",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+}
 
 export function StatCard({
   label,
@@ -141,19 +183,23 @@ export function LegalPageLayout({
   return (
     <div className="min-h-screen bg-background">
       <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4" /> Back to Home
-        </Link>
+        <FadeInSection>
+          <Link
+            to="/"
+            className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back to Home
+          </Link>
 
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{title}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">Last updated: {lastUpdated}</p>
+        </FadeInSection>
 
-        <div className="prose prose-neutral dark:prose-invert mt-8 space-y-8 text-muted-foreground">
-          {children}
-        </div>
+        <FadeInSection delay={100}>
+          <div className="prose prose-neutral dark:prose-invert mt-8 space-y-8 text-muted-foreground">
+            {children}
+          </div>
+        </FadeInSection>
       </main>
 
       <PublicFooter />

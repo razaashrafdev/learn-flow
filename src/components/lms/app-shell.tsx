@@ -30,7 +30,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-export type NavItem = { label: string; mobileLabel?: string; to: string; icon: typeof BookOpen; exact?: boolean };
+export type NavItem = {
+  label: string;
+  mobileLabel?: string;
+  to: string;
+  icon: typeof BookOpen;
+  exact?: boolean;
+};
 
 export const studentNav: NavItem[] = [
   { label: "Dashboard", to: "/app/dashboard", icon: LayoutGrid },
@@ -76,11 +82,17 @@ export function AppShell({
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
-    try { return localStorage.getItem("admin.sidebar.collapsed") === "true"; } catch { return false; }
+    try {
+      return localStorage.getItem("admin.sidebar.collapsed") === "true";
+    } catch {
+      return false;
+    }
   });
 
   useEffect(() => {
-    try { localStorage.setItem("admin.sidebar.collapsed", String(collapsed)); } catch {}
+    try {
+      localStorage.setItem("admin.sidebar.collapsed", String(collapsed));
+    } catch {}
   }, [collapsed]);
 
   useEffect(() => {
@@ -94,21 +106,42 @@ export function AppShell({
   };
 
   const sidebar = (
-    <div className={cn(
-      "flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-in-out",
-      collapsed ? "w-[68px]" : "w-64"
-    )}>
-      <div className={cn("flex items-center gap-2.5 px-5 py-5", collapsed && "justify-center px-0")}>
-        <img
-          src="/images/Black-Logo.png"
-          alt="Hamza Visuals"
-          className="h-9 w-auto shrink-0 dark:hidden"
-        />
-        <img
-          src="/images/White-Logo.png"
-          alt="Hamza Visuals"
-          className="h-9 w-auto shrink-0 hidden dark:block"
-        />
+    <div
+      className={cn(
+        "flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-all duration-300 ease-in-out",
+        collapsed ? "w-[68px]" : "w-64",
+      )}
+    >
+      <div
+        className={cn("flex items-center gap-2.5 px-5 py-5", collapsed && "justify-center px-0")}
+      >
+        {collapsed ? (
+          <>
+            <img
+              src="/images/black sidebar.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto shrink-0 dark:hidden"
+            />
+            <img
+              src="/images/white sidebar.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto shrink-0 hidden dark:block"
+            />
+          </>
+        ) : (
+          <>
+            <img
+              src="/images/Black-Logo.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto shrink-0 dark:hidden"
+            />
+            <img
+              src="/images/White-Logo.png"
+              alt="Hamza Visuals"
+              className="h-9 w-auto shrink-0 hidden dark:block"
+            />
+          </>
+        )}
         <button
           type="button"
           onClick={() => setOpen(false)}
@@ -149,7 +182,7 @@ export function AppShell({
           title={collapsed ? "Logout" : undefined}
           className={cn(
             "flex w-full items-center gap-3 [border-radius:5px] py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground",
-            collapsed ? "justify-center px-2" : "px-3"
+            collapsed ? "justify-center px-2" : "px-3",
           )}
         >
           <LogOut className="h-[18px] w-[18px]" />
@@ -161,70 +194,74 @@ export function AppShell({
 
   return (
     <>
-    <div className="flex min-h-screen w-full bg-background">
-      <aside className="sticky top-0 hidden h-screen lg:block">{sidebar}</aside>
+      <div className="flex min-h-screen w-full bg-background">
+        <aside className="sticky top-0 hidden h-screen lg:block">{sidebar}</aside>
 
-      {open ? (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-            aria-hidden
-          />
-          <div className="absolute inset-y-0 left-0 h-full">{sidebar}</div>
-        </div>
-      ) : null}
+        {open ? (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div
+              className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+              onClick={() => setOpen(false)}
+              aria-hidden
+            />
+            <div className="absolute inset-y-0 left-0 h-full">{sidebar}</div>
+          </div>
+        ) : null}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:px-6">
-            <div className="flex min-w-0 items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden lg:flex"
-                onClick={() => setCollapsed(!collapsed)}
-                aria-label={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-              >
-                {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-              </Button>
-              <div className="min-w-0">
-                <h1 className="truncate text-lg font-bold sm:text-xl">{title}</h1>
-                {subtitle ? (
-                  <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
-                ) : null}
+        <div className="flex min-w-0 flex-1 flex-col">
+          <header className="sticky top-0 z-30 border-b border-border bg-background/85 backdrop-blur">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-4 sm:px-6">
+              <div className="flex min-w-0 items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden lg:flex"
+                  onClick={() => setCollapsed(!collapsed)}
+                  aria-label={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+                >
+                  {collapsed ? (
+                    <PanelLeftOpen className="h-5 w-5" />
+                  ) : (
+                    <PanelLeftClose className="h-5 w-5" />
+                  )}
+                </Button>
+                <div className="min-w-0">
+                  <h1 className="truncate text-lg font-bold sm:text-xl">{title}</h1>
+                  {subtitle ? (
+                    <p className="truncate text-sm text-muted-foreground">{subtitle}</p>
+                  ) : null}
+                </div>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                {actions}
+                <ThemeToggle />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button type="button" className="cursor-pointer">
+                      <Avatar className="h-8 w-8 shrink-0">
+                        {currentUser?.avatar ? (
+                          <AvatarImage src={currentUser.avatar} alt="" />
+                        ) : null}
+                        <AvatarFallback className="bg-primary-soft">
+                          <User className="h-4 w-4 text-accent-foreground" />
+                        </AvatarFallback>
+                      </Avatar>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
-              {actions}
-              <ThemeToggle />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button type="button" className="cursor-pointer">
-                    <Avatar className="h-8 w-8 shrink-0">
-                      {currentUser?.avatar ? <AvatarImage src={currentUser.avatar} alt="" /> : null}
-                      <AvatarFallback className="bg-primary-soft">
-                        <User className="h-4 w-4 text-accent-foreground" />
-                      </AvatarFallback>
-                    </Avatar>
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-        </header>
+          </header>
 
-        <main className="flex-1 px-4 pb-32 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">
-          {children}
-        </main>
+          <main className="flex-1 px-4 pb-32 pt-6 sm:px-6 sm:pb-6 lg:px-8 lg:pb-8">{children}</main>
+        </div>
       </div>
-    </div>
 
       {createPortal(
         <>
@@ -237,9 +274,7 @@ export function AppShell({
                   to={item.to}
                   className={cn(
                     "flex flex-1 items-center justify-center py-3 transition-colors",
-                    active
-                      ? "text-primary"
-                      : "text-muted-foreground",
+                    active ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   <item.icon className="h-6 w-6" />

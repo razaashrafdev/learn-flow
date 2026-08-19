@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { LandingCourseCard } from "@/components/lms/course-card";
-import { PublicFooter } from "@/components/lms/ui-bits";
+import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
 
 export const Route = createFileRoute("/courses/")({
   head: () => ({
@@ -53,12 +53,14 @@ function CoursesListing() {
           <ChevronLeft className="h-4 w-4" /> Back to Home
         </Link>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">All Courses</h1>
-          <p className="mt-2 text-muted-foreground">
-            Browse our full catalogue of expert-led courses.
-          </p>
-        </div>
+        <FadeInSection>
+          <div className="mb-8">
+            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">All Courses</h1>
+            <p className="mt-2 text-muted-foreground">
+              Browse our full catalogue of expert-led courses.
+            </p>
+          </div>
+        </FadeInSection>
 
         <div className="mb-6">
           <div className="relative min-w-0 max-w-md">

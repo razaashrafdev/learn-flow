@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FadeInSection } from "@/components/lms/ui-bits";
 import { useLms } from "@/lib/lms/store";
 
 const loginSearchSchema = z.object({
@@ -85,27 +86,33 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-5">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 flex justify-center">
-          <Link to="/" className="flex items-center gap-2.5">
-            <img
-              src="/images/Black-Logo.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto dark:hidden"
-            />
-            <img
-              src="/images/White-Logo.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto hidden dark:block"
-            />
-          </Link>
-        </div>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-5">
+      <div className="absolute inset-0 bg-surface" />
+      <div className="absolute inset-0 opacity-[0.04] [background:radial-gradient(80%_50%_at_50%_-20%,var(--color-primary),transparent)] dark:opacity-[0.06]" />
+      <div className="absolute inset-0 [background:radial-gradient(100%_100%_at_50%_0%,transparent_30%,var(--color-background)_100%)] dark:[background:radial-gradient(100%_100%_at_50%_0%,transparent_20%,var(--color-background)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.015] dark:opacity-[0.03] [background-image:linear-gradient(var(--color-foreground)_1px,transparent_1px),linear-gradient(90deg,var(--color-foreground)_1px,transparent_1px)] [background-size:64px_64px]" />
+      <div className="relative w-full max-w-sm">
+        <FadeInSection>
+          <div className="mb-8 flex justify-center">
+            <Link to="/" className="flex items-center gap-2.5">
+              <img
+                src="/images/Black-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto dark:hidden"
+              />
+              <img
+                src="/images/White-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto hidden dark:block"
+              />
+            </Link>
+          </div>
 
-        <h1 className="text-2xl font-extrabold tracking-tight">Sign in to your account</h1>
-        <p className="mt-1.5 text-sm text-muted-foreground">
-          Continue where you left off, or manage your platform.
-        </p>
+          <h1 className="text-2xl font-extrabold tracking-tight">Sign in to your account</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Continue where you left off, or manage your platform.
+          </p>
+        </FadeInSection>
 
         <form onSubmit={submit} noValidate className="mt-8 space-y-4">
           <div className="space-y-1.5">

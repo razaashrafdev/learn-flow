@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { LandingCourseCard } from "@/components/lms/course-card";
-import { PublicFooter } from "@/components/lms/ui-bits";
+import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -290,11 +290,16 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section id="home" className="relative overflow-hidden bg-background">
-        <div className="absolute inset-0 opacity-[0.03] [background:radial-gradient(80%_50%_at_50%_-20%,var(--color-primary),transparent)] dark:opacity-[0.05]" />
-        <div className="relative mx-auto max-w-7xl px-4 pt-16 pb-10 sm:px-6 sm:pt-20 sm:pb-16 lg:px-8 lg:pt-24 lg:pb-20">
+      <section id="home" className="relative overflow-hidden border-b border-border">
+        {/* Layered background surfaces */}
+        <div className="absolute inset-0 bg-surface" />
+        <div className="absolute inset-0 opacity-[0.04] [background:radial-gradient(80%_50%_at_50%_-20%,var(--color-primary),transparent)] dark:opacity-[0.06]" />
+        <div className="absolute inset-0 [background:radial-gradient(100%_100%_at_50%_0%,transparent_30%,var(--color-background)_100%)] dark:[background:radial-gradient(100%_100%_at_50%_0%,transparent_20%,var(--color-background)_100%)]" />
+        {/* Subtle grid texture overlay */}
+        <div className="pointer-events-none absolute inset-0 opacity-[0.015] dark:opacity-[0.03] [background-image:linear-gradient(var(--color-foreground)_1px,transparent_1px),linear-gradient(90deg,var(--color-foreground)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <div className="relative mx-auto max-w-7xl px-4 pt-20 pb-14 sm:px-6 sm:pt-28 sm:pb-20 lg:px-8 lg:pt-32 lg:pb-24">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-4 py-1.5 text-xs font-medium text-muted-foreground">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-4 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse" />
               Trained 1000+ Students in Design and AI
             </div>
@@ -302,27 +307,27 @@ function LandingPage() {
               AI Skills That Work in <br className="hidden sm:block" />
               <span className="bg-primary bg-clip-text text-transparent">the Real World</span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
+            <p className="mt-7 text-lg text-muted-foreground sm:text-xl">
               Hamza Visuals teaches graphic design, video editing, and practical AI through hands-on courses. Learn through real projects and apply knowledge right away.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="px-8">
-                <Link to="/courses" target="_blank" rel="noopener noreferrer">
-                  Explore Courses <ArrowRight className="h-5 w-5" />
+                <Link to="/about" target="_blank" rel="noopener noreferrer">
+                  About Instructor <ArrowRight className="h-5 w-5" />
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/app/my-courses" target="_blank" rel="noopener noreferrer">My Learning</Link>
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">Explore Courses</Link>
               </Button>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="mx-auto mt-16 grid max-w-3xl grid-cols-2 gap-6 sm:grid-cols-4">
+          <div className="mx-auto mt-18 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
             {stats.map((stat) => (
-              <div key={stat.label} className="text-center">
+              <div key={stat.label} className="rounded-xl border border-border bg-card px-4 py-5 text-center shadow-sm backdrop-blur-sm transition-all duration-200 hover:shadow-md">
                 <p className="text-2xl font-extrabold text-primary sm:text-3xl">{stat.value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
+                <p className="mt-1.5 text-sm text-muted-foreground">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -330,26 +335,28 @@ function LandingPage() {
       </section>
 
       {/* Courses Section */}
-      <section id="courses" className="bg-background py-16 sm:py-20">
+      <section id="courses" className="bg-background py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-                Popular Courses
-              </p>
-              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-                Learn From the Best
-              </h2>
-              <p className="mt-3 text-muted-foreground">
-                Start learning today with our expert-led courses.
-              </p>
+          <FadeInSection>
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+                  Popular Courses
+                </p>
+                <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                  Learn From the Best
+                </h2>
+                <p className="mt-3 text-muted-foreground">
+                  Start learning today with our expert-led courses.
+                </p>
+              </div>
             </div>
-          </div>
+          </FadeInSection>
 
           {!ready ? (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="card-surface animate-pulse overflow-hidden">
+                <div key={i} className="rounded-xl border border-border bg-card overflow-hidden shadow-sm animate-pulse">
                   <div className="aspect-video bg-muted" />
                   <div className="p-5 space-y-3">
                     <div className="h-5 w-3/4 rounded bg-muted" />
@@ -404,7 +411,7 @@ function LandingPage() {
           )}
 
           {publishedCourses.length >= 4 && (
-            <div className="mt-8 text-center">
+            <div className="mt-10 text-center">
                 <Button asChild className="bg-blue-600 text-white shadow hover:bg-blue-700">
                   <Link to="/courses" target="_blank" rel="noopener noreferrer">View All Courses</Link>
                 </Button>
@@ -414,43 +421,49 @@ function LandingPage() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="bg-muted/30 py-16 sm:py-20">
+      <section id="services" className="border-y border-border bg-surface py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-              Our Services
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Everything You Need to Grow
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              From idea to design, we deliver end-to-end digital solutions that help
-              businesses scale and succeed in the modern world.
-            </p>
-          </div>
+          <FadeInSection>
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+                Our Services
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Everything You Need to Grow
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                From idea to design, we deliver end-to-end digital solutions that help
+                businesses scale and succeed in the modern world.
+              </p>
+            </div>
+          </FadeInSection>
 
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((service) => (
-              <ServiceCard key={service.title} service={service} />
+          <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service, i) => (
+              <FadeInSection key={service.title} delay={i * 100}>
+                <ServiceCard service={service} />
+              </FadeInSection>
             ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="bg-muted/30 py-16 sm:py-20">
+      <section id="testimonials" className="bg-background py-20 sm:py-24">
         <div className="mx-auto w-full px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-              Testimonials
-            </p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              What Our Students Say
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Join thousands of learners who have transformed their careers.
-            </p>
-          </div>
+          <FadeInSection>
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-primary">
+                Testimonials
+              </p>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                What Our Students Say
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Join thousands of learners who have transformed their careers.
+              </p>
+            </div>
+          </FadeInSection>
 
           <div className="relative mx-auto mt-14 max-w-7xl">
             {/* Slider Buttons */}
@@ -476,7 +489,7 @@ function LandingPage() {
                     key={testimonial.id}
                     className="w-full flex-shrink-0 px-3 sm:w-1/2 lg:w-1/3"
                   >
-                    <div className="card-surface p-6 transition-shadow hover:shadow-lg h-full">
+                    <div className="card-surface p-6 transition-all duration-200 hover:shadow-lg hover:border-primary/20 h-full">
                       <div className="flex gap-1">
                         {Array.from({ length: testimonial.rating }).map((_, i) => (
                           <Star key={i} className="h-4 w-4 fill-yellow-500 text-yellow-500" />
@@ -489,7 +502,7 @@ function LandingPage() {
                         <img
                           src={testimonial.image}
                           alt={testimonial.name}
-                          className="h-10 w-10 rounded-full object-cover"
+                          className="h-10 w-10 rounded-full object-cover ring-2 ring-border"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             target.style.display = "none";
@@ -526,52 +539,58 @@ function LandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="bg-background py-16 sm:py-20">
+      <section id="faq" className="mb-20 border-t border-border bg-surface py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">FAQ</p>
-            <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
-              Frequently Asked Questions
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Everything you need to know about learning on our platform.
-            </p>
-          </div>
+          <FadeInSection>
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-primary">FAQ</p>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
+                Frequently Asked Questions
+              </h2>
+              <p className="mt-4 text-muted-foreground">
+                Everything you need to know about learning on our platform.
+              </p>
+            </div>
+          </FadeInSection>
 
-          <Accordion type="single" collapsible className="mx-auto mt-12 max-w-3xl">
-            {faqs.map((faq) => (
-              <AccordionItem key={faq.question} value={faq.question} className="px-2 sm:px-0">
-                <AccordionTrigger className="text-base sm:text-lg">{faq.question}</AccordionTrigger>
-                <AccordionContent className="text-sm sm:text-base text-muted-foreground">{faq.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+          <FadeInSection delay={100}>
+            <Accordion type="single" collapsible className="mx-auto mt-12 max-w-3xl">
+              {faqs.map((faq) => (
+                <AccordionItem key={faq.question} value={faq.question} className="px-2 sm:px-0">
+                  <AccordionTrigger className="text-base sm:text-lg">{faq.question}</AccordionTrigger>
+                  <AccordionContent className="text-sm sm:text-base text-muted-foreground">{faq.answer}</AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </FadeInSection>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="relative overflow-hidden [border-radius:15px] border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 my-16 sm:my-20">
+      <section id="cta" className="relative overflow-hidden [border-radius:15px] border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 mt-20 sm:mt-24 mb-16 sm:mb-20">
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.25)]" />
           <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.15)]" />
           <div className="absolute inset-0 bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(255,255,255,0.06),transparent_62%)] dark:bg-[radial-gradient(120%_60%_at_50%_-12%,rgba(0,118,223,0.2),transparent_62%)]" />
         </div>
-        <div className="relative mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
-          <h2 className="text-3xl font-extrabold tracking-tight text-primary-foreground dark:text-white sm:text-4xl">
-            Start Where You're Comfortable
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/70 dark:text-white/70">
-            Explore the full course library, or start with a free course to experience my teaching
-            style and see what works best for you.
-          </p>
-          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="px-8">
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
-              <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
-            </Button>
-          </div>
+        <div className="relative mx-auto max-w-7xl px-4 py-20 text-center sm:px-6 sm:py-24 lg:px-8">
+          <FadeInSection>
+            <h2 className="text-3xl font-extrabold tracking-tight text-primary-foreground dark:text-white sm:text-4xl">
+              Start Where You're Comfortable
+            </h2>
+            <p className="mx-auto mt-5 max-w-2xl text-primary-foreground/70 dark:text-white/70">
+              Explore the full course library, or start with a free course to experience my teaching
+              style and see what works best for you.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button asChild size="lg" className="px-8">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
+              </Button>
+            </div>
+          </FadeInSection>
         </div>
       </section>
 
@@ -582,7 +601,7 @@ function LandingPage() {
 
 function ServiceCard({ service }: { service: (typeof services)[number] }) {
   return (
-    <div className="group relative card-surface p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+    <div className="group relative rounded-xl border border-border bg-card p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20">
       <div className="flex h-12 w-12 items-center justify-center [border-radius:5px] bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
         <service.icon className="h-6 w-6" />
       </div>
