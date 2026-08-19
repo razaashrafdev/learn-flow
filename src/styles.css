@@ -612,24 +612,6 @@ button:hover.bg-primary,
   color: #0076DF;
 }
 
-/* Dark Mode Footer - Keep Original */
-.dark footer {
-  background-color: var(--surface);
-  border-top: 1px solid var(--border);
-}
-
-.dark footer h4 {
-  color: var(--foreground);
-}
-
-.dark footer a {
-  color: var(--muted-foreground);
-}
-
-.dark footer a:hover {
-  color: var(--foreground);
-}
-
 /* Light Mode Input Enhancement */
 :root input,
 :root textarea,
@@ -649,19 +631,286 @@ button:hover.bg-primary,
   background-color: #F8F8F8 !important;
 }
 
-/* Dark Mode Badge - Keep Original */
-.dark .bg-muted {
-  background-color: var(--muted) !important;
-}
-
 /* Light Mode Border Contrast */
 :root hr,
 :root [class*="border-"] {
   border-color: rgba(12, 12, 12, 0.12);
 }
 
-/* Dark Mode Border - Keep Original */
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE - Discord-Inspired Visual Polish
+   Applied across entire website via semantic CSS variables
+   ═══════════════════════════════════════════════════════════ */
+
+/* Card Surface: layered depth for dark mode */
+.dark .card-surface {
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.dark .card-surface:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Inputs, Textarea, Select: refined dark mode */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #1A1A1A;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #666666;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #0076DF;
+  box-shadow: 0 0 0 3px rgba(0, 118, 223, 0.15);
+  outline: none;
+}
+
+/* Tables: clean dark mode surface */
+.dark table {
+  color: #FFFFFF;
+}
+
+.dark thead {
+  background-color: #161616;
+}
+
+.dark tbody {
+  background-color: #0C0C0C;
+}
+
+.dark tbody tr {
+  transition: background-color 0.15s ease-out;
+}
+
+.dark tbody tr:hover {
+  background-color: #1A1A1A;
+}
+
+.dark tbody td,
+.dark thead th {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Dialogs / Modals: elevated dark surface */
+.dark [data-radix-dialog-content] {
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+/* Dropdown Menus: refined dark surface */
+.dark [data-radix-dropdown-menu-content] {
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.dark [data-radix-dropdown-menu-item] {
+  color: #CCCCCC;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+.dark [data-radix-dropdown-menu-item]:hover,
+.dark [data-radix-dropdown-menu-item][data-highlighted] {
+  background-color: rgba(0, 118, 223, 0.1);
+  color: #FFFFFF;
+}
+
+/* Select Content: dark mode dropdown */
+.dark [data-radix-select-content] {
+  background-color: #141414;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.dark [data-radix-select-item] {
+  color: #CCCCCC;
+  transition: background-color 0.15s ease-out;
+}
+
+.dark [data-radix-select-item]:hover,
+.dark [data-radix-select-item][data-highlighted] {
+  background-color: rgba(0, 118, 223, 0.1);
+  color: #FFFFFF;
+}
+
+/* Accordion: dark mode hover */
+.dark .accordion-trigger:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.dark [data-state="open"] > .accordion-trigger {
+  color: #FFFFFF;
+}
+
+/* Tabs: dark mode polish */
+.dark [role="tablist"] {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark [role="tab"] {
+  color: #888888;
+  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.dark [role="tab"]:hover {
+  color: #CCCCCC;
+}
+
+.dark [role="tab"][data-state="active"],
+.dark [role="tab"][aria-selected="true"] {
+  color: #FFFFFF;
+  border-color: #0076DF;
+}
+
+/* Progress Bar: dark mode */
+.dark [role="progressbar"] {
+  background-color: #1A1A1A;
+}
+
+/* Skeleton: dark mode shimmer */
+.dark .animate-pulse {
+  background-color: #1A1A1A;
+}
+
+/* Footer: refined dark mode */
+.dark footer {
+  background-color: #0C0C0C;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dark footer h4 {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.dark footer a {
+  color: #888888;
+  transition: color 0.2s ease;
+}
+
+.dark footer a:hover {
+  color: #FFFFFF;
+}
+
+/* Badge / Muted surface: dark mode */
+.dark .bg-muted {
+  background-color: #1A1A1A !important;
+}
+
+/* Borders: soft dark mode */
 .dark hr,
 .dark [class*="border-"] {
-  border-color: var(--border);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark .border-border {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Sidebar: refined dark surface */
+.dark [class*="sidebar"] {
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dark [class*="sidebar"] a:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Scrollbar: dark mode */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0C0C0C;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #333333;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #555555;
+}
+
+/* Smooth transitions for dark mode interactive elements */
+.dark .card-surface,
+.dark [class*="group"] {
+  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out, background-color 0.2s ease-out;
+}
+
+.dark #services .group:hover {
+  transform: translateY(-2px);
+}
+
+.dark [aria-label*="testimonials"]:hover:not(:disabled) {
+  box-shadow: 0 4px 16px rgba(0, 118, 223, 0.2);
+}
+
+/* Landing Page specific dark mode refinements */
+.dark .hero-stat-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* StatusPill: dark mode refinements */
+.dark .bg-amber-100 {
+  background-color: rgba(251, 191, 36, 0.15) !important;
+}
+
+.dark .text-amber-700 {
+  color: #FCD34D !important;
+}
+
+/* ResourceModal: dark mode overlay and panel */
+.dark [class*="bg-black/60"] {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Prose: dark mode for legal pages */
+.dark .prose {
+  color: #CCCCCC;
+}
+
+.dark .prose strong {
+  color: #FFFFFF;
+}
+
+.dark .prose h2 {
+  color: #FFFFFF;
+}
+
+/* Section separation - clean Discord-style layering */
+section + section {
+  margin-top: 0;
 }

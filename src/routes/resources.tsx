@@ -1,10 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Download, Search, X } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
+import { Download, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PublicFooter } from "@/components/lms/ui-bits";
+import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
 import { apiFetchResources } from "@/lib/api";
 import type { Resource } from "@/lib/lms/types";
 
@@ -94,6 +94,10 @@ function ResourcesPage() {
   const [loading, setLoading] = useState(resources.length === 0);
   const [query, setQuery] = useState("");
   const [selectedResource, setSelectedResource] = useState<Resource | null>(null);
+  const [page, setPage] = useState(1);
+
+  const DESKTOP_PAGE_SIZE = 24;
+  const MOBILE_PAGE_SIZE = 10;
 
   useEffect(() => {
     if (_resourcesCache && Date.now() - _resourcesCache.ts < RESOURCES_CACHE_MS) {
@@ -110,29 +114,59 @@ function ResourcesPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const filteredResources = resources.filter(
+  const filteredResources = useMemo(() => resources.filter(
     (r) =>
       r.title.toLowerCase().includes(query.toLowerCase()) ||
       r.description.toLowerCase().includes(query.toLowerCase()) ||
       r.type.toLowerCase().includes(query.toLowerCase()),
-  );
+  ), [resources, query]);
+
+  const totalPagesDesktop = Math.ceil(filteredResources.length / DESKTOP_PAGE_SIZE);
+  const totalPagesMobile = Math.ceil(filteredResources.length / MOBILE_PAGE_SIZE);
+
+  const paginatedResourcesDesktop = useMemo(() => {
+    const start = (page - 1) * DESKTOP_PAGE_SIZE;
+    return filteredResources.slice(start, start + DESKTOP_PAGE_SIZE);
+  }, [filteredResources, page]);
+
+  const paginatedResourcesMobile = useMemo(() => {
+    const start = (page - 1) * MOBILE_PAGE_SIZE;
+    return filteredResources.slice(start, start + MOBILE_PAGE_SIZE);
+  }, [filteredResources, page]);
+
+  const getPageNumbers = (currentPage: number, total: number) => {
+    if (total <= 3) return Array.from({ length: total }, (_, i) => i + 1);
+    if (currentPage <= 2) return [1, 2, 3];
+    if (currentPage >= total - 1) return [total - 2, total - 1, total];
+    return [currentPage - 1, currentPage, currentPage + 1];
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <section className="relative bg-background py-10 sm:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search resources..."
-                className="pl-10"
-                maxLength={120}
-              />
+          <FadeInSection>
+            <div className="max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Search resources..."
+                  className="pl-10"
+                  maxLength={120}
+                />
+              </div>
             </div>
-          </div>
+          </FadeInSection>
 
           {loading ? (
             <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -153,47 +187,162 @@ function ResourcesPage() {
               <p className="mt-1 text-sm text-muted-foreground">Try a different search term.</p>
             </div>
           ) : (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {filteredResources.map((resource) => (
-                <div
-                  key={resource.id}
-                  className="group card-surface overflow-hidden transition-shadow hover:shadow-lg"
-                >
-                  <div className="relative aspect-video overflow-hidden">
-                    {resource.image ? (
-                      <img
-                        src={resource.image}
-                        alt={resource.title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="grid h-full w-full place-items-center bg-muted">
-                        <Download className="h-10 w-10 text-muted-foreground/40" />
+            <>
+              {/* Desktop grid */}
+              <div className="mt-8 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-4">
+                {paginatedResourcesDesktop.map((resource) => (
+                  <div
+                    key={resource.id}
+                    className="group card-surface overflow-hidden transition-shadow hover:shadow-lg"
+                  >
+                    <div className="relative aspect-video overflow-hidden">
+                      {resource.image ? (
+                        <img
+                          src={resource.image}
+                          alt={resource.title}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center bg-muted">
+                          <Download className="h-10 w-10 text-muted-foreground/40" />
+                        </div>
+                      )}
+                      <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
+                        {resource.type}
+                      </span>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-base font-bold leading-snug">{resource.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                        {resource.description}
+                      </p>
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          className="w-full text-xs"
+                          onClick={() => setSelectedResource(resource)}
+                        >
+                          Click Here to Explore
+                        </Button>
                       </div>
-                    )}
-                    <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
-                      {resource.type}
-                    </span>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="text-base font-bold leading-snug">{resource.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
-                      {resource.description}
-                    </p>
-                    <div className="mt-4">
-                      <Button
-                        variant="outline"
-                        className="w-full text-xs"
-                        onClick={() => setSelectedResource(resource)}
-                      >
-                        Click Here to Explore
-                      </Button>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Mobile grid */}
+              <div className="mt-8 grid gap-6 sm:hidden">
+                {paginatedResourcesMobile.map((resource) => (
+                  <div
+                    key={resource.id}
+                    className="group card-surface overflow-hidden transition-shadow hover:shadow-lg"
+                  >
+                    <div className="relative aspect-video overflow-hidden">
+                      {resource.image ? (
+                        <img
+                          src={resource.image}
+                          alt={resource.title}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center bg-muted">
+                          <Download className="h-10 w-10 text-muted-foreground/40" />
+                        </div>
+                      )}
+                      <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
+                        {resource.type}
+                      </span>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="text-base font-bold leading-snug">{resource.title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                        {resource.description}
+                      </p>
+                      <div className="mt-4">
+                        <Button
+                          variant="outline"
+                          className="w-full text-xs"
+                          onClick={() => setSelectedResource(resource)}
+                        >
+                          Click Here to Explore
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop pagination */}
+              {totalPagesDesktop > 1 && (
+                <div className="mt-10 hidden items-center justify-between sm:flex">
+                  <p className="text-sm text-muted-foreground">
+                    Total Resources: {filteredResources.length}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page === 1}
+                      onClick={() => handlePageChange(page - 1)}
+                    >
+                      Previous
+                    </Button>
+                    {getPageNumbers(page, totalPagesDesktop).map((p) => (
+                      <Button
+                        key={p}
+                        variant={p === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => handlePageChange(p)}
+                      >
+                        {p}
+                      </Button>
+                    ))}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={page === totalPagesDesktop}
+                      onClick={() => handlePageChange(page + 1)}
+                    >
+                      Next
+                    </Button>
+                  </div>
                 </div>
-              ))}
-            </div>
+              )}
+
+              {/* Mobile pagination */}
+              {totalPagesMobile > 1 && (
+                <div className="mt-8 flex items-center justify-center gap-2 sm:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page === 1}
+                    onClick={() => handlePageChange(page - 1)}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  {getPageNumbers(page, totalPagesMobile).map((p) => (
+                    <Button
+                      key={p}
+                      variant={p === page ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => handlePageChange(p)}
+                    >
+                      {p}
+                    </Button>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={page === totalPagesMobile}
+                    onClick={() => handlePageChange(page + 1)}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
 

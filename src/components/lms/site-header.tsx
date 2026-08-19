@@ -70,13 +70,17 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
   const desktopNavClass = (isActive: boolean) =>
     cn(
       "[border-radius:5px] px-3 py-2 text-sm font-medium transition-colors",
-      isActive ? "text-foreground font-semibold" : "text-muted-foreground hover:bg-muted hover:text-foreground",
+      isActive
+        ? "text-foreground font-semibold"
+        : "text-muted-foreground hover:bg-muted hover:text-foreground",
     );
 
   const mobileNavClass = (isActive: boolean) =>
     cn(
       "[border-radius:5px] px-3 py-2.5 text-left text-sm font-medium transition-colors",
-      isActive ? "text-foreground font-semibold" : "text-muted-foreground hover:bg-muted hover:text-foreground",
+      isActive
+        ? "text-foreground font-semibold"
+        : "text-muted-foreground hover:bg-muted hover:text-foreground",
     );
 
   return (
@@ -125,7 +129,12 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           >
             Testimonials
           </a>
-          <Link to="/resources" target="_blank" rel="noopener noreferrer" className={desktopNavClass(getActiveState("resources", "/resources"))}>
+          <Link
+            to="/resources"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={desktopNavClass(getActiveState("resources", "/resources"))}
+          >
             Resources
           </Link>
         </nav>
@@ -139,10 +148,19 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           ) : (
             <>
               <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link to="/login" target="_blank" rel="noopener noreferrer">Sign In</Link>
+                <Link to="/login" target="_blank" rel="noopener noreferrer">
+                  Sign In
+                </Link>
               </Button>
               <Button asChild size="sm" className="hidden sm:inline-flex">
-                <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer" style={{ borderRadius: "5px" }}>Mentorship</a>
+                <a
+                  href="https://wa.me/923308923780"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ borderRadius: "5px" }}
+                >
+                  Mentorship
+                </a>
               </Button>
             </>
           )}
@@ -165,7 +183,10 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
           <nav className="flex flex-col gap-1">
             <a
               href="/"
-              onClick={(e) => { handleSectionClick(e, "home"); setMobileMenuOpen(false); }}
+              onClick={(e) => {
+                handleSectionClick(e, "home");
+                setMobileMenuOpen(false);
+              }}
               className={mobileNavClass(getActiveState("home"))}
             >
               Home
@@ -208,10 +229,19 @@ export function SiteHeader({ activeSection }: { activeSection?: string | undefin
             ) : (
               <>
                 <Button asChild variant="ghost" className="justify-start">
-                  <Link to="/login" target="_blank" rel="noopener noreferrer">Sign In</Link>
+                  <Link to="/login" target="_blank" rel="noopener noreferrer">
+                    Sign In
+                  </Link>
                 </Button>
                 <Button asChild className="justify-start">
-                  <a href="https://wa.me/923308923780" target="_blank" rel="noopener noreferrer" style={{ borderRadius: "5px" }}>Mentorship</a>
+                  <a
+                    href="https://wa.me/923308923780"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ borderRadius: "5px" }}
+                  >
+                    Mentorship
+                  </a>
                 </Button>
               </>
             )}

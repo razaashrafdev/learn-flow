@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { useLms } from "@/lib/lms/store";
 import { storePaymentScreenshot } from "@/lib/lms/store";
-import { ImageUpload } from "@/components/lms/ui-bits";
+import { FadeInSection, ImageUpload } from "@/components/lms/ui-bits";
 
 const WHATSAPP_URL = "https://wa.me/923308923780";
 
@@ -141,20 +141,26 @@ function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex min-h-screen max-w-2xl items-center justify-center px-5 py-12 sm:px-10">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      <div className="absolute inset-0 bg-surface" />
+      <div className="absolute inset-0 opacity-[0.04] [background:radial-gradient(80%_50%_at_50%_-20%,var(--color-primary),transparent)] dark:opacity-[0.06]" />
+      <div className="absolute inset-0 [background:radial-gradient(100%_100%_at_50%_0%,transparent_30%,var(--color-background)_100%)] dark:[background:radial-gradient(100%_100%_at_50%_0%,transparent_20%,var(--color-background)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.015] dark:opacity-[0.03] [background-image:linear-gradient(var(--color-foreground)_1px,transparent_1px),linear-gradient(90deg,var(--color-foreground)_1px,transparent_1px)] [background-size:64px_64px]" />
+      <div className="relative mx-auto flex min-h-screen max-w-2xl items-center justify-center px-5 py-12 sm:px-10">
         <div className="w-full">
-          <Link
-            to="/"
-            className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back to Home
-          </Link>
+          <FadeInSection>
+            <Link
+              to="/"
+              className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" /> Back to Home
+            </Link>
 
-          <h1 className="text-2xl font-extrabold tracking-tight">Enroll in Your Course</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            Fill in the details below to create your account and get started.
-          </p>
+            <h1 className="text-2xl font-extrabold tracking-tight">Enroll in Your Course</h1>
+            <p className="mt-1.5 text-sm text-muted-foreground">
+              Fill in the details below to create your account and get started.
+            </p>
+          </FadeInSection>
 
           <form onSubmit={submit} noValidate className="mt-8 space-y-4">
             <div className="grid grid-cols-2 gap-4">
