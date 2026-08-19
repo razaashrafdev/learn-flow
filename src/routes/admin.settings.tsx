@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLms } from "@/lib/lms/store";
-import { apiUploadImage } from "@/lib/api";
-import { getPopupImageUrl, setPopupImageUrl, removePopupImageUrl } from "@/lib/lms/store";
+import { apiUploadImage, apiGetPopupImage, apiSetPopupImage, apiRemovePopupImage } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
@@ -157,7 +156,7 @@ function PopupSection() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    setPopupUrl(getPopupImageUrl());
+    apiGetPopupImage().then((url) => setPopupUrl(url));
   }, []);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -179,7 +178,7 @@ function PopupSection() {
       });
 
       const url = await apiUploadImage(dataUrl);
-      setPopupImageUrl(url);
+      await apiSetPopupImage(url);
       setPopupUrl(url);
       toast.success("Popup image uploaded successfully");
     } catch (err) {
@@ -190,10 +189,14 @@ function PopupSection() {
     }
   };
 
-  const handleRemove = () => {
-    removePopupImageUrl();
-    setPopupUrl(null);
-    toast.success("Popup image removed");
+  const handleRemove = async () => {
+    try {
+      await apiRemovePopupImage();
+      setPopupUrl(null);
+      toast.success("Popup image removed");
+    } catch {
+      toast.error("Failed to remove popup image");
+    }
   };
 
   return (
