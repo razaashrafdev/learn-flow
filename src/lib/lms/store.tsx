@@ -87,6 +87,36 @@ export function getPaymentScreenshot(studentId: string, courseId: string): strin
   }
 }
 
+/** localStorage key for website popup image URL. */
+const popupImageKey = "lms.popup.imageUrl";
+
+/** Store the popup image URL in localStorage. */
+export function setPopupImageUrl(url: string) {
+  try {
+    localStorage.setItem(popupImageKey, url);
+  } catch {
+    /* quota */
+  }
+}
+
+/** Retrieve the popup image URL from localStorage. */
+export function getPopupImageUrl(): string | null {
+  try {
+    return localStorage.getItem(popupImageKey);
+  } catch {
+    return null;
+  }
+}
+
+/** Remove the popup image URL from localStorage. */
+export function removePopupImageUrl() {
+  try {
+    localStorage.removeItem(popupImageKey);
+  } catch {
+    /* ignore */
+  }
+}
+
 const upsertEnrollment = (list: Enrollment[], next: Enrollment): Enrollment[] => {
   const others = list.filter(
     (e) => !(e.studentId === next.studentId && e.courseId === next.courseId),

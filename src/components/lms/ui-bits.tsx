@@ -6,6 +6,7 @@ import {
   Youtube,
   Upload,
   XCircle,
+  X,
   Loader2,
 } from "lucide-react";
 import { apiUploadImage } from "@/lib/api";
@@ -16,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { getPopupImageUrl } from "@/lib/lms/store";
 
 export function FadeInSection({
   children,
@@ -55,6 +57,51 @@ export function FadeInSection({
       )}
     >
       {children}
+    </div>
+  );
+}
+
+export function WebsitePopup() {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    const url = getPopupImageUrl();
+    if (url) setImageUrl(url);
+  }, []);
+
+  useEffect(() => {
+    if (imageUrl && !dismissed) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+    return () => {};
+  }, [imageUrl, dismissed]);
+
+  if (!imageUrl || dismissed) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      onClick={() => setDismissed(true)}
+    >
+      <div className="relative mx-4 max-w-[90vw] sm:max-w-lg">
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          className="absolute -top-3 -right-3 z-10 h-8 w-8 rounded-full bg-background shadow-md flex items-center justify-center transition-colors hover:bg-muted"
+        >
+          <X className="h-4 w-4" />
+        </button>
+        <img
+          src={imageUrl}
+          alt="Popup"
+          className="w-full rounded-xl object-contain shadow-2xl"
+          style={{ aspectRatio: "1 / 1" }}
+        />
+      </div>
     </div>
   );
 }

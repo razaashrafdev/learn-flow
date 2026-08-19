@@ -16,6 +16,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { NotFoundPage } from "@/components/not-found";
 import { SiteHeader } from "@/components/lms/site-header";
 import { PageTransition } from "@/components/page-transition";
+import { WebsitePopup } from "@/components/lms/ui-bits";
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
@@ -124,6 +125,7 @@ function RootComponent() {
             <Outlet />
           </PageTransition>
           <Toaster position="bottom-right" richColors />
+          <WebsitePopup />
         </LmsProvider>
       </ThemeProvider>
     </QueryClientProvider>
