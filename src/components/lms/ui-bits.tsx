@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { getPopupImageUrl } from "@/lib/lms/store";
+import { apiGetPopupImage } from "@/lib/api";
 
 export function FadeInSection({
   children,
@@ -66,8 +66,9 @@ export function WebsitePopup() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    const url = getPopupImageUrl();
-    if (url) setImageUrl(url);
+    apiGetPopupImage().then((url) => {
+      if (url) setImageUrl(url);
+    });
   }, []);
 
   useEffect(() => {

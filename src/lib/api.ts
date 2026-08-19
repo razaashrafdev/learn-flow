@@ -426,3 +426,23 @@ export type AccessCheckResult = { access: boolean; status: EnrollmentState | "no
 export async function apiCheckEnrollmentAccess(courseId: string): Promise<AccessCheckResult> {
   return request<AccessCheckResult>(`/api/enrollments/access/${courseId}`);
 }
+
+export async function apiGetPopupImage(): Promise<string | null> {
+  try {
+    const res = await request<{ imageUrl: string | null }>("/api/settings/popup");
+    return res.imageUrl;
+  } catch {
+    return null;
+  }
+}
+
+export async function apiSetPopupImage(imageUrl: string): Promise<void> {
+  await request<{ ok: boolean }>("/api/settings/popup", {
+    method: "POST",
+    body: JSON.stringify({ imageUrl }),
+  });
+}
+
+export async function apiRemovePopupImage(): Promise<void> {
+  await request<{ ok: boolean }>("/api/settings/popup", { method: "DELETE" });
+}
