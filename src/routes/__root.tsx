@@ -125,7 +125,7 @@ function RootComponent() {
             <Outlet />
           </PageTransition>
           <Toaster position="bottom-right" richColors />
-          <WebsitePopup />
+          {pathname === "/" && <WebsitePopup />}
         </LmsProvider>
       </ThemeProvider>
     </QueryClientProvider>

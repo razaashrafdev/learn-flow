@@ -151,7 +151,7 @@ function AdminEnrollments() {
               <th className="hidden px-5 py-3 font-semibold md:table-cell">S.No</th>
               <th className="px-3 py-3 font-semibold sm:px-5">Student</th>
               <th className="hidden px-5 py-3 font-semibold md:table-cell">Course</th>
-              <th className="hidden px-5 py-3 font-semibold md:table-cell">Status</th>
+              <th className="px-3 py-3 font-semibold sm:px-5">Status</th>
               <th className="hidden px-5 py-3 font-semibold md:table-cell">Enrolled</th>
               <th className="px-2 py-3 text-right font-semibold sm:px-5">Actions</th>
             </tr>
@@ -173,7 +173,7 @@ function AdminEnrollments() {
                   <td className="hidden max-w-[240px] truncate px-5 py-3 md:table-cell">
                     {course?.title ?? "Deleted Course"}
                   </td>
-                  <td className="hidden px-5 py-3 md:table-cell">
+                  <td className="px-3 py-3 sm:px-5">
                     <StatusPill status={accessStatus} />
                   </td>
                   <td className="hidden px-5 py-3 text-muted-foreground md:table-cell">

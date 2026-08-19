@@ -70,7 +70,7 @@ function AdminDashboard() {
                 <thead className="bg-surface text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-5 py-3 font-semibold">Student</th>
-                    <th className="px-5 py-3 font-semibold">Course</th>
+                    <th className="px-5 py-3 font-semibold hidden sm:table-cell">Course</th>
                     <th className="px-5 py-3 font-semibold">Date</th>
                     <th className="px-5 py-3 font-semibold">Status</th>
                   </tr>
@@ -83,7 +83,7 @@ function AdminDashboard() {
                     return (
                       <tr key={e.id}>
                         <td className="px-5 py-3 font-medium">{student?.name ?? "Unknown"}</td>
-                        <td className="px-5 py-3 text-muted-foreground truncate max-w-[150px]">
+                        <td className="px-5 py-3 text-muted-foreground truncate max-w-[150px] hidden sm:table-cell">
                           {course?.title ?? "Deleted Course"}
                         </td>
                         <td className="px-5 py-3 text-muted-foreground">
