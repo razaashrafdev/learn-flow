@@ -242,7 +242,7 @@ function PublicCourseDetails() {
       return;
     }
     if (isPaid) {
-      requestEnrollment(course.id);
+      await requestEnrollment(course.id);
       toast.success("Enrollment request sent successfully");
       navigate({ to: "/app/my-courses" });
       return;

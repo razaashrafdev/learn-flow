@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/lms/ui-bits";
-import type { Course, CourseLevel, CourseStatus, PricingType } from "@/lib/lms/types";
+import type { Course, CourseLevel, CourseStatus, Lesson, PricingType } from "@/lib/lms/types";
 
 export type CourseFormValues = {
   title: string;
@@ -27,6 +27,25 @@ export type CourseFormValues = {
   status: CourseStatus;
   price: number;
 };
+
+function calcTotalHours(lessons: Lesson[]): string {
+  let totalSeconds = 0;
+  for (const l of lessons) {
+    if (!l.published) continue;
+    const parts = l.duration.split(":");
+    if (parts.length === 2) {
+      const min = parseInt(parts[0]!, 10);
+      const sec = parseInt(parts[1]!, 10);
+      if (!isNaN(min)) totalSeconds += min * 60;
+      if (!isNaN(sec)) totalSeconds += sec;
+    } else if (parts.length === 1) {
+      const min = parseInt(parts[0]!, 10);
+      if (!isNaN(min)) totalSeconds += min * 60;
+    }
+  }
+  const hours = Math.round(totalSeconds / 3600 * 10) / 10;
+  return hours >= 1 ? `${hours}h` : "1h";
+}
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title Is Required").max(120),
@@ -72,13 +91,22 @@ export function CourseForm({
   initial,
   submitLabel,
   onSubmit,
+  lessons,
 }: {
   initial: CourseFormValues;
   submitLabel: string;
   onSubmit: (values: CourseFormValues) => void;
+  lessons?: Lesson[];
 }) {
   const [values, setValues] = useState<CourseFormValues>(initial);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const manualDuration = useRef(false);
+
+  useEffect(() => {
+    if (lessons && lessons.length > 0 && !manualDuration.current) {
+      setValues((s) => ({ ...s, duration: calcTotalHours(lessons) }));
+    }
+  }, [lessons]);
 
   const set = <K extends keyof CourseFormValues>(key: K, v: CourseFormValues[K]) =>
     setValues((s) => ({ ...s, [key]: v }));
@@ -158,7 +186,10 @@ export function CourseForm({
             value={values.duration}
             maxLength={20}
             placeholder="6h"
-            onChange={(e) => set("duration", e.target.value)}
+            onChange={(e) => {
+              manualDuration.current = true;
+              set("duration", e.target.value);
+            }}
           />
           {errors["duration"] ? (
             <p className="text-xs font-medium text-destructive">{errors["duration"]}</p>

@@ -335,11 +335,13 @@ function AdminStudents() {
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => {
-                              void setStudentActive(u.id, u.active === false).then(() =>
-                                toast.success(
-                                  u.active === false ? "Student activated successfully" : "Student deactivated successfully",
-                                ),
-                              );
+                              void setStudentActive(u.id, u.active === false)
+                                .then(() =>
+                                  toast.success(
+                                    u.active === false ? "Student activated successfully" : "Student deactivated successfully",
+                                  ),
+                                )
+                                .catch(() => toast.error("Could not update student status"));
                             }}
                           >
                             {u.active === false ? (

@@ -116,6 +116,10 @@ function RegisterPage() {
       setErrors(fieldErrors);
       return;
     }
+    if (isPaidCourse && !form.imageUrl) {
+      setErrors({ imageUrl: "Payment screenshot is required for paid courses" });
+      return;
+    }
     setErrors({});
     setLoading(true);
     const result = await register(
@@ -245,6 +249,9 @@ function RegisterPage() {
                 <p className="text-xs text-muted-foreground">
                   Upload your payment receipt or screenshot for verification.
                 </p>
+                {errors["imageUrl"] ? (
+                  <p className="text-xs font-medium text-destructive">{errors["imageUrl"]}</p>
+                ) : null}
               </div>
             )}
 

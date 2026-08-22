@@ -64,12 +64,12 @@ function EditCourse() {
   const saveResources = async () => {
     if (!resourcesLessonId) return;
     const filtered = resourceLinks.filter((l) => l.trim() !== "");
-    try {
-      await updateLesson(resourcesLessonId, { resources: filtered });
+    const result = await updateLesson(resourcesLessonId, { resources: filtered });
+    if (result.ok) {
       toast.success("Resources saved successfully");
       setResourcesOpen(false);
-    } catch {
-      toast.error("Could not save resources");
+    } else {
+      toast.error(result.error ?? "Could not save resources");
     }
   };
 
@@ -91,6 +91,7 @@ function EditCourse() {
           <CourseForm
             initial={toFormValues(course)}
             submitLabel="Save Changes"
+            lessons={data.lessons.filter((l) => l.sectionId && sections.some((s) => s.id === l.sectionId))}
             onSubmit={async (values) => {
               try {
                 await updateCourse(course.id, values);

@@ -139,7 +139,7 @@ function CourseDetails() {
   const handlePaymentEnroll = async (screenshotUrl: string) => {
     setEnrollLoading(true);
     try {
-      requestEnrollment(course.id, screenshotUrl);
+      await requestEnrollment(course.id, screenshotUrl);
       toast.success("Enrollment request sent successfully");
       setPaymentModalOpen(false);
       navigate({ to: "/app/my-courses" });
