@@ -19,4 +19,4 @@ export function extractYoutubeId(url: string): string | null {
 
 export const youtubeThumb = (id: string) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
 export const youtubeEmbed = (id: string) =>
-  `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+  `https://www.youtube-nocookie.com/embed/${id}?rel=0&controls=0&iv_load_policy=3&playsinline=1&disablekb=1`;

@@ -374,6 +374,7 @@ export type ApiEnrollment = {
   accessStatus: EnrollmentState;
   enrolledAt: string;
   updatedAt: string;
+  screenshotUrl?: string | null;
 };
 
 function toEnrollment(e: ApiEnrollment): Enrollment {
@@ -384,6 +385,7 @@ function toEnrollment(e: ApiEnrollment): Enrollment {
     status: "in_progress",
     accessStatus: e.accessStatus,
     enrolledAt: e.enrolledAt,
+    paymentScreenshot: e.screenshotUrl ?? null,
   };
 }
 
@@ -394,11 +396,11 @@ export async function apiListEnrollments(): Promise<Enrollment[]> {
 
 export type ApiEnrollResult = { ok: true; enrollment: Enrollment } | { ok: false; error: string };
 
-export async function apiEnroll(courseId: string): Promise<ApiEnrollResult> {
+export async function apiEnroll(courseId: string, screenshotUrl?: string): Promise<ApiEnrollResult> {
   try {
     const body = await request<ApiEnrollment>("/api/enrollments", {
       method: "POST",
-      body: JSON.stringify({ courseId }),
+      body: JSON.stringify({ courseId, screenshotUrl: screenshotUrl ?? "" }),
     });
     return { ok: true, enrollment: toEnrollment(body) };
   } catch (e) {

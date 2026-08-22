@@ -93,9 +93,11 @@ function BrowseCourses() {
                   course={course}
                   lessonCount={s.publishedLessonsOfCourse(course.id).length}
                   pending={isPending}
+                  enrollmentStatus={enrolled?.accessStatus}
+                  completed={enrolled?.status === "completed"}
                   appLink
                   footer={
-                    enrolled
+                    enrolled?.accessStatus === "accepted"
                       ? { label: "Continue Learning", to: "/app/learn/$slug", params: { slug: course.slug } }
                       : { label: "View Course", to: "/app/courses/$slug", params: { slug: course.slug } }
                   }

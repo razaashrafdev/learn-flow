@@ -293,55 +293,53 @@ function EnrollmentDetailDialog({
   const student = data.users.find((u) => u.id === enrollment.studentId);
   const accessStatus: EnrollmentState = enrollment.accessStatus ?? "pending";
   const isPending = accessStatus === "pending";
-  const paymentScreenshot = getPaymentScreenshot(enrollment.studentId, enrollment.courseId);
+  const paymentScreenshot = enrollment.paymentScreenshot ?? getPaymentScreenshot(enrollment.studentId, enrollment.courseId);
 
   return (
     <AlertDialog open onOpenChange={(o) => !o && onClose()}>
-      <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md max-h-[90vh]">
+      <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md lg:max-w-2xl max-h-[90vh]">
         <div className="px-6 pt-6 pb-4">
           <h2 className="text-lg font-bold tracking-tight">Student Details</h2>
         </div>
 
-        <div className="px-6 pb-5 space-y-4">
-          {/* Row 1: Name + WhatsApp */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg bg-muted/50 px-4 py-3">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Name
-              </p>
-              <p className="mt-0.5 text-sm font-medium truncate">{student?.name ?? "Unknown"}</p>
-            </div>
-            <div className="rounded-lg bg-muted/50 px-4 py-3">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                WhatsApp
-              </p>
-              <p className="mt-0.5 text-sm font-medium truncate">{student?.whatsapp ?? "N/A"}</p>
-            </div>
-          </div>
-
-          {/* Row 2: Email + Date */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg bg-muted/50 px-4 py-3">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Email
-              </p>
-              <p className="mt-0.5 text-sm font-medium truncate">{student?.email ?? "N/A"}</p>
-            </div>
-            <div className="rounded-lg bg-muted/50 px-4 py-3">
-              <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                Date
-              </p>
-              <p className="mt-0.5 text-sm font-medium">
-                {new Date(enrollment.enrolledAt).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </p>
+        <div className="px-6 pb-5 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[1fr_260px] lg:gap-5">
+          {/* Left: Student Info */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3">
+              <div className="rounded-lg bg-muted/50 px-4 py-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Name
+                </p>
+                <p className="mt-0.5 text-sm font-medium truncate">{student?.name ?? "Unknown"}</p>
+              </div>
+              <div className="rounded-lg bg-muted/50 px-4 py-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  WhatsApp
+                </p>
+                <p className="mt-0.5 text-sm font-medium truncate">{student?.whatsapp ?? "N/A"}</p>
+              </div>
+              <div className="rounded-lg bg-muted/50 px-4 py-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Email
+                </p>
+                <p className="mt-0.5 text-sm font-medium truncate">{student?.email ?? "N/A"}</p>
+              </div>
+              <div className="rounded-lg bg-muted/50 px-4 py-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Date
+                </p>
+                <p className="mt-0.5 text-sm font-medium">
+                  {new Date(enrollment.enrolledAt).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
             </div>
           </div>
 
-          {/* Payment Screenshot */}
+          {/* Right: Payment Screenshot */}
           <div className="rounded-lg bg-muted/50 px-4 py-3">
             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Payment Screenshot
@@ -351,7 +349,7 @@ function EnrollmentDetailDialog({
                 <img
                   src={paymentScreenshot}
                   alt="Payment Screenshot"
-                  className="w-full object-contain max-h-48"
+                  className="w-full object-contain max-h-48 lg:max-h-[280px]"
                 />
               </div>
             ) : (

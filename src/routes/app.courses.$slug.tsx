@@ -106,16 +106,19 @@ function CourseDetails() {
   const myEnrollmentRequest = s.enrollmentRequestOf(user.id, course.id);
   const isPending =
     myEnrollmentRequest?.status === "pending" || enrollment?.accessStatus === "pending";
+  const isRejected = enrollment?.accessStatus === "rejected";
   const hasAccess = !!enrollment && enrollment.accessStatus === "accepted";
 
   const enrollLabel = hasAccess
     ? "Start Learning"
-    : isPaid && isPending
-      ? "Pending Approval"
-      : "Click Here to Enroll";
+    : isRejected
+      ? "Request Rejected"
+      : isPaid && isPending
+        ? "Pending Approval"
+        : "Click Here to Enroll";
 
   const handleEnroll = async () => {
-    if (isPaid && isPending) return;
+    if (isPaid && (isPending || isRejected)) return;
     if (hasAccess) {
       navigate({ to: "/app/learn/$slug", params: { slug: course.slug } });
       return;
@@ -147,7 +150,7 @@ function CourseDetails() {
     }
   };
 
-  if (enrollment) {
+  if (enrollment && enrollment.accessStatus === "accepted") {
     navigate({ to: "/app/learn/$slug", params: { slug: course.slug }, replace: true });
     return null;
   }
@@ -386,7 +389,7 @@ function CourseDetails() {
               )}
               <p className="mt-2 text-xs text-muted-foreground">
                 {isPaid
-                  ? `${course.accessPeriod ?? "Full access"} with 30-day money-back guarantee`
+                  ? `${course.accessPeriod ?? "Full access"} with You will get lifetime access.`
                   : "Start learning for free — no card required"}
               </p>
 
@@ -394,18 +397,20 @@ function CourseDetails() {
                 size="lg"
                 className="mt-5 w-full"
                 onClick={handleEnroll}
-                disabled={isPaid && isPending}
+                disabled={isPaid && (isPending || isRejected)}
               >
                 {enrollLabel}
               </Button>
               <p className="mt-2.5 text-center text-xs text-muted-foreground">
                 {hasAccess
                   ? "Continue where you left off"
-                  : isPaid && isPending
-                    ? "Your request is pending admin approval"
-                    : isPaid
-                      ? "Your enrollment request will be reviewed by an administrator"
-                      : "Enroll free and start learning"}
+                  : isRejected
+                    ? "Your enrollment request was rejected by the administrator"
+                    : isPaid && isPending
+                      ? "Your request is pending admin approval"
+                      : isPaid
+                        ? "Your enrollment request will be reviewed by an administrator"
+                        : "Enroll free and start learning"}
               </p>
 
               <dl className="mt-6 space-y-3.5 border-t border-border pt-6">
@@ -431,8 +436,8 @@ function CourseDetails() {
 
               {isPaid ? (
                 <p className="mt-5 flex items-center gap-2 rounded-xl bg-primary/5 p-3 text-xs text-muted-foreground">
-                  <ShieldCheck className="h-4 w-4 shrink-0 text-primary" /> 30-day money-back
-                  guarantee
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-primary" /> You will get lifetime
+                  access
                 </p>
               ) : (
                 <p className="mt-5 flex items-center gap-2 rounded-xl bg-primary/5 p-3 text-xs text-muted-foreground">

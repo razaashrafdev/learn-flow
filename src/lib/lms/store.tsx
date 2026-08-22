@@ -543,12 +543,9 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     },
     requestEnrollment: async (courseId, screenshotUrl) => {
       if (!currentUserId) return;
-      const result = await apiEnroll(courseId);
+      const result = await apiEnroll(courseId, screenshotUrl);
       if (result.ok) {
         setData((d) => ({ ...d, enrollments: upsertEnrollment(d.enrollments, result.enrollment) }));
-        if (screenshotUrl) {
-          storePaymentScreenshot(currentUserId, courseId, screenshotUrl);
-        }
       }
     },
     approveEnrollment: (requestId) => {

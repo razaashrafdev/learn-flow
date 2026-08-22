@@ -23,7 +23,7 @@ function MyCourses() {
   const { data, currentUser } = useLms();
   const s = useSelectors();
   const user = currentUser!;
-  const enrollments = data.enrollments.filter((e) => e.studentId === user.id && e.status !== "completed");
+  const enrollments = data.enrollments.filter((e) => e.studentId === user.id);
 
   return (
     <AppShell nav={studentNav} title="My Courses">
@@ -49,6 +49,7 @@ function MyCourses() {
             const course = data.courses.find((c) => c.id === e.courseId);
             if (!course) return null;
             const isPending = e.accessStatus === "pending";
+            const isRejected = e.accessStatus === "rejected";
             const progress = s.courseProgress(user.id, course.id);
             return (
               <CourseCard
@@ -56,13 +57,19 @@ function MyCourses() {
                 course={course}
                 lessonCount={s.publishedLessonsOfCourse(course.id).length}
                 pending={isPending}
+                enrollmentStatus={e.accessStatus}
+                completed={e.status === "completed"}
                 appLink
-                {...(!isPending && { progress: { percent: progress.percent, label: `${progress.done}/${progress.total} lessons complete` } })}
-                footer={{
-                  label: "Continue Learning",
-                  to: "/app/learn/$slug",
-                  params: { slug: course.slug },
-                }}
+                {...(!isPending && !isRejected && { progress: { percent: progress.percent, label: `${progress.done}/${progress.total} lessons complete` } })}
+                footer={
+                  isRejected
+                    ? undefined
+                    : {
+                        label: "Continue Learning",
+                        to: "/app/learn/$slug",
+                        params: { slug: course.slug },
+                      }
+                }
               />
             );
           })}

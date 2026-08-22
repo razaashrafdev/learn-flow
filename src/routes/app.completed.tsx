@@ -138,10 +138,10 @@ function CompletedCourses() {
                 onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Tell others about your experience..."
                 rows={4}
-                maxLength={250}
+                maxLength={200}
               />
               <p className="mt-1 text-xs text-muted-foreground text-right">
-                {reviewText.length}/250 characters
+                {reviewText.length}/200 characters
               </p>
             </div>
           </div>

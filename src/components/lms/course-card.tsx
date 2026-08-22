@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Clock, PlayCircle, Tag, ChevronRight, Users } from "lucide-react";
+import { CheckCircle2, Clock, PlayCircle, Tag, ChevronRight, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ProgressRow } from "@/components/lms/ui-bits";
@@ -12,16 +12,22 @@ export function CourseCard({
   progress,
   footer,
   pending,
+  enrollmentStatus,
   appLink,
+  completed,
 }: {
   course: Course;
   lessonCount: number;
   progress?: { percent: number; label?: string };
   footer?: { label: string; to: string; params?: Record<string, string> };
   pending?: boolean;
+  enrollmentStatus?: "pending" | "accepted" | "rejected";
   appLink?: boolean;
+  completed?: boolean;
 }) {
   const detailTo = appLink ? "/app/courses/$slug" : "/courses/$slug";
+  const isRejected = enrollmentStatus === "rejected";
+  const isPending = pending || enrollmentStatus === "pending";
   return (
     <article className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-pop">
       <Link
@@ -45,6 +51,12 @@ export function CourseCard({
         >
           {course.pricingType === "free" ? "FREE" : "PAID"}
         </span>
+        {completed && (
+          <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-success/80 px-2.5 py-1 text-xs font-bold text-success-foreground backdrop-blur-sm">
+            <CheckCircle2 className="h-3 w-3" />
+            Completed
+          </span>
+        )}
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
@@ -77,7 +89,11 @@ export function CourseCard({
         ) : null}
 
         <div className="mt-5 pt-0">
-          {pending ? (
+          {isRejected ? (
+            <Button className="w-full" disabled variant="destructive">
+              Request Rejected
+            </Button>
+          ) : isPending ? (
             <Button className="w-full" disabled variant="outline">
               Pending Approval
             </Button>

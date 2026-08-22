@@ -71,14 +71,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Hamza Visuals LMS — Learn at your own pace" },
       {
         property: "og:description",
-        content: "A simple, modern learning platform with video lessons and progress tracking.",
+        content:
+          "A simple, modern learning platform with video lessons and progress tracking.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/images/favicon.PNG" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "/images/favicon.PNG" },
+      { name: "msapplication-TileImage", content: "/images/favicon.PNG" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/images/favicon.PNG" },
+      { rel: "icon", type: "image/png", href: "/images/favicon.PNG" },
+      { rel: "apple-touch-icon", href: "/images/favicon.PNG" },
     ],
   }),
   shellComponent: RootShell,

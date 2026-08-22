@@ -16,6 +16,7 @@ import { toast } from "sonner";
 
 import { AppShell, studentNav } from "@/components/lms/app-shell";
 import { EmptyState, ProgressRow } from "@/components/lms/ui-bits";
+import { VideoPlayer } from "@/components/lms/video-player";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { apiCheckEnrollmentAccess, type AccessCheckResult } from "@/lib/api";
 import { useLms, useSelectors } from "@/lib/lms/store";
-import { youtubeEmbed } from "@/lib/lms/youtube";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app/learn/$slug")({
@@ -204,14 +204,10 @@ function LearnPage() {
           <div className="card-surface overflow-hidden">
             <div className="aspect-video w-full bg-foreground/90" onContextMenu={handleContextMenu}>
               {active?.youtubeVideoId ? (
-                <iframe
+                <VideoPlayer
                   key={active.id}
-                  src={youtubeEmbed(active.youtubeVideoId)}
-                  title={active.title}
-                  className="h-full w-full pointer-events-none"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  referrerPolicy="no-referrer"
+                  videoId={active.youtubeVideoId}
+                  className="h-full w-full"
                 />
               ) : active ? (
                 <div className="flex h-full items-center justify-center gap-2 px-6 text-center text-sm text-muted-foreground">

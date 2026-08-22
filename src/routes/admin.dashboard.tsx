@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { BookOpen, Users, ClipboardList } from "lucide-react";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
@@ -24,8 +25,12 @@ export const Route = createFileRoute("/admin/dashboard")({
 });
 
 function AdminDashboard() {
-  const { data } = useLms();
+  const { data, syncStudents } = useLms();
   const s = useSelectors();
+
+  useEffect(() => {
+    void syncStudents();
+  }, [syncStudents]);
 
   const students = s.studentsList();
   const recent = data.enrollments
