@@ -448,3 +448,32 @@ export async function apiSetPopupImage(imageUrl: string): Promise<void> {
 export async function apiRemovePopupImage(): Promise<void> {
   await request<{ ok: boolean }>("/api/settings/popup", { method: "DELETE" });
 }
+
+// ── Lesson progress ──────────────────────────────────────────────────────────
+
+export type ApiLessonProgress = {
+  id: string;
+  studentId: string;
+  courseId: string;
+  lessonId: string;
+  completed: boolean;
+  completedAt: string | null;
+};
+
+export async function apiFetchProgress(studentId?: string): Promise<ApiLessonProgress[]> {
+  const qs = studentId ? `?studentId=${encodeURIComponent(studentId)}` : "";
+  const res = await request<{ progress: ApiLessonProgress[] }>(`/api/progress${qs}`);
+  return res.progress;
+}
+
+export async function apiUpsertProgress(
+  courseId: string,
+  lessonId: string,
+  completed: boolean,
+  studentId?: string,
+): Promise<ApiLessonProgress> {
+  return request<ApiLessonProgress>("/api/progress", {
+    method: "PUT",
+    body: JSON.stringify({ courseId, lessonId, completed, studentId }),
+  });
+}

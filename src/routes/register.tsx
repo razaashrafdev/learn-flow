@@ -174,7 +174,7 @@ function RegisterPage() {
                   id="name"
                   type="text"
                   autoComplete="name"
-                  placeholder="Alex Morgan"
+                  placeholder="Your Name"
                   value={form.name}
                   maxLength={80}
                   onChange={set("name")}

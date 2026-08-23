@@ -47,9 +47,10 @@ function ResourceModal({
       >
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-10 [border-radius:5px] bg-background/80 p-1.5 text-muted-foreground backdrop-blur transition-colors hover:text-foreground"
+          className="absolute right-4 top-4 z-10 [border-radius:5px] opacity-70 ring-offset-background cursor-pointer transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <X className="h-4 w-4" />
+          <span className="sr-only">Close</span>
         </button>
 
         {resource.image ? (

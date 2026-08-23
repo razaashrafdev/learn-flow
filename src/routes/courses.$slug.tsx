@@ -55,10 +55,23 @@ function formatCount(n?: number) {
 }
 
 function formatTotalDuration(lessons: Lesson[]) {
+  if (lessons.length === 0) return "";
   const total = lessons.reduce((acc, l) => {
-    const m = /(\d+)\s*min/.exec(l.duration);
-    return acc + (m ? parseInt(m[1]!, 10) : 0);
+    const colonMatch = /^(\d+):(\d+)$/.exec(l.duration);
+    if (colonMatch) {
+      return acc + parseInt(colonMatch[1]!, 10);
+    }
+    const minMatch = /(\d+)\s*min/.exec(l.duration);
+    if (minMatch) {
+      return acc + parseInt(minMatch[1]!, 10);
+    }
+    const numMatch = /^(\d+)$/.exec(l.duration);
+    if (numMatch) {
+      return acc + parseInt(numMatch[1]!, 10);
+    }
+    return acc;
   }, 0);
+  if (total === 0) return "";
   const h = Math.floor(total / 60);
   const min = total % 60;
   if (h > 0 && min > 0) return `${h}h ${min}m`;

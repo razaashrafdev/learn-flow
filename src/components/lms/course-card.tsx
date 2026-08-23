@@ -3,8 +3,33 @@ import { CheckCircle2, Clock, PlayCircle, Tag, ChevronRight, Users } from "lucid
 
 import { Button } from "@/components/ui/button";
 import { ProgressRow } from "@/components/lms/ui-bits";
-import type { Course } from "@/lib/lms/types";
+import type { Course, Lesson } from "@/lib/lms/types";
 import { cn } from "@/lib/utils";
+
+function formatLessonsDuration(lessons: Lesson[]): string {
+  if (lessons.length === 0) return "";
+  const total = lessons.reduce((acc, l) => {
+    const colonMatch = /^(\d+):(\d+)$/.exec(l.duration);
+    if (colonMatch) {
+      return acc + parseInt(colonMatch[1]!, 10);
+    }
+    const minMatch = /(\d+)\s*min/.exec(l.duration);
+    if (minMatch) {
+      return acc + parseInt(minMatch[1]!, 10);
+    }
+    const numMatch = /^(\d+)$/.exec(l.duration);
+    if (numMatch) {
+      return acc + parseInt(numMatch[1]!, 10);
+    }
+    return acc;
+  }, 0);
+  if (total === 0) return "";
+  const h = Math.floor(total / 60);
+  const min = total % 60;
+  if (h > 0 && min > 0) return `${h}h ${min}m`;
+  if (h > 0) return `${h}h`;
+  return `${min}m`;
+}
 
 export function CourseCard({
   course,
@@ -15,6 +40,7 @@ export function CourseCard({
   enrollmentStatus,
   appLink,
   completed,
+  lessons,
 }: {
   course: Course;
   lessonCount: number;
@@ -24,10 +50,12 @@ export function CourseCard({
   enrollmentStatus?: "pending" | "accepted" | "rejected";
   appLink?: boolean;
   completed?: boolean;
+  lessons?: Lesson[];
 }) {
   const detailTo = appLink ? "/app/courses/$slug" : "/courses/$slug";
   const isRejected = enrollmentStatus === "rejected";
   const isPending = pending || enrollmentStatus === "pending";
+  const displayDuration = (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
   return (
     <article className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-pop">
       <Link
@@ -72,7 +100,7 @@ export function CourseCard({
             <PlayCircle className="h-3.5 w-3.5" /> {lessonCount} lessons
           </span>
           <span className="flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" /> {course.duration}
+            <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
             <Tag className="h-3.5 w-3.5" /> <Link to="/about" className="hover:text-primary transition-colors">{course.instructor}</Link>
@@ -116,10 +144,13 @@ export function CourseCard({
 export function LandingCourseCard({
   course,
   lessonCount,
+  lessons,
 }: {
   course: Course;
   lessonCount: number;
+  lessons?: Lesson[];
 }) {
+  const displayDuration = (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
   return (
     <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <Link
@@ -161,7 +192,7 @@ export function LandingCourseCard({
             <PlayCircle className="h-3.5 w-3.5" /> {lessonCount} lessons
           </span>
           <span className="flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" /> {course.duration}
+            <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
             <Users className="h-3.5 w-3.5" /> <Link to="/about" className="hover:text-primary transition-colors">{course.instructor}</Link>

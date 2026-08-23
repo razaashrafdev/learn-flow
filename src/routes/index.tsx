@@ -371,12 +371,13 @@ function LandingPage() {
               {/* Mobile: all courses */}
               <div className="mt-10 grid gap-6 sm:hidden">
                 {landingCourses.map((course) => {
-                  const lessonCount = s.publishedLessonsOfCourse(course.id).length;
+                  const lessons = s.publishedLessonsOfCourse(course.id);
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
-                      lessonCount={lessonCount}
+                      lessonCount={lessons.length}
+                      lessons={lessons}
                     />
                   );
                 })}
@@ -384,12 +385,13 @@ function LandingPage() {
               {/* Tablet: all courses */}
               <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:hidden">
                 {landingCourses.map((course) => {
-                  const lessonCount = s.publishedLessonsOfCourse(course.id).length;
+                  const lessons = s.publishedLessonsOfCourse(course.id);
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
-                      lessonCount={lessonCount}
+                      lessonCount={lessons.length}
+                      lessons={lessons}
                     />
                   );
                 })}
@@ -397,12 +399,13 @@ function LandingPage() {
               {/* Desktop: all courses */}
               <div className="mt-10 hidden gap-6 lg:grid lg:grid-cols-3">
                 {landingCourses.map((course) => {
-                  const lessonCount = s.publishedLessonsOfCourse(course.id).length;
+                  const lessons = s.publishedLessonsOfCourse(course.id);
                   return (
                     <LandingCourseCard
                       key={course.id}
                       course={course}
-                      lessonCount={lessonCount}
+                      lessonCount={lessons.length}
+                      lessons={lessons}
                     />
                   );
                 })}

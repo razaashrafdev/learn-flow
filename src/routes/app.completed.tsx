@@ -76,11 +76,13 @@ function CompletedCourses() {
             const course = data.courses.find((c) => c.id === e.courseId);
             if (!course) return null;
             const reviewed = hasReviewed(course.id);
+            const lessons = s.publishedLessonsOfCourse(course.id);
             return (
               <div key={e.id} className="flex flex-col gap-3">
                 <CourseCard
                   course={course}
-                  lessonCount={s.publishedLessonsOfCourse(course.id).length}
+                  lessonCount={lessons.length}
+                  lessons={lessons}
                   progress={{ percent: 100, label: "Completed" }}
                   appLink
                   footer={{ label: "Review Course", to: "/app/learn/$slug", params: { slug: course.slug } }}

@@ -51,11 +51,13 @@ function MyCourses() {
             const isPending = e.accessStatus === "pending";
             const isRejected = e.accessStatus === "rejected";
             const progress = s.courseProgress(user.id, course.id);
+            const lessons = s.publishedLessonsOfCourse(course.id);
             return (
               <CourseCard
                 key={e.id}
                 course={course}
-                lessonCount={s.publishedLessonsOfCourse(course.id).length}
+                lessonCount={lessons.length}
+                lessons={lessons}
                 pending={isPending}
                 enrollmentStatus={e.accessStatus}
                 completed={e.status === "completed"}

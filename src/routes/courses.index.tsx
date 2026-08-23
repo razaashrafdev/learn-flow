@@ -105,9 +105,9 @@ function CoursesListing() {
           <>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {shown.map((course) => {
-                const lessonCount = s.publishedLessonsOfCourse(course.id).length;
+                const lessons = s.publishedLessonsOfCourse(course.id);
                 return (
-                  <LandingCourseCard key={course.id} course={course} lessonCount={lessonCount} />
+                  <LandingCourseCard key={course.id} course={course} lessonCount={lessons.length} lessons={lessons} />
                 );
               })}
             </div>

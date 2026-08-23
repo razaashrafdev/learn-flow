@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   XCircle,
   Eye,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,6 +74,7 @@ function AdminStudents() {
     changeStudentPassword,
     deleteStudent,
     syncStudents,
+    syncProgress,
   } = useLms();
   const s = useSelectors();
   const [query, setQuery] = useState("");
@@ -90,6 +92,10 @@ function AdminStudents() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [editErrors, setEditErrors] = useState<Record<string, string>>({});
   const [detailsId, setDetailsId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (detailsId) void syncProgress();
+  }, [detailsId, syncProgress]);
 
   const PAGE_SIZE = 10;
   const allStudents = s
@@ -458,65 +464,50 @@ function AdminStudents() {
             const course = data.courses.find((c) => c.id === e.courseId);
             return { ...e, courseTitle: course?.title ?? "Unknown Course" };
           });
-          const isActive = u.active !== false;
           return (
             <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-              <AlertDialogContent className="gap-0 p-0 overflow-y-auto sm:max-w-md max-h-[90vh]">
-                <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-transparent px-6 pt-6 pb-4">
-                  <h2 className="text-center text-lg font-bold tracking-tight">{u.name}</h2>
-                  <p className="mt-0.5 text-center text-sm text-muted-foreground">{u.email}</p>
-                  <div className="mt-3 flex justify-center">
-                    <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${isActive ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
-                    >
-                      <span
-                        className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-emerald-500" : "bg-red-500"}`}
-                      />
-                      {isActive ? "Active" : "Inactive"}
-                    </span>
-                  </div>
-                </div>
+              <AlertDialogContent className="sm:max-w-sm max-h-[90vh] overflow-y-auto">
+                <button
+                  onClick={() => setDetailsId(null)}
+                  className="absolute right-4 top-4 z-10 rounded-[5px] opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </button>
 
-                <div className="px-6 py-5 space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
-                      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                        WhatsApp
-                      </p>
-                      <p className="mt-0.5 text-sm font-medium truncate">{u.whatsapp || "—"}</p>
-                    </div>
-                    <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
-                      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                        Joined
-                      </p>
-                      <p className="mt-0.5 text-sm font-medium">
-                        {new Date(u.createdAt).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </p>
-                    </div>
-                    <div className="rounded-lg bg-muted/50 px-3.5 py-2.5">
-                      <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                        Role
-                      </p>
-                      <p className="mt-0.5 text-sm font-medium capitalize">{u.role}</p>
-                    </div>
-                  </div>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>{u.name}</AlertDialogTitle>
+                  <AlertDialogDescription>Student Details</AlertDialogDescription>
+                </AlertDialogHeader>
 
-                  <div>
-                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mb-2">
-                      Enrolled Courses ({enrolledCourses.length})
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Email</p>
+                    <p className="mt-0.5 text-sm font-medium">{u.email}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">WhatsApp</p>
+                    <p className="mt-0.5 text-sm font-medium">{u.whatsapp || "—"}</p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Joined</p>
+                    <p className="mt-0.5 text-sm font-medium">
+                      {new Date(u.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                    <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      Enrolled Classes ({enrolledCourses.length})
                     </p>
                     {enrolledCourses.length > 0 ? (
-                      <ul className="space-y-1.5">
+                      <ul className="mt-1.5 space-y-1">
                         {enrolledCourses.map((e) => (
-                          <li
-                            key={e.id}
-                            className="flex items-center justify-between rounded-lg bg-muted/50 px-3.5 py-2"
-                          >
-                            <span className="text-sm font-medium truncate">{e.courseTitle}</span>
+                          <li key={e.id} className="flex items-center justify-between text-sm">
+                            <span className="font-medium truncate">{e.courseTitle}</span>
                             <span
                               className={`ml-2 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                                 e.accessStatus === "accepted"
@@ -532,13 +523,9 @@ function AdminStudents() {
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-muted-foreground">No courses enrolled</p>
+                      <p className="mt-1 text-sm text-muted-foreground">No courses enrolled</p>
                     )}
                   </div>
-                </div>
-
-                <div className="border-t border-border px-6 py-3.5">
-                  <AlertDialogCancel className="w-full">Close</AlertDialogCancel>
                 </div>
               </AlertDialogContent>
             </AlertDialog>

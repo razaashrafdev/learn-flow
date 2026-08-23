@@ -41,6 +41,8 @@ import {
   apiEnroll,
   apiSetEnrollmentStatus,
   apiDeleteEnrollment,
+  apiFetchProgress,
+  apiUpsertProgress,
   type CreateResourceInput,
   type CreateStudentInput,
 } from "../api";
@@ -134,6 +136,7 @@ type Ctx = {
   syncCatalog: () => Promise<void>;
   syncStudents: () => Promise<void>;
   syncEnrollments: () => Promise<void>;
+  syncProgress: () => Promise<void>;
   signIn: (
     email: string,
     password: string,
@@ -272,10 +275,19 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       setData((d) => {
         const merged = enrollments.map((incoming) => {
           const local = d.enrollments.find((e) => e.id === incoming.id);
+          // Compute completion status from progress data
+          const sectionIds = d.sections.filter((s) => s.courseId === incoming.courseId).map((s) => s.id);
+          const total = d.lessons.filter(
+            (l) => sectionIds.includes(l.sectionId) && l.published,
+          ).length;
+          const done = d.progress.filter(
+            (p) => p.studentId === incoming.studentId && p.courseId === incoming.courseId && p.completed,
+          ).length;
+          const isComplete = total > 0 && done >= total;
           return {
             ...incoming,
-            status: (local?.status ?? "in_progress") as "in_progress" | "completed",
-            completedAt: local?.completedAt ?? null,
+            status: (isComplete ? "completed" : (local?.status ?? "in_progress")) as "in_progress" | "completed",
+            completedAt: isComplete ? (local?.completedAt ?? new Date().toISOString()) : (local?.completedAt ?? null),
             lastLessonId: local?.lastLessonId ?? null,
             lastAccessedAt: local?.lastAccessedAt ?? null,
           };
@@ -284,6 +296,25 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       });
     } catch {
       /* keep existing enrollments on failure */
+    }
+  }, []);
+
+  const syncProgress = useCallback(async () => {
+    try {
+      const progress = await apiFetchProgress();
+      setData((d) => ({
+        ...d,
+        progress: progress.map((p) => ({
+          id: p.id,
+          studentId: p.studentId,
+          courseId: p.courseId,
+          lessonId: p.lessonId,
+          completed: p.completed,
+          completedAt: p.completedAt,
+        })),
+      }));
+    } catch {
+      /* keep existing progress on failure */
     }
   }, []);
 
@@ -297,7 +328,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
         if (me.ok) {
           setCurrentUser(me.user);
           setData(initialDataFor(me.user));
-          await Promise.all([syncCatalog(true), syncEnrollments()]);
+          await Promise.all([syncCatalog(true), syncEnrollments(), syncProgress()]);
           if (session !== me.user.id) {
             try {
               localStorage.setItem(SESSION_KEY, me.user.id);
@@ -343,10 +374,10 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       persistSession(result.user.id, remember);
       setCurrentUser(result.user);
       setData(initialDataFor(result.user));
-      await Promise.all([syncCatalog(true), syncEnrollments()]);
+      await Promise.all([syncCatalog(true), syncEnrollments(), syncProgress()]);
       return { ok: true };
     },
-    [syncCatalog, syncEnrollments],
+    [syncCatalog, syncEnrollments, syncProgress],
   );
 
   const register: Ctx["register"] = useCallback(
@@ -384,6 +415,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     syncCatalog,
     syncStudents,
     syncEnrollments,
+    syncProgress,
     signIn,
     register,
     signOut,
@@ -565,6 +597,10 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     },
     setLessonCompleted: (courseId, lessonId, completed) => {
       if (!currentUserId) return;
+      // Persist to database
+      void apiUpsertProgress(courseId, lessonId, completed).catch(() => {
+        /* progress will still be in local state */
+      });
       setData((d) => {
         const others = d.progress.filter(
           (p) => !(p.studentId === currentUserId && p.lessonId === lessonId),

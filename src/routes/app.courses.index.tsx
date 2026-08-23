@@ -87,11 +87,13 @@ function BrowseCourses() {
             {shown.map((course) => {
               const enrolled = currentUser ? s.enrollmentOf(currentUser.id, course.id) : null;
               const isPending = enrolled?.accessStatus === "pending";
+              const lessons = s.publishedLessonsOfCourse(course.id);
               return (
                 <CourseCard
                   key={course.id}
                   course={course}
-                  lessonCount={s.publishedLessonsOfCourse(course.id).length}
+                  lessonCount={lessons.length}
+                  lessons={lessons}
                   pending={isPending}
                   enrollmentStatus={enrolled?.accessStatus}
                   completed={enrolled?.status === "completed"}
