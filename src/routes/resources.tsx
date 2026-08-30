@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, useMemo } from "react";
 import { Download, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 
+const WHATSAPP_URL = "https://wa.me/923308923780";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
@@ -74,11 +76,19 @@ function ResourceModal({
             {resource.description}
           </p>
           <div className="mt-5">
-            <Button asChild className="w-full">
-              <a href={resource.downloadUrl} target="_blank" rel="noopener noreferrer">
-                <Download className="mr-1.5 h-4 w-4" /> Download
-              </a>
-            </Button>
+            {resource.resourceType === "paid" ? (
+              <Button asChild className="w-full">
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                  Contact Us
+                </a>
+              </Button>
+            ) : (
+              <Button asChild className="w-full">
+                <a href={resource.downloadUrl} target="_blank" rel="noopener noreferrer">
+                  <Download className="mr-1.5 h-4 w-4" /> Download
+                </a>
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -209,6 +219,9 @@ function ResourcesPage() {
                           <Download className="h-10 w-10 text-muted-foreground/40" />
                         </div>
                       )}
+                      <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide backdrop-blur-sm ${(resource.resourceType ?? "free") === "free" ? "bg-success/80 text-success-foreground" : "bg-warning/80 text-warning-foreground"}`}>
+                        {(resource.resourceType ?? "free") === "free" ? "Free" : "Paid"}
+                      </span>
                       <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
                         {resource.type}
                       </span>
@@ -252,6 +265,9 @@ function ResourcesPage() {
                           <Download className="h-10 w-10 text-muted-foreground/40" />
                         </div>
                       )}
+                      <span className={`absolute left-2 top-2 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide backdrop-blur-sm ${(resource.resourceType ?? "free") === "free" ? "bg-success/80 text-success-foreground" : "bg-warning/80 text-warning-foreground"}`}>
+                        {(resource.resourceType ?? "free") === "free" ? "Free" : "Paid"}
+                      </span>
                       <span className="absolute right-2 top-2 rounded-full bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
                         {resource.type}
                       </span>

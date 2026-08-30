@@ -53,36 +53,36 @@ const stats = [
 
 const expertise = [
   { label: "Brand Design", icon: Palette },
-  { label: "Creative Calligraphy", icon: Target },
+  { label: "Digital Calligraphy", icon: Target },
   { label: "Generative AI", icon: Sparkles },
   { label: "UGC Ads Creation", icon: Share2 },
 ];
 
 const journey = [
   {
-    year: "2018",
-    title: "Started the Journey",
-    desc: "Began exploring graphic design and visual storytelling, building a foundation in creative tools and principles.",
+    year: "2026",
+    title: "Design Meet Generative AI",
+    desc: "Started using Generative AI in creative work, exploring AI visuals, photography, direction, and workflows.",
   },
   {
-    year: "2019",
-    title: "Professional Freelancing",
-    desc: "Started taking on client projects across branding, social media design, and visual content creation.",
+    year: "2026",
+    title: "1,000+ Students Trained",
+    desc: "Teaching became a key part of the journey, training 1,000+ students through practical projects.",
   },
   {
     year: "2021",
-    title: "Content Creator Era",
-    desc: "Launched educational content on YouTube and social platforms, teaching design and creative workflows.",
+    title: "Stepped into the Education",
+    desc: "Started teaching design with a practical focus on skills, projects, and real-world creative work.",
   },
   {
-    year: "2023",
-    title: "Built the Community",
-    desc: "Created a thriving community of learners and creators, mentoring students through practical projects.",
+    year: "2020",
+    title: "From Skills to Work",
+    desc: "Started working with real clients across graphic design, branding, logo design, and digital creative work.",
   },
   {
-    year: "2024",
-    title: "Hamza Visuals LMS",
-    desc: "Launched a structured learning platform to deliver project-based courses with hands-on experience.",
+    year: "2019",
+    title: "Started with Design",
+    desc: "Learned the fundamentals of graphic design, Visuals Communication, branding, and composition.",
   },
 ];
 
@@ -103,7 +103,7 @@ const socialLinks = [
     </svg>
   ), href: "https://www.pinterest.com/hamzavisuals1/", label: "Pinterest" },
   { icon: <Youtube className="h-4 w-4" />, href: "https://www.youtube.com/@Hamza.Visuals1", label: "YouTube" },
-  { icon: <Linkedin className="h-4 w-4" />, href: "#", label: "LinkedIn" },
+  { icon: <Linkedin className="h-4 w-4" />, href: "https://www.linkedin.com/in/hamzavisuals1", label: "LinkedIn" },
 ];
 
 /* ─── Page ─── */
@@ -125,7 +125,7 @@ function AboutInstructorPage() {
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-start lg:gap-16">
             {/* Left — Text */}
-            <FadeInSection className="flex-1 text-center lg:text-left">
+            <FadeInSection className="flex-1 pt-8 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 [border-radius:5px] border border-border bg-card px-3 py-1.5 text-xs font-semibold text-primary">
                 <Users className="h-3.5 w-3.5" />
                 Instructor Intro
@@ -136,11 +136,11 @@ function AboutInstructorPage() {
               </h1>
 
               <p className="mt-3 text-lg font-semibold text-primary">
-                Creative Brand Designer
+                Brand Designer - Generative AI Expert
               </p>
 
               <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground lg:max-w-lg">
-                Helping students master design, branding, and AI-powered creative workflows through
+                Helping students master design, branding, and AI-powered creative through
                 practical, project-based learning. Built on real experience, designed for real
                 results.
               </p>
@@ -180,17 +180,12 @@ function AboutInstructorPage() {
                 {/* Glow ring */}
                 <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-transparent blur-lg" />
                 <div className="relative overflow-hidden rounded-2xl border-2 border-border bg-card">
-                  <div className="flex h-[320px] w-[280px] items-center justify-center bg-gradient-to-br from-primary/8 to-primary/3 sm:h-[380px] sm:w-[320px]">
+                  <div className="relative h-[380px] w-[360px] overflow-hidden sm:h-[450px] sm:w-[420px]">
                     <img
-                      src="/images/favicon.PNG"
+                      src="/images/about_image.png"
                       alt="Hamza Bhatti"
-                      className="h-28 w-28 rounded-full border-4 border-primary/20 object-cover sm:h-36 sm:w-36"
+                      className="h-full w-full object-cover"
                     />
-                  </div>
-                  {/* Bottom bar */}
-                  <div className="border-t border-border bg-card px-5 py-3 text-center">
-                    <p className="text-sm font-bold text-foreground">Hamza Visuals</p>
-                    <p className="text-xs text-muted-foreground">Educator &amp; Designer</p>
                   </div>
                 </div>
               </div>
@@ -370,10 +365,10 @@ function AboutInstructorPage() {
             style and see what works best for you.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button asChild size="lg" className="px-8">
+            <Button asChild size="lg" className="border !border-white px-8 dark:!bg-transparent">
               <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
             </Button>
-            <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
+            <Button asChild variant="outline" size="lg" className="dark:border-white dark:bg-white dark:!text-[#0C0C0C]">
               <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
             </Button>
           </div>

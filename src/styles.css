@@ -220,9 +220,9 @@
   --accent-foreground: #0076DF;
   --destructive: #0C0C0C;
   --destructive-foreground: #FFFFFF;
-  --success: #0076DF;
+  --success: #16a34a;
   --success-foreground: #FFFFFF;
-  --warning: #0076DF;
+  --warning: #f59e0b;
   --warning-foreground: #FFFFFF;
   --border: rgba(12, 12, 12, 0.12);
   --input: rgba(12, 12, 12, 0.15);
@@ -261,10 +261,10 @@
   --accent-foreground: #0076DF;
   --destructive: #FFFFFF;
   --destructive-foreground: #0C0C0C;
-  --success: #0076DF;
+  --success: #22c55e;
   --success-foreground: #FFFFFF;
-  --warning: #0076DF;
-  --warning-foreground: #FFFFFF;
+  --warning: #fbbf24;
+  --warning-foreground: #0C0C0C;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.12);
   --ring: #0076DF;

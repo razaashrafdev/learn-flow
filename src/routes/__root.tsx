@@ -1,7 +1,6 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
-  createRootRouteWithContext,
+  createRootRoute,
   useRouter,
   useRouterState,
   HeadContent,
@@ -56,7 +55,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -109,7 +108,6 @@ function RootShell({ children }: { children: ReactNode }) {
 const NO_HEADER_PREFIXES = ["/login", "/register", "/forgot-password", "/app", "/admin"];
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const showHeader = !NO_HEADER_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(p + "/"),
@@ -121,7 +119,6 @@ function RootComponent() {
       : undefined;
 
   return (
-    <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <LmsProvider>
           {showHeader ? <SiteHeader activeSection={activeSection} /> : null}
@@ -133,6 +130,5 @@ function RootComponent() {
           {pathname === "/" && <WebsitePopup />}
         </LmsProvider>
       </ThemeProvider>
-    </QueryClientProvider>
   );
 }

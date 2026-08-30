@@ -32,11 +32,11 @@ function CoursesListing() {
     const q = query.trim().toLowerCase();
     return data.courses
       .filter((c) => c.status === "published")
+      .filter((c) => c.showOnCoursesPage)
       .filter((c) =>
         q
           ? c.title.toLowerCase().includes(q) ||
-            c.shortDescription.toLowerCase().includes(q) ||
-            c.description.toLowerCase().includes(q)
+            c.shortDescription.toLowerCase().includes(q)
           : true,
       );
   }, [data.courses, query]);

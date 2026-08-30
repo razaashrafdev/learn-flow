@@ -1,5 +1,5 @@
 ﻿import { useCallback, useEffect, useRef, useState } from "react";
-import { Maximize, Pause, Play, Volume2, VolumeX } from "lucide-react";
+import { Maximize, Pause, Play, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 declare global {
@@ -283,7 +283,7 @@ export function VideoPlayer({ videoId, className }: Props) {
   const pct = dur > 0 ? (cur / dur) * 100 : 0;
   return (
     <div
-      className={cn("relative bg-black", className)}
+      className={cn("relative h-full w-full bg-black", className)}
       onMouseMove={showControls}
       onMouseEnter={showControls}
       onMouseLeave={() => {
@@ -292,8 +292,7 @@ export function VideoPlayer({ videoId, className }: Props) {
     >
       <div
         ref={wrapRef}
-        className="relative w-full"
-        style={{ paddingBottom: "56.25%" }}
+        className="relative w-full h-full"
         onDoubleClick={handleDoubleClick}
       >
         <div
@@ -348,6 +347,24 @@ export function VideoPlayer({ videoId, className }: Props) {
               ) : (
                 <Play className="h-4 w-4" />
               )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { seek(-10); closeMenus(); }}
+              className="rounded-md p-1.5 hover:bg-white/20"
+              title="Rewind 10 seconds"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => { seek(10); closeMenus(); }}
+              className="rounded-md p-1.5 hover:bg-white/20"
+              title="Forward 10 seconds"
+            >
+              <RotateCw className="h-4 w-4" />
             </button>
 
             <button

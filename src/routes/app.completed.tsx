@@ -54,9 +54,9 @@ function CompletedCourses() {
     setFeedbackOpen(true);
   };
 
-  const submitFeedback = () => {
+  const submitFeedback = async () => {
     if (!feedbackCourseId || rating === 0) return;
-    addReview(feedbackCourseId, rating, reviewText);
+    await addReview(feedbackCourseId, rating, reviewText);
     toast.success("Feedback submitted successfully");
     setFeedbackOpen(false);
   };

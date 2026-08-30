@@ -4,7 +4,6 @@ import { toast } from "sonner";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
 import {
-  User,
   UserPlus,
   MoreHorizontal,
   Pencil,

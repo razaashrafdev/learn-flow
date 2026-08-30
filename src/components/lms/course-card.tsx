@@ -5,27 +5,14 @@ import { Button } from "@/components/ui/button";
 import { ProgressRow } from "@/components/lms/ui-bits";
 import type { Course, Lesson } from "@/lib/lms/types";
 import { cn } from "@/lib/utils";
+import { parseDurationToSeconds } from "@/lib/helpers";
 
 function formatLessonsDuration(lessons: Lesson[]): string {
   if (lessons.length === 0) return "";
-  const total = lessons.reduce((acc, l) => {
-    const colonMatch = /^(\d+):(\d+)$/.exec(l.duration);
-    if (colonMatch) {
-      return acc + parseInt(colonMatch[1]!, 10);
-    }
-    const minMatch = /(\d+)\s*min/.exec(l.duration);
-    if (minMatch) {
-      return acc + parseInt(minMatch[1]!, 10);
-    }
-    const numMatch = /^(\d+)$/.exec(l.duration);
-    if (numMatch) {
-      return acc + parseInt(numMatch[1]!, 10);
-    }
-    return acc;
-  }, 0);
-  if (total === 0) return "";
-  const h = Math.floor(total / 60);
-  const min = total % 60;
+  const totalSeconds = lessons.reduce((acc, l) => acc + parseDurationToSeconds(l.duration), 0);
+  if (totalSeconds === 0) return "";
+  const h = Math.floor(totalSeconds / 3600);
+  const min = Math.floor((totalSeconds % 3600) / 60);
   if (h > 0 && min > 0) return `${h}h ${min}m`;
   if (h > 0) return `${h}h`;
   return `${min}m`;
@@ -72,19 +59,22 @@ export function CourseCard({
         <span
           className={cn(
             "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
-            course.pricingType === "free"
-              ? "bg-success/80 text-success-foreground"
-              : "bg-warning/80 text-warning-foreground",
+            course.courseType === "live"
+              ? "bg-red-500/90 text-white"
+              : "bg-gray-500/90 text-white",
           )}
         >
-          {course.pricingType === "free" ? "FREE" : "PAID"}
+          {course.courseType === "live" ? "Live" : "Recorded"}
         </span>
         {completed && (
-          <span className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-success/80 px-2.5 py-1 text-xs font-bold text-success-foreground backdrop-blur-sm">
+          <span className="absolute left-3 top-10 flex items-center gap-1 rounded-full bg-success/80 px-2.5 py-1 text-xs font-bold text-success-foreground backdrop-blur-sm">
             <CheckCircle2 className="h-3 w-3" />
             Completed
           </span>
         )}
+        <span className="absolute bottom-3 left-3 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground backdrop-blur-sm">
+          {course.pricingType === "free" ? "Free" : `Rs. ${course.price ?? 0}`}
+        </span>
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
@@ -103,7 +93,7 @@ export function CourseCard({
             <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
-            <Tag className="h-3.5 w-3.5" /> <Link to="/about" className="hover:text-primary transition-colors">{course.instructor}</Link>
+            <Tag className="h-3.5 w-3.5" /> <Link to="/about" className="text-primary hover:text-primary underline transition-colors">{course.instructor}</Link>
           </span>
         </div>
 
@@ -170,12 +160,15 @@ export function LandingCourseCard({
         <span
           className={cn(
             "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
-            course.pricingType === "free"
-              ? "bg-success/80 text-success-foreground"
-              : "bg-warning/80 text-warning-foreground",
+            course.courseType === "live"
+              ? "bg-red-500/90 text-white"
+              : "bg-gray-500/90 text-white",
           )}
         >
-          {course.pricingType === "free" ? "FREE" : "PAID"}
+          {course.courseType === "live" ? "Live" : "Recorded"}
+        </span>
+        <span className="absolute bottom-3 left-3 rounded-full bg-primary px-3 py-1.5 text-sm font-bold text-primary-foreground backdrop-blur-sm">
+          {course.pricingType === "free" ? "Free" : `Rs. ${course.price ?? 0}`}
         </span>
       </Link>
 
@@ -195,7 +188,7 @@ export function LandingCourseCard({
             <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5" /> <Link to="/about" className="hover:text-primary transition-colors">{course.instructor}</Link>
+            <Users className="h-3.5 w-3.5" /> <Link to="/about" className="text-primary hover:text-primary underline transition-colors">{course.instructor}</Link>
           </span>
         </div>
 

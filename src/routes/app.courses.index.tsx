@@ -36,8 +36,7 @@ function BrowseCourses() {
       .filter((c) =>
         q
           ? c.title.toLowerCase().includes(q) ||
-            c.shortDescription.toLowerCase().includes(q) ||
-            c.description.toLowerCase().includes(q)
+            c.shortDescription.toLowerCase().includes(q)
           : true,
       );
   }, [data.courses, query, s]);
@@ -95,7 +94,7 @@ function BrowseCourses() {
                   lessonCount={lessons.length}
                   lessons={lessons}
                   pending={isPending}
-                  enrollmentStatus={enrolled?.accessStatus}
+                  {...(enrolled ? { enrollmentStatus: enrolled.accessStatus } : {})}
                   completed={enrolled?.status === "completed"}
                   appLink
                   footer={

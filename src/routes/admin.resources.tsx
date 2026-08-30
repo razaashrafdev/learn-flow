@@ -27,6 +27,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ImageUpload } from "@/components/lms/ui-bits";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useLms } from "@/lib/lms/store";
 import type { Resource } from "@/lib/lms/types";
 
@@ -49,6 +56,7 @@ const emptyForm = {
   type: "",
   image: "",
   downloadUrl: "",
+  resourceType: "free",
 };
 
 function AdminResources() {
@@ -81,6 +89,7 @@ function AdminResources() {
       type: r.type,
       image: r.image,
       downloadUrl: r.downloadUrl,
+      resourceType: r.resourceType ?? "free",
     });
     setDialogOpen(true);
   };
@@ -97,6 +106,7 @@ function AdminResources() {
       type: form.type.trim() || "Other",
       image: form.image.trim(),
       downloadUrl: form.downloadUrl.trim(),
+      resourceType: form.resourceType,
     };
     try {
       if (editingId) {
@@ -139,7 +149,7 @@ function AdminResources() {
               <tr className="border-b bg-muted/50 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <th className="px-5 py-3 w-12">#</th>
                 <th className="px-5 py-3">Heading</th>
-                <th className="hidden px-5 py-3 md:table-cell">Type</th>
+                <th className="hidden px-5 py-3 md:table-cell">Price</th>
                 <th className="px-5 py-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -151,8 +161,8 @@ function AdminResources() {
                   </td>
                   <td className="px-5 py-3 font-medium">{r.title}</td>
                   <td className="hidden px-5 py-3 md:table-cell">
-                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
-                      {r.type}
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${(r.resourceType ?? "free") === "free" ? "bg-success/12 text-success" : "bg-warning/12 text-warning"}`}>
+                      {(r.resourceType ?? "free") === "free" ? "Free" : "Paid"}
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right">
@@ -204,15 +214,32 @@ function AdminResources() {
                 className="w-full"
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="res-title">Title *</Label>
-              <Input
-                id="res-title"
-                value={form.title}
-                maxLength={120}
-                placeholder="Resource title"
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
-              />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <Label htmlFor="res-title">Title *</Label>
+                <Input
+                  id="res-title"
+                  value={form.title}
+                  maxLength={120}
+                  placeholder="Resource title"
+                  onChange={(e) => setForm({ ...form, title: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="res-resource-type">Resource Type</Label>
+                <Select
+                  value={form.resourceType}
+                  onValueChange={(v) => setForm({ ...form, resourceType: v })}
+                >
+                  <SelectTrigger id="res-resource-type">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="free">Free</SelectItem>
+                    <SelectItem value="paid">Paid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="res-desc">Description</Label>
