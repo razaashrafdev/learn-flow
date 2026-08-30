@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronDown, ChevronUp, Link2, Plus, Trash2, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Link2, Plus, Trash2, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell, adminNav } from "@/components/lms/app-shell";
@@ -43,6 +43,11 @@ function EditCourse() {
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [resourcesLessonId, setResourcesLessonId] = useState<string | null>(null);
   const [resourceLinks, setResourceLinks] = useState<string[]>([""]);
+  const [editingLessonId, setEditingLessonId] = useState<string | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editUrl, setEditUrl] = useState("");
+  const [editDuration, setEditDuration] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
 
   if (!course) {
     return (
@@ -75,6 +80,23 @@ function EditCourse() {
 
   const addResourceLink = () => setResourceLinks([...resourceLinks, ""]);
   const removeResourceLink = (idx: number) => setResourceLinks(resourceLinks.filter((_, i) => i !== idx));
+  const startEdit = (l: typeof data.lessons[0]) => {
+    setEditingLessonId(l.id);
+    setEditTitle(l.title);
+    setEditUrl(l.youtubeUrl);
+    setEditDuration(l.duration);
+  };
+  const saveEdit = async (lessonId: string) => {
+    setSavingEdit(true);
+    const result = await updateLesson(lessonId, { title: editTitle.trim(), youtubeUrl: editUrl.trim(), duration: editDuration.trim() || "10:00" });
+    setSavingEdit(false);
+    if (result.ok) {
+      toast.success("Lesson updated successfully");
+      setEditingLessonId(null);
+    } else {
+      toast.error(result.error ?? "Could not update lesson");
+    }
+  };
 
   return (
     <AppShell nav={adminNav} title="Edit Course" subtitle={course.title}>
@@ -92,6 +114,8 @@ function EditCourse() {
             initial={toFormValues(course)}
             submitLabel="Save Changes"
             lessons={data.lessons.filter((l) => l.sectionId && sections.some((s) => s.id === l.sectionId))}
+            allCourses={data.courses}
+            currentCourseId={course.id}
             onSubmit={async (values) => {
               try {
                 await updateCourse(course.id, values);
@@ -150,12 +174,76 @@ function EditCourse() {
                 </div>
 
                 <ul className="mt-3 divide-y divide-border">
-                  {lessons.map((l) => (
+{lessons.map((l) => (
                     <li key={l.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 py-2">
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium">{l.title}</p>
-                        <p className="truncate text-xs text-muted-foreground">{l.duration} · {l.youtubeVideoId}</p>
-                      </div>
+                      {editingLessonId === l.id ? (
+                        <div className="min-w-0 flex flex-col gap-2">
+                          <Input
+                            value={editTitle}
+                            maxLength={120}
+                            className="h-8 text-sm font-bold"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (editTitle?.trim()) {
+                                  void saveEdit(l.id);
+                                } else {
+                                  setEditingLessonId(null);
+                                }
+                              }
+                              if (e.key === "Escape") setEditingLessonId(null);
+                            }}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                          />
+                          <Input
+                            value={editUrl}
+                            maxLength={300}
+                            className="h-8 text-sm"
+                            placeholder="YouTube URL"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (editUrl?.trim()) {
+                                  void saveEdit(l.id);
+                                } else {
+                                  setEditingLessonId(null);
+                                }
+                              }
+                              if (e.key === "Escape") setEditingLessonId(null);
+                            }}
+                            onChange={(e) => setEditUrl(e.target.value)}
+                          />
+                          <Input
+                            value={editDuration}
+                            maxLength={10}
+                            className="h-8 text-sm"
+                            placeholder="Duration (e.g. 12:30)"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (editTitle?.trim()) {
+                                  void saveEdit(l.id);
+                                } else {
+                                  setEditingLessonId(null);
+                                }
+                              }
+                              if (e.key === "Escape") setEditingLessonId(null);
+                            }}
+                            onChange={(e) => setEditDuration(e.target.value)}
+                          />
+                          <div className="flex gap-2">
+                            <Button variant="default" size="sm" onClick={() => saveEdit(l.id)} disabled={savingEdit}>
+                              {savingEdit ? "Saving..." : "Save"}
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => setEditingLessonId(null)}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium">{l.title}</p>
+                          <p className="truncate text-xs text-muted-foreground">{l.duration} · {l.youtubeVideoId}</p>
+                        </div>
+                      )}
                       <div className="flex shrink-0 gap-1">
                         <Button variant="ghost" size="icon" aria-label="Add resources" onClick={() => openResources(l.id)}>
                           <Link2 className="h-4 w-4" />
@@ -168,6 +256,14 @@ function EditCourse() {
                         </Button>
                         <Button variant="ghost" size="icon" aria-label="Delete lesson" onClick={() => { void deleteLesson(l.id).then(() => toast.success("Lesson deleted successfully")).catch(() => toast.error("Could not delete lesson")); }}>
                           <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Edit lesson"
+                          onClick={() => startEdit(l)}
+                        >
+                          <Pencil className="h-4 w-4" />
                         </Button>
                       </div>
                     </li>

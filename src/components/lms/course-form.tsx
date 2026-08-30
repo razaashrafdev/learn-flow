@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -13,77 +14,81 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ImageUpload } from "@/components/lms/ui-bits";
-import type { Course, CourseLevel, CourseStatus, Lesson, PricingType } from "@/lib/lms/types";
+import type { Course, CourseLevel, CourseStatus, CourseType, Lesson, PricingType } from "@/lib/lms/types";
+import { parseDurationToSeconds } from "@/lib/helpers";
 
 export type CourseFormValues = {
   title: string;
   shortDescription: string;
-  description: string;
   thumbnail: string;
   duration: string;
   instructor: string;
   level: CourseLevel;
   pricingType: PricingType;
+  courseType: CourseType;
   status: CourseStatus;
   price: number;
+  showOnCoursesPage: boolean;
+  showOnHomePage: boolean;
+  homePagePosition: number | null;
 };
 
 function calcTotalHours(lessons: Lesson[]): string {
   let totalSeconds = 0;
   for (const l of lessons) {
     if (!l.published) continue;
-    const parts = l.duration.split(":");
-    if (parts.length === 2) {
-      const min = parseInt(parts[0]!, 10);
-      const sec = parseInt(parts[1]!, 10);
-      if (!isNaN(min)) totalSeconds += min * 60;
-      if (!isNaN(sec)) totalSeconds += sec;
-    } else if (parts.length === 1) {
-      const min = parseInt(parts[0]!, 10);
-      if (!isNaN(min)) totalSeconds += min * 60;
-    }
+    totalSeconds += parseDurationToSeconds(l.duration);
   }
-  const hours = Math.round(totalSeconds / 3600 * 10) / 10;
-  return hours >= 1 ? `${hours}h` : "1h";
+  if (totalSeconds === 0) return "1h";
+  const h = Math.floor(totalSeconds / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  if (h > 0 && m > 0) return `${h}h ${m}m`;
+  if (h > 0) return `${h}h`;
+  return `${m}m`;
 }
 
 const schema = z.object({
   title: z.string().trim().min(3, "Title Is Required").max(120),
   shortDescription: z.string().trim().min(10, "Write a Short Summary").max(200),
-  description: z.string().trim().min(20, "Add a Fuller Description").max(4000),
   thumbnail: z.string().trim().min(1, "Thumbnail is required").max(6000000),
   duration: z.string().trim().min(1, "Add a Duration").max(20),
-  instructor: z.string().trim().min(2, "Add an Instructor Name").max(80),
   level: z.enum(["Beginner", "Intermediate", "Advanced", "All Levels"]),
   pricingType: z.enum(["free", "paid"]),
+  courseType: z.enum(["live", "recorded"]),
   price: z.number().min(0),
 });
 
 export const emptyCourse = (): CourseFormValues => ({
   title: "",
   shortDescription: "",
-  description: "",
   thumbnail: "",
   duration: "1h",
   instructor: "Hamza Bhatti",
   level: "Beginner",
   pricingType: "free",
+  courseType: "recorded",
   status: "draft",
   price: 0,
+  showOnCoursesPage: true,
+  showOnHomePage: false,
+  homePagePosition: null,
 });
 
 export function toFormValues(course: Course): CourseFormValues {
   return {
     title: course.title,
     shortDescription: course.shortDescription,
-    description: course.description,
     thumbnail: course.thumbnail,
     duration: course.duration,
-    instructor: course.instructor,
+    instructor: "Hamza Bhatti",
     level: course.level,
     pricingType: course.pricingType,
+    courseType: course.courseType ?? "recorded",
     status: course.status,
     price: course.price ?? 0,
+    showOnCoursesPage: course.showOnCoursesPage ?? true,
+    showOnHomePage: course.showOnHomePage ?? false,
+    homePagePosition: course.homePagePosition ?? null,
   };
 }
 
@@ -92,11 +97,15 @@ export function CourseForm({
   submitLabel,
   onSubmit,
   lessons,
+  allCourses,
+  currentCourseId,
 }: {
   initial: CourseFormValues;
   submitLabel: string;
-  onSubmit: (values: CourseFormValues) => void;
+  onSubmit: (values: CourseFormValues) => void | Promise<void>;
   lessons?: Lesson[];
+  allCourses?: Course[];
+  currentCourseId?: string;
 }) {
   const [values, setValues] = useState<CourseFormValues>(initial);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -111,7 +120,7 @@ export function CourseForm({
   const set = <K extends keyof CourseFormValues>(key: K, v: CourseFormValues[K]) =>
     setValues((s) => ({ ...s, [key]: v }));
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const parsed = schema.safeParse(values);
     if (!parsed.success) {
@@ -121,7 +130,7 @@ export function CourseForm({
       return;
     }
     setErrors({});
-    onSubmit(values);
+    await onSubmit(values);
   };
 
   return (
@@ -161,20 +170,6 @@ export function CourseForm({
         />
         {errors["shortDescription"] ? (
           <p className="text-xs font-medium text-destructive">{errors["shortDescription"]}</p>
-        ) : null}
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="desc">Full Description</Label>
-        <Textarea
-          id="desc"
-          rows={5}
-          value={values.description}
-          maxLength={4000}
-          onChange={(e) => set("description", e.target.value)}
-        />
-        {errors["description"] ? (
-          <p className="text-xs font-medium text-destructive">{errors["description"]}</p>
         ) : null}
       </div>
 
@@ -238,18 +233,95 @@ export function CourseForm({
             />
           </div>
         )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <Label>Course Type</Label>
+          <Select
+            value={values.courseType}
+            onValueChange={(v) => set("courseType", v as CourseType)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="live">Live</SelectItem>
+              <SelectItem value="recorded">Recorded</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="instructor">Instructor</Label>
-          <Input
-            id="instructor"
-            value={values.instructor}
-            maxLength={80}
-            onChange={(e) => set("instructor", e.target.value)}
+          <Label>Home Page Position</Label>
+          <Select
+            value={values.homePagePosition != null ? String(values.homePagePosition) : "none"}
+            onValueChange={(v) => set("homePagePosition", v === "none" ? null : Number(v))}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="No Position" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">No Position</SelectItem>
+              {[1, 2, 3].map((pos) => {
+                const occupiedByOther = (allCourses ?? []).some(
+                  (c) => c.homePagePosition === pos && c.id !== currentCourseId,
+                );
+                return (
+                  <SelectItem key={pos} value={String(pos)} disabled={occupiedByOther}>
+                    Position {pos}{occupiedByOther ? " (Occupied)" : ""}
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex items-center justify-between rounded-lg border border-border p-3">
+          <Label htmlFor="showOnCoursesPage" className="cursor-pointer text-sm font-medium">
+            Show on Courses Page
+          </Label>
+          <Switch
+            id="showOnCoursesPage"
+            checked={values.showOnCoursesPage}
+            onCheckedChange={(checked) => {
+              set("showOnCoursesPage", checked);
+              if (!checked) {
+                set("showOnHomePage", false);
+              }
+            }}
           />
-          {errors["instructor"] ? (
-            <p className="text-xs font-medium text-destructive">{errors["instructor"]}</p>
-          ) : null}
+        </div>
+
+        <div className="flex items-center justify-between rounded-lg border border-border p-3">
+          <Label
+            htmlFor="showOnHomePage"
+            className={`cursor-pointer text-sm font-medium ${!values.showOnCoursesPage ? "text-muted-foreground" : ""}`}
+          >
+            Show on Home Page
+          </Label>
+          <Switch
+            id="showOnHomePage"
+            checked={values.showOnHomePage}
+            disabled={!values.showOnCoursesPage}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                const homepageCount = (allCourses ?? []).filter(
+                  (c) => c.showOnHomePage && c.id !== currentCourseId,
+                ).length;
+                if (homepageCount >= 3) {
+                  toast.error(
+                    "Only 3 courses can be shown on the Home Page. Please remove one of the existing courses first.",
+                  );
+                  return;
+                }
+              }
+              set("showOnHomePage", checked);
+              if (!checked) set("homePagePosition", null);
+            }}
+          />
         </div>
       </div>
 

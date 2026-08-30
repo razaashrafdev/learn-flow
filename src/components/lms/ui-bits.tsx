@@ -352,8 +352,8 @@ export function PublicFooter() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Hamza Visuals teaches practical design, video editing <br className="max-sm:hidden" />
-              and AI through project based courses.
+              Helping students master design and AI-powered creative through
+              project-based learning.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <a
@@ -516,7 +516,7 @@ export function PublicFooter() {
               href="https://wa.me/923008974168"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-foreground hover:underline"
+              className="font-semibold text-primary"
             >
               Muhammad Aftab
             </a>

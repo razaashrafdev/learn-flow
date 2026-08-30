@@ -273,7 +273,15 @@ function LandingPage() {
 
   const landingCourses = useMemo(() => {
     return [...publishedCourses]
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .filter((c) => c.showOnHomePage)
+      .sort((a, b) => {
+        const posA = a.homePagePosition;
+        const posB = b.homePagePosition;
+        if (posA != null && posB != null) return posA - posB;
+        if (posA != null) return -1;
+        if (posB != null) return 1;
+        return b.createdAt.localeCompare(a.createdAt);
+      })
       .slice(0, 3);
   }, [publishedCourses]);
 
@@ -505,6 +513,7 @@ function LandingPage() {
                         <img
                           src={testimonial.image}
                           alt={testimonial.name}
+                          loading="lazy"
                           className="h-10 w-10 rounded-full object-cover ring-2 ring-border"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -586,10 +595,10 @@ function LandingPage() {
               style and see what works best for you.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Button asChild size="lg" className="px-8">
+              <Button asChild size="lg" className="border !border-white px-8 dark:!bg-transparent">
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
               </Button>
-              <Button asChild variant="outline" size="lg" className="dark:border-white/25 dark:text-white">
+              <Button asChild variant="outline" size="lg" className="dark:border-white dark:bg-white dark:!text-[#0C0C0C]">
                 <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
               </Button>
             </div>

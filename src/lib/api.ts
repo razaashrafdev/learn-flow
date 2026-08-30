@@ -12,7 +12,7 @@ import type {
 const API_URL: string =
   (import.meta as unknown as { env?: Record<string, string> }).env?.["VITE_API_URL"] ??
   (typeof window !== "undefined"
-    ? `http://${window.location.hostname}:5000`
+    ? `${window.location.protocol}//${window.location.hostname}:5000`
     : "http://localhost:5000");
 
 const TOKEN_KEY = "lms.token.v1";
@@ -259,6 +259,7 @@ export type CreateResourceInput = {
   image: string;
   downloadUrl: string;
   fileSize?: string;
+  resourceType?: string;
 };
 
 export async function apiCreateResource(input: CreateResourceInput): Promise<Resource> {
@@ -475,5 +476,27 @@ export async function apiUpsertProgress(
   return request<ApiLessonProgress>("/api/progress", {
     method: "PUT",
     body: JSON.stringify({ courseId, lessonId, completed, studentId }),
+  });
+}
+
+// ── Reviews ─────────────────────────────────────────────────────────────────
+
+export type ApiReview = {
+  id: string;
+  author: string;
+  role: string;
+  rating: number;
+  content: string;
+  date: string;
+};
+
+export async function apiSubmitReview(
+  courseId: string,
+  rating: number,
+  content: string,
+): Promise<ApiReview> {
+  return request<ApiReview>("/api/reviews", {
+    method: "POST",
+    body: JSON.stringify({ courseId, rating, content }),
   });
 }

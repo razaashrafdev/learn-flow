@@ -29,6 +29,7 @@ import { apiFetchCourseBySlug, type CourseDetail } from "@/lib/api";
 import { FadeInSection, PublicFooter } from "@/components/lms/ui-bits";
 import { cn } from "@/lib/utils";
 import type { Course, Lesson, Section } from "@/lib/lms/types";
+import { formatCount, formatTotalDuration } from "@/lib/helpers";
 
 export const Route = createFileRoute("/courses/$slug")({
   head: () => ({
@@ -47,37 +48,6 @@ export const Route = createFileRoute("/courses/$slug")({
   }),
   component: PublicCourseDetails,
 });
-
-/* ---------------- small helpers ---------------- */
-
-function formatCount(n?: number) {
-  return n == null ? "" : n.toLocaleString("en-US");
-}
-
-function formatTotalDuration(lessons: Lesson[]) {
-  if (lessons.length === 0) return "";
-  const total = lessons.reduce((acc, l) => {
-    const colonMatch = /^(\d+):(\d+)$/.exec(l.duration);
-    if (colonMatch) {
-      return acc + parseInt(colonMatch[1]!, 10);
-    }
-    const minMatch = /(\d+)\s*min/.exec(l.duration);
-    if (minMatch) {
-      return acc + parseInt(minMatch[1]!, 10);
-    }
-    const numMatch = /^(\d+)$/.exec(l.duration);
-    if (numMatch) {
-      return acc + parseInt(numMatch[1]!, 10);
-    }
-    return acc;
-  }, 0);
-  if (total === 0) return "";
-  const h = Math.floor(total / 60);
-  const min = total % 60;
-  if (h > 0 && min > 0) return `${h}h ${min}m`;
-  if (h > 0) return `${h}h`;
-  return `${min}m`;
-}
 
 function relativeDate(date: string) {
   const days = Math.max(0, Math.floor((Date.now() - new Date(date).getTime()) / 86400000));
@@ -131,18 +101,17 @@ function PublicCourseDetails() {
   // Try store first
   const storeCourse = data.courses.find((c) => c.slug === slug && c.status === "published");
 
-  // Fallback: direct API fetch
+  // Always fetch from API for fresh enrollment count and reviews
   const [remote, setRemote] = useState<CourseDetail | null>(() => {
-    if (storeCourse) return null;
     if (_courseDetailCache && _courseDetailCache.slug === slug && Date.now() - _courseDetailCache.ts < COURSE_DETAIL_CACHE_MS) {
       return _courseDetailCache.data;
     }
     return null;
   });
-  const [apiLoading, setApiLoading] = useState(!storeCourse && !remote);
+  const [apiLoading, setApiLoading] = useState(!remote);
 
   useEffect(() => {
-    if (storeCourse || remote) {
+    if (remote) {
       setApiLoading(false);
       return;
     }
@@ -154,7 +123,7 @@ function PublicCourseDetails() {
       setApiLoading(false);
     });
     return () => { cancelled = true; };
-  }, [slug, storeCourse, remote]);
+  }, [slug, remote]);
 
   const loading = apiLoading && !storeCourse;
 
@@ -208,11 +177,14 @@ function PublicCourseDetails() {
         return sectionIds.includes(l.sectionId) && l.published;
       });
   const isPaid = course.pricingType === "paid";
-  const rating = course.rating ?? 0;
-  const reviewCount = course.reviewCount ?? 0;
-  const enrolledCount =
-    course.studentCount ?? (storeCourse ? data.enrollments.filter((e) => e.courseId === course.id).length : 0);
   const reviews = course.reviews ?? [];
+  const reviewCount = reviews.length;
+  const rating = reviewCount > 0
+    ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
+    : 0;
+  const enrolledCount = remote?.course.studentCount
+    ?? course.studentCount
+    ?? (storeCourse ? data.enrollments.filter((e) => e.courseId === course.id).length : 0);
   const totalDuration = formatTotalDuration(lessonsList) || course.duration;
 
   const defaultOpen = courseSections[0];
@@ -499,7 +471,7 @@ function PublicCourseDetails() {
                 )}
                 <p className="mt-2 text-xs text-muted-foreground">
                   {isPaid
-                    ? `${course.accessPeriod ?? "Full access"} with You will get lifetime access.`
+                    ? `You will get lifetime access.`
                     : "Start learning for free — no card required"}
                 </p>
 

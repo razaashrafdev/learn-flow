@@ -63,15 +63,13 @@ function MyCourses() {
                 completed={e.status === "completed"}
                 appLink
                 {...(!isPending && !isRejected && { progress: { percent: progress.percent, label: `${progress.done}/${progress.total} lessons complete` } })}
-                footer={
-                  isRejected
-                    ? undefined
-                    : {
-                        label: "Continue Learning",
-                        to: "/app/learn/$slug",
-                        params: { slug: course.slug },
-                      }
-                }
+                {...(!isRejected && {
+                  footer: {
+                    label: "Continue Learning",
+                    to: "/app/learn/$slug",
+                    params: { slug: course.slug },
+                  },
+                })}
               />
             );
           })}

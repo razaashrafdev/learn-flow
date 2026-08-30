@@ -43,6 +43,7 @@ import {
   apiDeleteEnrollment,
   apiFetchProgress,
   apiUpsertProgress,
+  apiSubmitReview,
   type CreateResourceInput,
   type CreateStudentInput,
 } from "../api";
@@ -86,36 +87,6 @@ export function getPaymentScreenshot(studentId: string, courseId: string): strin
     return localStorage.getItem(paymentScreenshotKey(studentId, courseId));
   } catch {
     return null;
-  }
-}
-
-/** localStorage key for website popup image URL. */
-const popupImageKey = "lms.popup.imageUrl";
-
-/** Store the popup image URL in localStorage. */
-export function setPopupImageUrl(url: string) {
-  try {
-    localStorage.setItem(popupImageKey, url);
-  } catch {
-    /* quota */
-  }
-}
-
-/** Retrieve the popup image URL from localStorage. */
-export function getPopupImageUrl(): string | null {
-  try {
-    return localStorage.getItem(popupImageKey);
-  } catch {
-    return null;
-  }
-}
-
-/** Remove the popup image URL from localStorage. */
-export function removePopupImageUrl() {
-  try {
-    localStorage.removeItem(popupImageKey);
-  } catch {
-    /* ignore */
   }
 }
 
@@ -213,7 +184,7 @@ type Ctx = {
   ) => Promise<{ ok: boolean; error?: string }>;
   deleteStudent: (id: string) => Promise<void>;
 
-  addReview: (courseId: string, rating: number, content: string) => void;
+  addReview: (courseId: string, rating: number, content: string) => Promise<void>;
 
   addResource: (resource: Omit<Resource, "id">) => Promise<void>;
   updateResource: (id: string, patch: Partial<Omit<Resource, "id">>) => Promise<void>;
@@ -241,6 +212,9 @@ export function LmsProvider({ children }: { children: ReactNode }) {
   };
 
   const lastCatalogSync = useRef(0);
+  const lastStudentsSync = useRef(0);
+  const lastEnrollmentsSync = useRef(0);
+  const SYNC_CACHE_MS = 10_000;
 
   const syncCatalog = useCallback(async (force = false) => {
     if (!force && Date.now() - lastCatalogSync.current < CATALOG_CACHE_MS) return;
@@ -257,9 +231,11 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
-  const syncStudents = useCallback(async () => {
+  const syncStudents = useCallback(async (force = false) => {
+    if (!force && Date.now() - lastStudentsSync.current < SYNC_CACHE_MS) return;
     try {
       const students = await apiListStudents();
+      lastStudentsSync.current = Date.now();
       setData((d) => ({
         ...d,
         users: students.map((s) => ({ ...s, role: "student" })),
@@ -269,9 +245,11 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const syncEnrollments = useCallback(async () => {
+  const syncEnrollments = useCallback(async (force = false) => {
+    if (!force && Date.now() - lastEnrollmentsSync.current < SYNC_CACHE_MS) return;
     try {
       const enrollments = await apiListEnrollments();
+      lastEnrollmentsSync.current = Date.now();
       setData((d) => {
         const merged = enrollments.map((incoming) => {
           const local = d.enrollments.find((e) => e.id === incoming.id);
@@ -408,7 +386,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const value: Ctx = {
+  const value: Ctx = useMemo(() => ({
     ready,
     data,
     currentUser,
@@ -740,39 +718,36 @@ export function LmsProvider({ children }: { children: ReactNode }) {
       }));
     },
 
-    addReview: (courseId, rating, content) => {
+    addReview: async (courseId, rating, content) => {
       if (!currentUserId) return;
       const user = data.users.find((u) => u.id === currentUserId);
       if (!user) return;
-      setData((d) => {
-        const course = d.courses.find((c) => c.id === courseId);
-        if (!course) return d;
-        const review: CourseReview = {
-          id: uid("rev"),
-          author: user.name,
-          role: "Student",
-          rating,
-          content,
-          date: nowIso(),
-        };
-        const existingReviews = course.reviews ?? [];
-        const newReviewCount = (course.reviewCount ?? 0) + 1;
-        const oldRatingTotal = (course.rating ?? 0) * (course.reviewCount ?? 0);
-        const newRating = (oldRatingTotal + rating) / newReviewCount;
-        return {
+      try {
+        const review = await apiSubmitReview(courseId, rating, content);
+        // Optimistically add the review to local state instead of refetching entire catalog
+        setData((d) => ({
           ...d,
-          courses: d.courses.map((c) =>
-            c.id === courseId
-              ? {
-                  ...c,
-                  reviews: [...existingReviews, review],
-                  reviewCount: newReviewCount,
-                  rating: Math.round(newRating * 10) / 10,
-                }
-              : c,
-          ),
-        };
-      });
+          courses: d.courses.map((c) => {
+            if (c.id !== courseId) return c;
+            const newReview = {
+              id: review.id,
+              author: review.author,
+              role: "Student",
+              rating: review.rating,
+              content: review.content,
+              date: review.date,
+            };
+            const reviews = [...(c.reviews ?? []), newReview];
+            const reviewCount = reviews.length;
+            const avgRating = reviewCount > 0
+              ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
+              : 0;
+            return { ...c, reviews, reviewCount, rating: avgRating };
+          }),
+        }));
+      } catch {
+        // silently fail — the review may already exist or enrollment may be missing
+      }
     },
 
     addResource: async (resource) => {
@@ -795,7 +770,7 @@ export function LmsProvider({ children }: { children: ReactNode }) {
         resources: d.resources.filter((r) => r.id !== id),
       }));
     },
-  };
+  }), [ready, data, currentUser, syncCatalog, syncStudents, syncEnrollments, syncProgress, signIn, register, signOut]);
 
   return <LmsContext.Provider value={value}>{children}</LmsContext.Provider>;
 }

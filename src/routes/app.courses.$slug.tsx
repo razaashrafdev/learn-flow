@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { useLms, useSelectors } from "@/lib/lms/store";
 import { cn } from "@/lib/utils";
 import type { Lesson } from "@/lib/lms/types";
+import { formatCount, formatTotalDuration } from "@/lib/helpers";
 import { PaymentEnrollModal } from "@/components/lms/payment-enroll-modal";
 
 export const Route = createFileRoute("/app/courses/$slug")({
@@ -38,35 +39,6 @@ export const Route = createFileRoute("/app/courses/$slug")({
   }),
   component: CourseDetails,
 });
-
-function formatCount(n?: number) {
-  return n == null ? "" : n.toLocaleString("en-US");
-}
-
-function formatTotalDuration(lessons: Lesson[]) {
-  if (lessons.length === 0) return "";
-  const total = lessons.reduce((acc, l) => {
-    const colonMatch = /^(\d+):(\d+)$/.exec(l.duration);
-    if (colonMatch) {
-      return acc + parseInt(colonMatch[1]!, 10);
-    }
-    const minMatch = /(\d+)\s*min/.exec(l.duration);
-    if (minMatch) {
-      return acc + parseInt(minMatch[1]!, 10);
-    }
-    const numMatch = /^(\d+)$/.exec(l.duration);
-    if (numMatch) {
-      return acc + parseInt(numMatch[1]!, 10);
-    }
-    return acc;
-  }, 0);
-  if (total === 0) return "";
-  const h = Math.floor(total / 60);
-  const min = total % 60;
-  if (h > 0 && min > 0) return `${h}h ${min}m`;
-  if (h > 0) return `${h}h`;
-  return `${min}m`;
-}
 
 function CourseDetails() {
   const { slug } = useParams({ from: "/app/courses/$slug" });
@@ -101,11 +73,13 @@ function CourseDetails() {
   const courseSections = s.sectionsOf(course.id);
   const lessonsList = s.publishedLessonsOfCourse(course.id);
   const isPaid = course.pricingType === "paid";
-  const rating = course.rating ?? 0;
-  const reviewCount = course.reviewCount ?? 0;
+  const reviews = course.reviews ?? [];
+  const reviewCount = reviews.length;
+  const rating = reviewCount > 0
+    ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
+    : 0;
   const enrolledCount =
     course.studentCount ?? data.enrollments.filter((e) => e.courseId === course.id).length;
-  const reviews = course.reviews ?? [];
   const totalDuration = formatTotalDuration(lessonsList) || course.duration;
 
   const defaultOpen = courseSections[0];
@@ -402,7 +376,7 @@ function CourseDetails() {
               )}
               <p className="mt-2 text-xs text-muted-foreground">
                 {isPaid
-                  ? `${course.accessPeriod ?? "Full access"} with You will get lifetime access.`
+                  ? `You will get lifetime access.`
                   : "Start learning for free — no card required"}
               </p>
 

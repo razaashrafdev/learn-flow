@@ -22,6 +22,7 @@ export type Category = {
 export type CourseLevel = "Beginner" | "Intermediate" | "Advanced" | "All Levels";
 export type CourseStatus = "draft" | "published";
 export type PricingType = "free" | "paid";
+export type CourseType = "live" | "recorded";
 
 export type CourseReview = {
   id: string;
@@ -46,14 +47,17 @@ export type Course = {
   title: string;
   slug: string;
   shortDescription: string;
-  description: string;
   thumbnail: string;
   categoryId: string;
   level: CourseLevel;
   pricingType: PricingType;
+  courseType: CourseType;
   duration: string;
   instructor: string;
   status: CourseStatus;
+  showOnCoursesPage: boolean;
+  showOnHomePage: boolean;
+  homePagePosition: number | null;
   createdAt: string;
   updatedAt: string;
 
@@ -146,6 +150,7 @@ export type Resource = {
   image: string;
   downloadUrl: string;
   fileSize?: string;
+  resourceType?: string;
 };
 
 export type LmsData = {
