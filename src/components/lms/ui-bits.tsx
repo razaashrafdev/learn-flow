@@ -389,7 +389,7 @@ export function PublicFooter() {
                 </svg>
               </a>
               <a
-                href="https://www.pinterest.com/hamzavisuals1/"
+                href="https://www.pinterest.com/hamzavisuals11/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="grid h-8 w-8 place-items-center [border-radius:5px] bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"

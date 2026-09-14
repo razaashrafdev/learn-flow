@@ -20,7 +20,7 @@ import { toast } from "sonner";
 
 import { useLms } from "@/lib/lms/store";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -239,9 +239,6 @@ export function AppShell({
                   <DropdownMenuTrigger asChild>
                     <button type="button" className="cursor-pointer">
                       <Avatar className="h-8 w-8 shrink-0">
-                        {currentUser?.avatar ? (
-                          <AvatarImage src={currentUser.avatar} alt="" />
-                        ) : null}
                         <AvatarFallback className="bg-primary-soft">
                           <User className="h-4 w-4 text-accent-foreground" />
                         </AvatarFallback>
