@@ -66,9 +66,13 @@ export function WebsitePopup() {
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    apiGetPopupImage().then((url) => {
-      if (url) setImageUrl(url);
-    });
+    // Check popup non-blockingly
+    const timer = setTimeout(() => {
+      apiGetPopupImage().then((url) => {
+        if (url) setImageUrl(url);
+      });
+    }, 150);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -99,6 +103,7 @@ export function WebsitePopup() {
         <img
           src={imageUrl}
           alt="Popup"
+          decoding="async"
           className="w-full rounded-xl object-contain shadow-2xl"
           style={{ aspectRatio: "1 / 1" }}
         />
@@ -352,8 +357,7 @@ export function PublicFooter() {
               />
             </Link>
             <p className="mt-4 text-sm text-muted-foreground">
-              Helping students master design and AI-powered creative through
-              project-based learning.
+              Helping students master design and AI-powered creative through project-based learning.
             </p>
             <div className="mt-4 flex items-center gap-3">
               <a

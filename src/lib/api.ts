@@ -36,19 +36,43 @@ export function setToken(token: string | null) {
 
 export type AuthResult = { ok: true; token: string; user: User } | { ok: false; error: string };
 
+const inFlightRequests = new Map<string, Promise<unknown>>();
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = (init?.method ?? "GET").toUpperCase();
+  const isGet = method === "GET";
   const token = getToken();
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(init?.headers ?? {}),
-    },
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error((body as { error?: string }).error ?? "Request failed");
-  return body as T;
+  const dedupeKey = isGet ? `${token ? "auth:" : "anon:"}${path}` : null;
+
+  if (dedupeKey && inFlightRequests.has(dedupeKey)) {
+    return inFlightRequests.get(dedupeKey) as Promise<T>;
+  }
+
+  const reqPromise = (async () => {
+    try {
+      const res = await fetch(`${API_URL}${path}`, {
+        ...init,
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(init?.headers ?? {}),
+        },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((body as { error?: string }).error ?? "Request failed");
+      return body as T;
+    } finally {
+      if (dedupeKey) {
+        inFlightRequests.delete(dedupeKey);
+      }
+    }
+  })();
+
+  if (dedupeKey) {
+    inFlightRequests.set(dedupeKey, reqPromise);
+  }
+
+  return reqPromise;
 }
 
 export async function apiLogin(email: string, password: string): Promise<AuthResult> {
@@ -396,7 +420,10 @@ export async function apiListEnrollments(): Promise<Enrollment[]> {
 
 export type ApiEnrollResult = { ok: true; enrollment: Enrollment } | { ok: false; error: string };
 
-export async function apiEnroll(courseId: string, screenshotUrl?: string): Promise<ApiEnrollResult> {
+export async function apiEnroll(
+  courseId: string,
+  screenshotUrl?: string,
+): Promise<ApiEnrollResult> {
   try {
     const body = await request<ApiEnrollment>("/api/enrollments", {
       method: "POST",

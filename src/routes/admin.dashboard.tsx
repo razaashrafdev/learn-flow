@@ -36,7 +36,7 @@ function AdminDashboard() {
   const recent = data.enrollments
     .slice()
     .sort((a, b) => b.enrolledAt.localeCompare(a.enrolledAt))
-    .slice(0, 5);
+    .slice(0, 7);
 
   const popular = data.courses
     .map((c) => ({

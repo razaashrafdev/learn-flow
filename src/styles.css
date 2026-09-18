@@ -1,11 +1,12 @@
-@import "tailwindcss" source(none);
-@source "../src";
+@import "tailwindcss";
 @import "tw-animate-css";
 
 /* Helvetica Now Text - Thin (100) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Thin.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Thin.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Thin.ttf") format("truetype");
   font-weight: 100;
   font-style: normal;
   font-display: swap;
@@ -13,8 +14,10 @@
 
 /* Helvetica Now Text - ExtraLight (200) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-ExtraLight.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-ExtraLight.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-ExtraLight.ttf") format("truetype");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
@@ -22,8 +25,10 @@
 
 /* Helvetica Now Text - Light (300) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Light.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Light.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -31,8 +36,10 @@
 
 /* Helvetica Now Text - Regular (400) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Regular.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Regular.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -40,8 +47,10 @@
 
 /* Helvetica Now Text - Medium (500) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Medium.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Medium.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -49,8 +58,10 @@
 
 /* Helvetica Now Text - Bold (700) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Bold.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Bold.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -58,8 +69,10 @@
 
 /* Helvetica Now Text - ExtraBold (800) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-ExtraBold.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-ExtraBold.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-ExtraBold.ttf") format("truetype");
   font-weight: 800;
   font-style: normal;
   font-display: swap;
@@ -67,8 +80,10 @@
 
 /* Helvetica Now Text - Black (900) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-Black.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-Black.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-Black.ttf") format("truetype");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -76,8 +91,10 @@
 
 /* Helvetica Now Text - Thin Italic (100) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-ThinItalic.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-ThinItalic.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-ThinItalic.ttf") format("truetype");
   font-weight: 100;
   font-style: italic;
   font-display: swap;
@@ -85,8 +102,10 @@
 
 /* Helvetica Now Text - ExtraLight Italic (200) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-ExtLtIta.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-ExtLtIta.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-ExtLtIta.ttf") format("truetype");
   font-weight: 200;
   font-style: italic;
   font-display: swap;
@@ -94,8 +113,10 @@
 
 /* Helvetica Now Text - Light Italic (300) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-LightItalic.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-LightItalic.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-LightItalic.ttf") format("truetype");
   font-weight: 300;
   font-style: italic;
   font-display: swap;
@@ -103,8 +124,10 @@
 
 /* Helvetica Now Text - Regular Italic (400) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-RegIta.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-RegIta.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-RegIta.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
@@ -112,8 +135,10 @@
 
 /* Helvetica Now Text - Medium Italic (500) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-MediumItalic.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-MediumItalic.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-MediumItalic.ttf") format("truetype");
   font-weight: 500;
   font-style: italic;
   font-display: swap;
@@ -121,8 +146,10 @@
 
 /* Helvetica Now Text - Bold Italic (700) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-BoldItalic.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-BoldItalic.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-BoldItalic.ttf") format("truetype");
   font-weight: 700;
   font-style: italic;
   font-display: swap;
@@ -130,8 +157,10 @@
 
 /* Helvetica Now Text - ExtraBold Italic (800) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-ExtBdIta.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-ExtBdIta.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-ExtBdIta.ttf") format("truetype");
   font-weight: 800;
   font-style: italic;
   font-display: swap;
@@ -139,8 +168,10 @@
 
 /* Helvetica Now Text - Black Italic (900) */
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url('/fonts/HelveticaNowText-BlackItalic.ttf') format('truetype');
+  font-family: "Helvetica Now";
+  src:
+    url("/fonts/HelveticaNowText-BlackItalic.woff2") format("woff2"),
+    url("/fonts/HelveticaNowText-BlackItalic.ttf") format("truetype");
   font-weight: 900;
   font-style: italic;
   font-display: swap;
@@ -149,7 +180,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Helvetica Now', sans-serif;
+  --font-sans: "Helvetica Now", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -202,85 +233,85 @@
 
 :root {
   --radius: 0.85rem;
-  --background: #FFFFFF;
-  --foreground: #0C0C0C;
-  --surface: #FAFAFA;
-  --card: #FFFFFF;
-  --card-foreground: #0C0C0C;
-  --popover: #FFFFFF;
-  --popover-foreground: #0C0C0C;
-  --primary: #0076DF;
-  --primary-foreground: #FFFFFF;
+  --background: #ffffff;
+  --foreground: #0c0c0c;
+  --surface: #fafafa;
+  --card: #ffffff;
+  --card-foreground: #0c0c0c;
+  --popover: #ffffff;
+  --popover-foreground: #0c0c0c;
+  --primary: #0076df;
+  --primary-foreground: #ffffff;
   --primary-soft: rgba(0, 118, 223, 0.08);
-  --secondary: #F5F5F5;
-  --secondary-foreground: #0C0C0C;
-  --muted: #F8F8F8;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #0c0c0c;
+  --muted: #f8f8f8;
   --muted-foreground: #444444;
   --accent: rgba(0, 118, 223, 0.06);
-  --accent-foreground: #0076DF;
-  --destructive: #0C0C0C;
-  --destructive-foreground: #FFFFFF;
+  --accent-foreground: #0076df;
+  --destructive: #0c0c0c;
+  --destructive-foreground: #ffffff;
   --success: #16a34a;
-  --success-foreground: #FFFFFF;
+  --success-foreground: #ffffff;
   --warning: #f59e0b;
-  --warning-foreground: #FFFFFF;
+  --warning-foreground: #ffffff;
   --border: rgba(12, 12, 12, 0.12);
   --input: rgba(12, 12, 12, 0.15);
-  --ring: #0076DF;
-  --chart-1: #0076DF;
-  --chart-2: #0C0C0C;
+  --ring: #0076df;
+  --chart-1: #0076df;
+  --chart-2: #0c0c0c;
   --chart-3: rgba(0, 118, 223, 0.6);
   --chart-4: rgba(12, 12, 12, 0.5);
   --chart-5: rgba(0, 118, 223, 0.3);
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #0C0C0C;
-  --sidebar-primary: #0076DF;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0c0c0c;
+  --sidebar-primary: #0076df;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(0, 118, 223, 0.06);
-  --sidebar-accent-foreground: #0076DF;
+  --sidebar-accent-foreground: #0076df;
   --sidebar-border: rgba(12, 12, 12, 0.12);
-  --sidebar-ring: #0076DF;
+  --sidebar-ring: #0076df;
 }
 
 .dark {
-  --background: #0C0C0C;
-  --foreground: #FFFFFF;
+  --background: #0c0c0c;
+  --foreground: #ffffff;
   --surface: #161616;
   --card: #141414;
-  --card-foreground: #FFFFFF;
+  --card-foreground: #ffffff;
   --popover: #141414;
-  --popover-foreground: #FFFFFF;
-  --primary: #0076DF;
-  --primary-foreground: #FFFFFF;
+  --popover-foreground: #ffffff;
+  --primary: #0076df;
+  --primary-foreground: #ffffff;
   --primary-soft: rgba(0, 118, 223, 0.12);
-  --secondary: #1A1A1A;
-  --secondary-foreground: #FFFFFF;
-  --muted: #1A1A1A;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #ffffff;
+  --muted: #1a1a1a;
   --muted-foreground: #888888;
   --accent: rgba(0, 118, 223, 0.1);
-  --accent-foreground: #0076DF;
-  --destructive: #FFFFFF;
-  --destructive-foreground: #0C0C0C;
+  --accent-foreground: #0076df;
+  --destructive: #ffffff;
+  --destructive-foreground: #0c0c0c;
   --success: #22c55e;
-  --success-foreground: #FFFFFF;
+  --success-foreground: #ffffff;
   --warning: #fbbf24;
-  --warning-foreground: #0C0C0C;
+  --warning-foreground: #0c0c0c;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.12);
-  --ring: #0076DF;
-  --chart-1: #0076DF;
-  --chart-2: #FFFFFF;
+  --ring: #0076df;
+  --chart-1: #0076df;
+  --chart-2: #ffffff;
   --chart-3: rgba(0, 118, 223, 0.7);
   --chart-4: rgba(255, 255, 255, 0.5);
   --chart-5: rgba(0, 118, 223, 0.4);
-  --sidebar: #0C0C0C;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #0076DF;
-  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar: #0c0c0c;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #0076df;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: rgba(0, 118, 223, 0.1);
-  --sidebar-accent-foreground: #0076DF;
+  --sidebar-accent-foreground: #0076df;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #0076DF;
+  --sidebar-ring: #0076df;
 }
 
 @layer base {
@@ -434,7 +465,7 @@ a.inline-flex {
 }
 
 [data-sonner-toaster] [data-sonner-toast] {
-  color: #0C0C0C !important;
+  color: #0c0c0c !important;
   width: 30% !important;
   min-width: 280px !important;
   max-width: 420px !important;
@@ -449,22 +480,22 @@ a.inline-flex {
   }
 }
 [data-sonner-toaster] [data-sonner-toast] svg {
-  color: #0C0C0C !important;
+  color: #0c0c0c !important;
 }
 [data-sonner-toaster] [data-sonner-toast] [data-description] {
-  color: #0C0C0C !important;
+  color: #0c0c0c !important;
 }
 [data-sonner-toaster] [data-sonner-toast][data-type="success"],
 [data-sonner-toaster] [data-sonner-toast][data-type="error"],
 [data-sonner-toaster] [data-sonner-toast][data-type="info"],
 [data-sonner-toaster] [data-sonner-toast][data-type="warning"] {
-  color: #0C0C0C !important;
+  color: #0c0c0c !important;
 }
 [data-sonner-toaster] [data-sonner-toast][data-type="success"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="error"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="info"] svg,
 [data-sonner-toaster] [data-sonner-toast][data-type="warning"] svg {
-  color: #0C0C0C !important;
+  color: #0c0c0c !important;
 }
 
 /* Page Transition Animations */
@@ -534,15 +565,20 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   html {
     scroll-behavior: auto;
   }
 }
 
 /* Smooth transitions for interactive elements */
-a, button, [role="button"] {
-  transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out;
+a,
+button,
+[role="button"] {
+  transition:
+    color 0.2s ease-out,
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
 }
 
 /* Remove hover effect on CTA section */
@@ -560,47 +596,51 @@ a, button, [role="button"] {
 
 /* Light Mode Button Refinements */
 :root .bg-primary {
-  background-color: #0076DF !important;
+  background-color: #0076df !important;
 }
 
 :root .bg-primary:hover {
-  background-color: #005BB5 !important;
+  background-color: #005bb5 !important;
 }
 
 :root .text-primary {
-  color: #0076DF !important;
+  color: #0076df !important;
 }
 
 /* Service card hover - icon should be white on hover */
 :root .group:hover .group-hover\:text-primary-foreground {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 /* All buttons with hover:bg-primary should have white text on hover */
 a:hover.bg-primary,
 button:hover.bg-primary,
 [class*="hover:bg-primary"]:hover {
-  color: #FFFFFF !important;
+  color: #ffffff !important;
 }
 
 /* Light Mode Card Enhancement */
 :root .card-surface {
   border: 1px solid rgba(12, 12, 12, 0.12);
-  box-shadow: 0 1px 3px rgba(12, 12, 12, 0.04), 0 4px 12px rgba(12, 12, 12, 0.03);
+  box-shadow:
+    0 1px 3px rgba(12, 12, 12, 0.04),
+    0 4px 12px rgba(12, 12, 12, 0.03);
 }
 
 :root .card-surface:hover {
-  box-shadow: 0 2px 6px rgba(12, 12, 12, 0.06), 0 8px 24px rgba(12, 12, 12, 0.05);
+  box-shadow:
+    0 2px 6px rgba(12, 12, 12, 0.06),
+    0 8px 24px rgba(12, 12, 12, 0.05);
 }
 
 /* Light Mode Footer Enhancement */
 :root footer {
-  background-color: #FAFAFA;
+  background-color: #fafafa;
   border-top: 1px solid rgba(12, 12, 12, 0.12);
 }
 
 :root footer h4 {
-  color: #0C0C0C;
+  color: #0c0c0c;
 }
 
 :root footer a {
@@ -609,7 +649,7 @@ button:hover.bg-primary,
 }
 
 :root footer a:hover {
-  color: #0076DF;
+  color: #0076df;
 }
 
 /* Light Mode Input Enhancement */
@@ -622,13 +662,13 @@ button:hover.bg-primary,
 :root input:focus,
 :root textarea:focus,
 :root select:focus {
-  border-color: #0076DF;
+  border-color: #0076df;
   box-shadow: 0 0 0 2px rgba(0, 118, 223, 0.15);
 }
 
 /* Light Mode Badge Enhancement */
 :root .bg-muted {
-  background-color: #F8F8F8 !important;
+  background-color: #f8f8f8 !important;
 }
 
 /* Light Mode Border Contrast */
@@ -650,7 +690,10 @@ button:hover.bg-primary,
     0 0 0 1px rgba(255, 255, 255, 0.02),
     0 1px 2px rgba(0, 0, 0, 0.3),
     0 4px 16px rgba(0, 0, 0, 0.3);
-  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out;
+  transition:
+    box-shadow 0.2s ease-out,
+    border-color 0.2s ease-out,
+    transform 0.2s ease-out;
 }
 
 .dark .card-surface:hover {
@@ -665,10 +708,12 @@ button:hover.bg-primary,
 .dark input,
 .dark textarea,
 .dark select {
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
   border-color: rgba(255, 255, 255, 0.08);
-  color: #FFFFFF;
-  transition: border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+  color: #ffffff;
+  transition:
+    border-color 0.2s ease-out,
+    box-shadow 0.2s ease-out;
 }
 
 .dark input::placeholder,
@@ -679,14 +724,14 @@ button:hover.bg-primary,
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-  border-color: #0076DF;
+  border-color: #0076df;
   box-shadow: 0 0 0 3px rgba(0, 118, 223, 0.15);
   outline: none;
 }
 
 /* Tables: clean dark mode surface */
 .dark table {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .dark thead {
@@ -694,7 +739,7 @@ button:hover.bg-primary,
 }
 
 .dark tbody {
-  background-color: #0C0C0C;
+  background-color: #0c0c0c;
 }
 
 .dark tbody tr {
@@ -702,7 +747,7 @@ button:hover.bg-primary,
 }
 
 .dark tbody tr:hover {
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
 }
 
 .dark tbody td,
@@ -731,14 +776,16 @@ button:hover.bg-primary,
 }
 
 .dark [data-radix-dropdown-menu-item] {
-  color: #CCCCCC;
-  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+  color: #cccccc;
+  transition:
+    background-color 0.15s ease-out,
+    color 0.15s ease-out;
 }
 
 .dark [data-radix-dropdown-menu-item]:hover,
 .dark [data-radix-dropdown-menu-item][data-highlighted] {
   background-color: rgba(0, 118, 223, 0.1);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* Select Content: dark mode dropdown */
@@ -751,14 +798,14 @@ button:hover.bg-primary,
 }
 
 .dark [data-radix-select-item] {
-  color: #CCCCCC;
+  color: #cccccc;
   transition: background-color 0.15s ease-out;
 }
 
 .dark [data-radix-select-item]:hover,
 .dark [data-radix-select-item][data-highlighted] {
   background-color: rgba(0, 118, 223, 0.1);
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* Accordion: dark mode hover */
@@ -767,7 +814,7 @@ button:hover.bg-primary,
 }
 
 .dark [data-state="open"] > .accordion-trigger {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* Tabs: dark mode polish */
@@ -777,37 +824,39 @@ button:hover.bg-primary,
 
 .dark [role="tab"] {
   color: #888888;
-  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+  transition:
+    color 0.15s ease-out,
+    border-color 0.15s ease-out;
 }
 
 .dark [role="tab"]:hover {
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .dark [role="tab"][data-state="active"],
 .dark [role="tab"][aria-selected="true"] {
-  color: #FFFFFF;
-  border-color: #0076DF;
+  color: #ffffff;
+  border-color: #0076df;
 }
 
 /* Progress Bar: dark mode */
 .dark [role="progressbar"] {
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
 }
 
 /* Skeleton: dark mode shimmer */
 .dark .animate-pulse {
-  background-color: #1A1A1A;
+  background-color: #1a1a1a;
 }
 
 /* Footer: refined dark mode */
 .dark footer {
-  background-color: #0C0C0C;
+  background-color: #0c0c0c;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .dark footer h4 {
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: 700;
 }
 
@@ -817,12 +866,12 @@ button:hover.bg-primary,
 }
 
 .dark footer a:hover {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* Badge / Muted surface: dark mode */
 .dark .bg-muted {
-  background-color: #1A1A1A !important;
+  background-color: #1a1a1a !important;
 }
 
 /* Borders: soft dark mode */
@@ -851,7 +900,7 @@ button:hover.bg-primary,
 }
 
 .dark ::-webkit-scrollbar-track {
-  background: #0C0C0C;
+  background: #0c0c0c;
 }
 
 .dark ::-webkit-scrollbar-thumb {
@@ -866,7 +915,11 @@ button:hover.bg-primary,
 /* Smooth transitions for dark mode interactive elements */
 .dark .card-surface,
 .dark [class*="group"] {
-  transition: box-shadow 0.2s ease-out, border-color 0.2s ease-out, transform 0.2s ease-out, background-color 0.2s ease-out;
+  transition:
+    box-shadow 0.2s ease-out,
+    border-color 0.2s ease-out,
+    transform 0.2s ease-out,
+    background-color 0.2s ease-out;
 }
 
 .dark #services .group:hover {
@@ -889,7 +942,7 @@ button:hover.bg-primary,
 }
 
 .dark .text-amber-700 {
-  color: #FCD34D !important;
+  color: #fcd34d !important;
 }
 
 /* ResourceModal: dark mode overlay and panel */
@@ -899,18 +952,42 @@ button:hover.bg-primary,
 
 /* Prose: dark mode for legal pages */
 .dark .prose {
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .dark .prose strong {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .dark .prose h2 {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 /* Section separation - clean Discord-style layering */
 section + section {
   margin-top: 0;
 }
+
+/* Infinite Marquee */
+@keyframes marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
