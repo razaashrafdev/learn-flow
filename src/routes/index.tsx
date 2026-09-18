@@ -1,6 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { ChevronRight, Star, Palette, Brush, ArrowRight, ChevronLeft, Camera, ShoppingBag, Video, Lightbulb, GraduationCap } from "lucide-react";
+import {
+  ChevronRight,
+  Star,
+  Palette,
+  Brush,
+  ArrowRight,
+  ChevronLeft,
+  Camera,
+  ShoppingBag,
+  Video,
+  Lightbulb,
+  GraduationCap,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,7 +57,8 @@ const services = [
   {
     icon: Brush,
     title: "Branding",
-    description: "Build a powerful brand identity that stands out and resonates with your audience.",
+    description:
+      "Build a powerful brand identity that stands out and resonates with your audience.",
   },
   {
     icon: Camera,
@@ -55,7 +68,8 @@ const services = [
   {
     icon: ShoppingBag,
     title: "Ecommerce Photography",
-    description: "Specialized product photography that drives sales and elevates your online store.",
+    description:
+      "Specialized product photography that drives sales and elevates your online store.",
   },
   {
     icon: Video,
@@ -75,7 +89,8 @@ const services = [
   {
     icon: GraduationCap,
     title: "1:1 Mentorship",
-    description: "Get personalized guidance from industry experts to accelerate your creative career.",
+    description:
+      "Get personalized guidance from industry experts to accelerate your creative career.",
   },
 ];
 
@@ -234,23 +249,21 @@ function LandingPage() {
   const { data, ready } = useLms();
   const s = useSelectors();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [slidesPerView, setSlidesPerView] = useState(3);
+  const [slidesPerView, setSlidesPerView] = useState(() => {
+    if (typeof window === "undefined") return 3;
+    const width = window.innerWidth;
+    return width < 640 ? 1 : width < 1024 ? 2 : 3;
+  });
   const maxSlide = Math.max(0, testimonials.length - slidesPerView);
 
   useEffect(() => {
     const updateSlidesPerView = () => {
       const width = window.innerWidth;
-      if (width < 640) {
-        setSlidesPerView(1);
-      } else if (width < 1024) {
-        setSlidesPerView(2);
-      } else {
-        setSlidesPerView(3);
-      }
+      const next = width < 640 ? 1 : width < 1024 ? 2 : 3;
+      setSlidesPerView((prev) => (prev !== next ? next : prev));
     };
 
-    updateSlidesPerView();
-    window.addEventListener("resize", updateSlidesPerView);
+    window.addEventListener("resize", updateSlidesPerView, { passive: true });
     return () => window.removeEventListener("resize", updateSlidesPerView);
   }, []);
 
@@ -312,11 +325,14 @@ function LandingPage() {
               Trained 1000+ Students in Design and AI
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-              AI Skills That Work in <br className="hidden sm:block" />
-              <span className="bg-primary bg-clip-text text-transparent">the Real World</span>
+              AI Skills That Truly <br className="hidden sm:block" />
+              <span className="bg-primary bg-clip-text text-transparent">
+                Work in the Real World
+              </span>
             </h1>
             <p className="mt-7 text-lg text-muted-foreground sm:text-xl">
-              Hamza Visuals teaches graphic design, video editing, and practical AI through hands-on courses. Learn through real projects and apply knowledge right away.
+              Hamza Visuals teaches graphic design, video editing, and practical AI through hands-on
+              courses. Learn through real projects and apply knowledge right away.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="px-8">
@@ -325,19 +341,32 @@ function LandingPage() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/courses" target="_blank" rel="noopener noreferrer">Explore Courses</Link>
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">
+                  Explore Courses
+                </Link>
               </Button>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="mx-auto mt-18 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
-            {stats.map((stat) => (
-              <div key={stat.label} className="rounded-xl border border-border bg-card px-4 py-5 text-center shadow-sm backdrop-blur-sm transition-all duration-200 hover:shadow-md">
-                <p className="text-2xl font-extrabold text-primary sm:text-3xl">{stat.value}</p>
-                <p className="mt-1.5 text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+          {/* Stats Marquee */}
+          <div className="relative mt-16 w-full overflow-hidden rounded-2xl border border-border/80 bg-card/60 py-5 shadow-sm backdrop-blur-md sm:mt-20">
+            {/* Edge fade gradients */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-r from-card via-card/70 to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 z-10 w-24 bg-gradient-to-l from-card via-card/70 to-transparent" />
+
+            <div className="animate-marquee items-center">
+              {[...stats, ...stats, ...stats, ...stats].map((stat, idx) => (
+                <div key={idx} className="flex shrink-0 items-center gap-3.5 px-8">
+                  <span className="text-2xl font-extrabold tracking-tight text-primary sm:text-3xl">
+                    {stat.value}
+                  </span>
+                  <span className="text-sm font-medium tracking-wide text-foreground/90 whitespace-nowrap sm:text-base">
+                    {stat.label}
+                  </span>
+                  <span className="ml-8 inline-block h-2 w-2 rounded-full bg-primary/40" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -364,7 +393,10 @@ function LandingPage() {
           {!ready ? (
             <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-xl border border-border bg-card overflow-hidden shadow-sm animate-pulse">
+                <div
+                  key={i}
+                  className="rounded-xl border border-border bg-card overflow-hidden shadow-sm animate-pulse"
+                >
                   <div className="aspect-video bg-muted" />
                   <div className="p-5 space-y-3">
                     <div className="h-5 w-3/4 rounded bg-muted" />
@@ -375,57 +407,28 @@ function LandingPage() {
               ))}
             </div>
           ) : (
-            <>
-              {/* Mobile: all courses */}
-              <div className="mt-10 grid gap-6 sm:hidden">
-                {landingCourses.map((course) => {
-                  const lessons = s.publishedLessonsOfCourse(course.id);
-                  return (
-                    <LandingCourseCard
-                      key={course.id}
-                      course={course}
-                      lessonCount={lessons.length}
-                      lessons={lessons}
-                    />
-                  );
-                })}
-              </div>
-              {/* Tablet: all courses */}
-              <div className="mt-10 hidden gap-6 sm:grid sm:grid-cols-2 lg:grid-cols-3 lg:hidden">
-                {landingCourses.map((course) => {
-                  const lessons = s.publishedLessonsOfCourse(course.id);
-                  return (
-                    <LandingCourseCard
-                      key={course.id}
-                      course={course}
-                      lessonCount={lessons.length}
-                      lessons={lessons}
-                    />
-                  );
-                })}
-              </div>
-              {/* Desktop: all courses */}
-              <div className="mt-10 hidden gap-6 lg:grid lg:grid-cols-3">
-                {landingCourses.map((course) => {
-                  const lessons = s.publishedLessonsOfCourse(course.id);
-                  return (
-                    <LandingCourseCard
-                      key={course.id}
-                      course={course}
-                      lessonCount={lessons.length}
-                      lessons={lessons}
-                    />
-                  );
-                })}
-              </div>
-            </>
+            <div className="mt-10 grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {landingCourses.map((course) => {
+                const lessons = s.publishedLessonsOfCourse(course.id);
+                return (
+                  <LandingCourseCard
+                    key={course.id}
+                    course={course}
+                    lessonCount={lessons.length}
+                    lessons={lessons}
+                  />
+                );
+              })}
+            </div>
           )}
 
           {publishedCourses.length >= 4 && (
             <div className="mt-10 text-center">
-                <Button asChild className="bg-blue-600 text-white shadow hover:bg-blue-700">
-                  <Link to="/courses" target="_blank" rel="noopener noreferrer">View All Courses</Link>
-                </Button>
+              <Button asChild className="bg-blue-600 text-white shadow hover:bg-blue-700">
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">
+                  View All Courses
+                </Link>
+              </Button>
             </div>
           )}
         </div>
@@ -443,8 +446,8 @@ function LandingPage() {
                 Everything You Need to Grow
               </h2>
               <p className="mt-4 text-muted-foreground">
-                From idea to design, we deliver end-to-end digital solutions that help
-                businesses scale and succeed in the modern world.
+                From idea to design, we deliver end-to-end digital solutions that help businesses
+                scale and succeed in the modern world.
               </p>
             </div>
           </FadeInSection>
@@ -496,10 +499,7 @@ function LandingPage() {
                 }}
               >
                 {testimonials.map((testimonial) => (
-                  <div
-                    key={testimonial.id}
-                    className="w-full flex-shrink-0 px-3 sm:w-1/2 lg:w-1/3"
-                  >
+                  <div key={testimonial.id} className="w-full flex-shrink-0 px-3 sm:w-1/2 lg:w-1/3">
                     <div className="card-surface p-6 transition-all duration-200 hover:shadow-lg hover:border-primary/20 h-full">
                       <div className="flex gap-1">
                         {Array.from({ length: testimonial.rating }).map((_, i) => (
@@ -514,6 +514,9 @@ function LandingPage() {
                           src={testimonial.image}
                           alt={testimonial.name}
                           loading="lazy"
+                          decoding="async"
+                          width={40}
+                          height={40}
                           className="h-10 w-10 rounded-full object-cover ring-2 ring-border"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
@@ -569,8 +572,12 @@ function LandingPage() {
             <Accordion type="single" collapsible className="mx-auto mt-12 max-w-3xl">
               {faqs.map((faq) => (
                 <AccordionItem key={faq.question} value={faq.question} className="px-2 sm:px-0">
-                  <AccordionTrigger className="text-base sm:text-lg">{faq.question}</AccordionTrigger>
-                  <AccordionContent className="text-sm sm:text-base text-muted-foreground">{faq.answer}</AccordionContent>
+                  <AccordionTrigger className="text-base sm:text-lg">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm sm:text-base text-muted-foreground">
+                    {faq.answer}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -579,7 +586,10 @@ function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="cta" className="relative overflow-hidden [border-radius:15px] border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 mt-20 sm:mt-24 mb-16 sm:mb-20">
+      <section
+        id="cta"
+        className="relative overflow-hidden [border-radius:15px] border border-border bg-primary dark:bg-gradient-to-br dark:from-[#0C0C0C] dark:via-[#0a1a2e] dark:to-[#0C0C0C] mx-4 sm:mx-6 lg:mx-8 mt-20 sm:mt-24 mb-16 sm:mb-20"
+      >
         <div aria-hidden className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-44 h-[28rem] w-[28rem] rounded-full bg-primary-foreground/10 blur-3xl dark:bg-[rgba(0,118,223,0.25)]" />
           <div className="absolute -bottom-48 -left-28 h-96 w-96 rounded-full bg-primary-foreground/5 blur-3xl dark:bg-[rgba(0,118,223,0.15)]" />
@@ -596,10 +606,19 @@ function LandingPage() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg" className="border !border-white px-8 dark:!bg-transparent">
-                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Get Started Free</a>
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                  Get Started Free
+                </a>
               </Button>
-              <Button asChild variant="outline" size="lg" className="dark:border-white dark:bg-white dark:!text-[#0C0C0C]">
-                <Link to="/courses" target="_blank" rel="noopener noreferrer">Browse Courses</Link>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="dark:border-white dark:bg-white dark:!text-[#0C0C0C]"
+              >
+                <Link to="/courses" target="_blank" rel="noopener noreferrer">
+                  Browse Courses
+                </Link>
               </Button>
             </div>
           </FadeInSection>

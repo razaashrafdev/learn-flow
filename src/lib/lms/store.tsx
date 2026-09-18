@@ -10,11 +10,13 @@ import {
 } from "react";
 import { buildEmptyData } from "./seed";
 import {
+  getToken,
   apiLogin,
   apiLogout,
   apiMe,
   apiRegister,
   apiFetchCatalog,
+  type Catalog,
   apiCreateCourse,
   apiUpdateCourse,
   apiDeleteCourse,
@@ -62,8 +64,22 @@ import type {
 
 const STORAGE_KEY_BASE = "lms.demo.v7";
 const SESSION_KEY = "lms.session.v1";
+const CATALOG_STORAGE_KEY = "lms.catalog.v1";
 const dataKey = (userId: string) => `${STORAGE_KEY_BASE}.${userId}`;
 const CATALOG_CACHE_MS = 10_000;
+
+function loadCachedCatalog(): Catalog | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && Array.isArray(parsed.courses)) return parsed;
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
 
 const uid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 9)}`;
 const nowIso = () => new Date().toISOString();
@@ -194,9 +210,26 @@ type Ctx = {
 const LmsContext = createContext<Ctx | null>(null);
 
 export function LmsProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<LmsData>(() => buildEmptyData());
+  const [data, setData] = useState<LmsData>(() => {
+    const cached = loadCachedCatalog();
+    if (cached) {
+      return {
+        ...buildEmptyData(),
+        categories: cached.categories || [],
+        courses: cached.courses || [],
+        sections: cached.sections || [],
+        lessons: cached.lessons || [],
+        resources: cached.resources || [],
+      };
+    }
+    return buildEmptyData();
+  });
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [ready, setReady] = useState(false);
+  const [ready, setReady] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const cached = loadCachedCatalog();
+    return Boolean(cached && cached.courses && cached.courses.length > 0);
+  });
   const hydrated = useRef(false);
 
   const currentUserId = currentUser?.id ?? null;
@@ -221,6 +254,11 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     const catalog = await apiFetchCatalog();
     if (!catalog) return;
     lastCatalogSync.current = Date.now();
+    try {
+      localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+    } catch {
+      /* quota */
+    }
     setData((d) => ({
       ...d,
       categories: catalog.categories,
@@ -254,18 +292,24 @@ export function LmsProvider({ children }: { children: ReactNode }) {
         const merged = enrollments.map((incoming) => {
           const local = d.enrollments.find((e) => e.id === incoming.id);
           // Compute completion status from progress data
-          const sectionIds = d.sections.filter((s) => s.courseId === incoming.courseId).map((s) => s.id);
+          const sectionIds = d.sections
+            .filter((s) => s.courseId === incoming.courseId)
+            .map((s) => s.id);
           const total = d.lessons.filter(
             (l) => sectionIds.includes(l.sectionId) && l.published,
           ).length;
           const done = d.progress.filter(
-            (p) => p.studentId === incoming.studentId && p.courseId === incoming.courseId && p.completed,
+            (p) =>
+              p.studentId === incoming.studentId && p.courseId === incoming.courseId && p.completed,
           ).length;
           const isComplete = total > 0 && done >= total;
           return {
             ...incoming,
-            status: (isComplete ? "completed" : (local?.status ?? "in_progress")) as "in_progress" | "completed",
-            completedAt: isComplete ? (local?.completedAt ?? new Date().toISOString()) : (local?.completedAt ?? null),
+            status: (isComplete ? "completed" : (local?.status ?? "in_progress")) as
+              "in_progress" | "completed",
+            completedAt: isComplete
+              ? (local?.completedAt ?? new Date().toISOString())
+              : (local?.completedAt ?? null),
             lastLessonId: local?.lastLessonId ?? null,
             lastAccessedAt: local?.lastAccessedAt ?? null,
           };
@@ -300,22 +344,29 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     (async () => {
       try {
+        const hasToken = Boolean(getToken());
         const session = localStorage.getItem(SESSION_KEY) ?? sessionStorage.getItem(SESSION_KEY);
-        const me = await apiMe();
+
+        // Concurrently run auth check and public catalog sync
+        const [meResult] = await Promise.all([
+          hasToken ? apiMe() : Promise.resolve({ ok: false as const, error: "No session" }),
+          syncCatalog(true),
+        ]);
+
         if (cancelled) return;
-        if (me.ok) {
-          setCurrentUser(me.user);
-          setData(initialDataFor(me.user));
+        if (meResult.ok) {
+          setCurrentUser(meResult.user);
+          setData(initialDataFor(meResult.user));
+          // Once auth is verified, load user-specific enrollments & progress in parallel
           await Promise.all([syncCatalog(true), syncEnrollments(), syncProgress()]);
-          if (session !== me.user.id) {
+          if (session !== meResult.user.id) {
             try {
-              localStorage.setItem(SESSION_KEY, me.user.id);
+              localStorage.setItem(SESSION_KEY, meResult.user.id);
             } catch {
               /* ignore */
             }
           }
         } else {
-          await syncCatalog(true);
           try {
             localStorage.removeItem(SESSION_KEY);
             sessionStorage.removeItem(SESSION_KEY);
@@ -386,389 +437,414 @@ export function LmsProvider({ children }: { children: ReactNode }) {
     }));
   };
 
-  const value: Ctx = useMemo(() => ({
-    ready,
-    data,
-    currentUser,
-    syncCatalog,
-    syncStudents,
-    syncEnrollments,
-    syncProgress,
-    signIn,
-    register,
-    signOut,
+  const value: Ctx = useMemo(
+    () => ({
+      ready,
+      data,
+      currentUser,
+      syncCatalog,
+      syncStudents,
+      syncEnrollments,
+      syncProgress,
+      signIn,
+      register,
+      signOut,
 
-    updateProfile: async (patch) => {
-      if (!currentUser) return { ok: false, error: "Not signed in." };
-      const profilePatch: { name: string; email: string; whatsapp?: string } = {
-        name: patch.name ?? currentUser.name,
-        email: patch.email ?? currentUser.email,
-      };
-      if (patch.whatsapp !== undefined) profilePatch.whatsapp = patch.whatsapp;
-      const result = await apiUpdateProfile(profilePatch);
-      if (!result.ok) return { ok: false, error: result.error };
-      if (currentUserId) {
-        const userPatch: Partial<User> = {
-          name: result.user.name,
-          email: result.user.email,
+      updateProfile: async (patch) => {
+        if (!currentUser) return { ok: false, error: "Not signed in." };
+        const profilePatch: { name: string; email: string; whatsapp?: string } = {
+          name: patch.name ?? currentUser.name,
+          email: patch.email ?? currentUser.email,
         };
-        if (result.user.whatsapp !== undefined) userPatch.whatsapp = result.user.whatsapp;
-        patchUser(currentUserId, userPatch);
-        setCurrentUser((u) => (u ? { ...u, ...userPatch } : u));
-      }
-      return { ok: true };
-    },
-    changePassword: async (current, next) => {
-      if (!currentUser) return { ok: false, error: "Not signed in." };
-      return apiChangePassword(current, next);
-    },
+        if (patch.whatsapp !== undefined) profilePatch.whatsapp = patch.whatsapp;
+        const result = await apiUpdateProfile(profilePatch);
+        if (!result.ok) return { ok: false, error: result.error };
+        if (currentUserId) {
+          const userPatch: Partial<User> = {
+            name: result.user.name,
+            email: result.user.email,
+          };
+          if (result.user.whatsapp !== undefined) userPatch.whatsapp = result.user.whatsapp;
+          patchUser(currentUserId, userPatch);
+          setCurrentUser((u) => (u ? { ...u, ...userPatch } : u));
+        }
+        return { ok: true };
+      },
+      changePassword: async (current, next) => {
+        if (!currentUser) return { ok: false, error: "Not signed in." };
+        return apiChangePassword(current, next);
+      },
 
-    createCategory: (name, description) =>
-      setData((d) => ({
-        ...d,
-        categories: [...d.categories, { id: uid("cat"), name, description, createdAt: nowIso() }],
-      })),
-    updateCategory: (id, patch) =>
-      setData((d) => ({
-        ...d,
-        categories: d.categories.map((c) => (c.id === id ? { ...c, ...patch } : c)),
-      })),
-    deleteCategory: (id) => {
-      if (data.courses.some((c) => c.categoryId === id))
-        return { ok: false, error: "This category is used by one or more courses." };
-      setData((d) => ({ ...d, categories: d.categories.filter((c) => c.id !== id) }));
-      return { ok: true };
-    },
-
-    createCourse: async (input) => {
-      const course = await apiCreateCourse(input as Record<string, unknown>);
-      setData((d) => ({ ...d, courses: [course, ...d.courses] }));
-      return course;
-    },
-    updateCourse: async (id, patch) => {
-      const updated = await apiUpdateCourse(id, patch as Record<string, unknown>);
-      setData((d) => ({
-        ...d,
-        courses: d.courses.map((c) => (c.id === id ? { ...c, ...updated } : c)),
-      }));
-    },
-    deleteCourse: async (id) => {
-      await apiDeleteCourse(id);
-      setData((d) => {
-        const sectionIds = d.sections.filter((s) => s.courseId === id).map((s) => s.id);
-        return {
-          ...d,
-          courses: d.courses.filter((c) => c.id !== id),
-          sections: d.sections.filter((s) => s.courseId !== id),
-          lessons: d.lessons.filter((l) => !sectionIds.includes(l.sectionId)),
-          enrollments: d.enrollments.filter((e) => e.courseId !== id),
-          progress: d.progress.filter((p) => p.courseId !== id),
-        };
-      });
-    },
-    toggleCourseStatus: async (id) => {
-      const course = data.courses.find((c) => c.id === id);
-      if (!course) return;
-      const next = course.status === "published" ? "draft" : "published";
-      const updated = await apiSetCourseStatus(id, next);
-      setData((d) => ({
-        ...d,
-        courses: d.courses.map((c) => (c.id === id ? { ...c, ...updated } : c)),
-      }));
-    },
-
-    createSection: async (courseId, title) => {
-      const section = await apiCreateSection(courseId, title);
-      setData((d) => ({ ...d, sections: [...d.sections, section] }));
-    },
-    updateSection: async (id, title) => {
-      await apiUpdateSection(id, title);
-      setData((d) => ({
-        ...d,
-        sections: d.sections.map((s) => (s.id === id ? { ...s, title } : s)),
-      }));
-    },
-    deleteSection: async (id) => {
-      await apiDeleteSection(id);
-      setData((d) => ({
-        ...d,
-        sections: d.sections.filter((s) => s.id !== id),
-        lessons: d.lessons.filter((l) => l.sectionId !== id),
-      }));
-    },
-    moveSection: async (id, dir) => {
-      const siblings = await apiMoveSection(id, dir);
-      if (!siblings) return;
-      setData((d) => ({
-        ...d,
-        sections: d.sections.map((s) => siblings.find((x) => x.id === s.id) ?? s),
-      }));
-    },
-
-    createLesson: async (sectionId, input) => {
-      const result = await apiCreateLesson(sectionId, input);
-      if (!result.ok) return { ok: false, error: result.error };
-      setData((d) => ({ ...d, lessons: [...d.lessons, result.lesson] }));
-      return { ok: true };
-    },
-    updateLesson: async (id, patch) => {
-      try {
-        const updated = await apiUpdateLesson(id, patch as Record<string, unknown>);
+      createCategory: (name, description) =>
         setData((d) => ({
           ...d,
-          lessons: d.lessons.map((l) => (l.id === id ? { ...l, ...updated } : l)),
-        }));
-        return { ok: true };
-      } catch (e) {
-        return { ok: false, error: e instanceof Error ? e.message : "Could not update the lesson" };
-      }
-    },
-    deleteLesson: async (id) => {
-      await apiDeleteLesson(id);
-      setData((d) => ({
-        ...d,
-        lessons: d.lessons.filter((l) => l.id !== id),
-        progress: d.progress.filter((p) => p.lessonId !== id),
-      }));
-    },
-    moveLesson: async (id, dir) => {
-      const siblings = await apiMoveLesson(id, dir);
-      if (!siblings) return;
-      setData((d) => ({
-        ...d,
-        lessons: d.lessons.map((l) => siblings.find((x) => x.id === l.id) ?? l),
-      }));
-    },
-
-    enroll: async (courseId): Promise<boolean> => {
-      if (!currentUserId) return false;
-      const result = await apiEnroll(courseId);
-      if (result.ok) {
-        setData((d) => ({ ...d, enrollments: upsertEnrollment(d.enrollments, result.enrollment) }));
-        return true;
-      }
-      return false;
-    },
-    requestEnrollment: async (courseId, screenshotUrl) => {
-      if (!currentUserId) return;
-      const result = await apiEnroll(courseId, screenshotUrl);
-      if (result.ok) {
-        setData((d) => ({ ...d, enrollments: upsertEnrollment(d.enrollments, result.enrollment) }));
-      }
-    },
-    approveEnrollment: (requestId) => {
-      void setEnrollmentStatus(requestId, "accepted");
-    },
-    setEnrollmentStatus,
-    setLastLesson: (courseId, lessonId) => {
-      if (!currentUserId) return;
-      setData((d) => ({
-        ...d,
-        enrollments: d.enrollments.map((e) =>
-          e.courseId === courseId && e.studentId === currentUserId
-            ? { ...e, lastLessonId: lessonId, lastAccessedAt: nowIso() }
-            : e,
-        ),
-      }));
-    },
-    setLessonCompleted: (courseId, lessonId, completed) => {
-      if (!currentUserId) return;
-      // Persist to database
-      void apiUpsertProgress(courseId, lessonId, completed).catch(() => {
-        /* progress will still be in local state */
-      });
-      setData((d) => {
-        const others = d.progress.filter(
-          (p) => !(p.studentId === currentUserId && p.lessonId === lessonId),
-        );
-        const progress = completed
-          ? [
-              ...others,
-              {
-                id: uid("prog"),
-                studentId: currentUserId,
-                courseId,
-                lessonId,
-                completed: true,
-                completedAt: nowIso(),
-              },
-            ]
-          : others;
-
-        const sectionIds = d.sections.filter((s) => s.courseId === courseId).map((s) => s.id);
-        const total = d.lessons.filter(
-          (l) => sectionIds.includes(l.sectionId) && l.published,
-        ).length;
-        const done = progress.filter(
-          (p) => p.studentId === currentUserId && p.courseId === courseId && p.completed,
-        ).length;
-        const isComplete = total > 0 && done >= total;
-
-        return {
+          categories: [...d.categories, { id: uid("cat"), name, description, createdAt: nowIso() }],
+        })),
+      updateCategory: (id, patch) =>
+        setData((d) => ({
           ...d,
-          progress,
+          categories: d.categories.map((c) => (c.id === id ? { ...c, ...patch } : c)),
+        })),
+      deleteCategory: (id) => {
+        if (data.courses.some((c) => c.categoryId === id))
+          return { ok: false, error: "This category is used by one or more courses." };
+        setData((d) => ({ ...d, categories: d.categories.filter((c) => c.id !== id) }));
+        return { ok: true };
+      },
+
+      createCourse: async (input) => {
+        const course = await apiCreateCourse(input as Record<string, unknown>);
+        setData((d) => ({ ...d, courses: [course, ...d.courses] }));
+        return course;
+      },
+      updateCourse: async (id, patch) => {
+        const updated = await apiUpdateCourse(id, patch as Record<string, unknown>);
+        setData((d) => ({
+          ...d,
+          courses: d.courses.map((c) => (c.id === id ? { ...c, ...updated } : c)),
+        }));
+      },
+      deleteCourse: async (id) => {
+        await apiDeleteCourse(id);
+        setData((d) => {
+          const sectionIds = d.sections.filter((s) => s.courseId === id).map((s) => s.id);
+          return {
+            ...d,
+            courses: d.courses.filter((c) => c.id !== id),
+            sections: d.sections.filter((s) => s.courseId !== id),
+            lessons: d.lessons.filter((l) => !sectionIds.includes(l.sectionId)),
+            enrollments: d.enrollments.filter((e) => e.courseId !== id),
+            progress: d.progress.filter((p) => p.courseId !== id),
+          };
+        });
+      },
+      toggleCourseStatus: async (id) => {
+        const course = data.courses.find((c) => c.id === id);
+        if (!course) return;
+        const next = course.status === "published" ? "draft" : "published";
+        const updated = await apiSetCourseStatus(id, next);
+        setData((d) => ({
+          ...d,
+          courses: d.courses.map((c) => (c.id === id ? { ...c, ...updated } : c)),
+        }));
+      },
+
+      createSection: async (courseId, title) => {
+        const section = await apiCreateSection(courseId, title);
+        setData((d) => ({ ...d, sections: [...d.sections, section] }));
+      },
+      updateSection: async (id, title) => {
+        await apiUpdateSection(id, title);
+        setData((d) => ({
+          ...d,
+          sections: d.sections.map((s) => (s.id === id ? { ...s, title } : s)),
+        }));
+      },
+      deleteSection: async (id) => {
+        await apiDeleteSection(id);
+        setData((d) => ({
+          ...d,
+          sections: d.sections.filter((s) => s.id !== id),
+          lessons: d.lessons.filter((l) => l.sectionId !== id),
+        }));
+      },
+      moveSection: async (id, dir) => {
+        const siblings = await apiMoveSection(id, dir);
+        if (!siblings) return;
+        setData((d) => ({
+          ...d,
+          sections: d.sections.map((s) => siblings.find((x) => x.id === s.id) ?? s),
+        }));
+      },
+
+      createLesson: async (sectionId, input) => {
+        const result = await apiCreateLesson(sectionId, input);
+        if (!result.ok) return { ok: false, error: result.error };
+        setData((d) => ({ ...d, lessons: [...d.lessons, result.lesson] }));
+        return { ok: true };
+      },
+      updateLesson: async (id, patch) => {
+        try {
+          const updated = await apiUpdateLesson(id, patch as Record<string, unknown>);
+          setData((d) => ({
+            ...d,
+            lessons: d.lessons.map((l) => (l.id === id ? { ...l, ...updated } : l)),
+          }));
+          return { ok: true };
+        } catch (e) {
+          return {
+            ok: false,
+            error: e instanceof Error ? e.message : "Could not update the lesson",
+          };
+        }
+      },
+      deleteLesson: async (id) => {
+        await apiDeleteLesson(id);
+        setData((d) => ({
+          ...d,
+          lessons: d.lessons.filter((l) => l.id !== id),
+          progress: d.progress.filter((p) => p.lessonId !== id),
+        }));
+      },
+      moveLesson: async (id, dir) => {
+        const siblings = await apiMoveLesson(id, dir);
+        if (!siblings) return;
+        setData((d) => ({
+          ...d,
+          lessons: d.lessons.map((l) => siblings.find((x) => x.id === l.id) ?? l),
+        }));
+      },
+
+      enroll: async (courseId): Promise<boolean> => {
+        if (!currentUserId) return false;
+        const result = await apiEnroll(courseId);
+        if (result.ok) {
+          setData((d) => ({
+            ...d,
+            enrollments: upsertEnrollment(d.enrollments, result.enrollment),
+          }));
+          return true;
+        }
+        return false;
+      },
+      requestEnrollment: async (courseId, screenshotUrl) => {
+        if (!currentUserId) return;
+        const result = await apiEnroll(courseId, screenshotUrl);
+        if (result.ok) {
+          setData((d) => ({
+            ...d,
+            enrollments: upsertEnrollment(d.enrollments, result.enrollment),
+          }));
+        }
+      },
+      approveEnrollment: (requestId) => {
+        void setEnrollmentStatus(requestId, "accepted");
+      },
+      setEnrollmentStatus,
+      setLastLesson: (courseId, lessonId) => {
+        if (!currentUserId) return;
+        setData((d) => ({
+          ...d,
           enrollments: d.enrollments.map((e) =>
             e.courseId === courseId && e.studentId === currentUserId
-              ? {
-                  ...e,
-                  status: isComplete ? "completed" : "in_progress",
-                  completedAt: isComplete ? (e.completedAt ?? nowIso()) : null,
-                  lastLessonId: lessonId,
-                  lastAccessedAt: nowIso(),
-                }
+              ? { ...e, lastLessonId: lessonId, lastAccessedAt: nowIso() }
               : e,
           ),
+        }));
+      },
+      setLessonCompleted: (courseId, lessonId, completed) => {
+        if (!currentUserId) return;
+        // Persist to database
+        void apiUpsertProgress(courseId, lessonId, completed).catch(() => {
+          /* progress will still be in local state */
+        });
+        setData((d) => {
+          const others = d.progress.filter(
+            (p) => !(p.studentId === currentUserId && p.lessonId === lessonId),
+          );
+          const progress = completed
+            ? [
+                ...others,
+                {
+                  id: uid("prog"),
+                  studentId: currentUserId,
+                  courseId,
+                  lessonId,
+                  completed: true,
+                  completedAt: nowIso(),
+                },
+              ]
+            : others;
+
+          const sectionIds = d.sections.filter((s) => s.courseId === courseId).map((s) => s.id);
+          const total = d.lessons.filter(
+            (l) => sectionIds.includes(l.sectionId) && l.published,
+          ).length;
+          const done = progress.filter(
+            (p) => p.studentId === currentUserId && p.courseId === courseId && p.completed,
+          ).length;
+          const isComplete = total > 0 && done >= total;
+
+          return {
+            ...d,
+            progress,
+            enrollments: d.enrollments.map((e) =>
+              e.courseId === courseId && e.studentId === currentUserId
+                ? {
+                    ...e,
+                    status: isComplete ? "completed" : "in_progress",
+                    completedAt: isComplete ? (e.completedAt ?? nowIso()) : null,
+                    lastLessonId: lessonId,
+                    lastAccessedAt: nowIso(),
+                  }
+                : e,
+            ),
+          };
+        });
+      },
+      setStudentActive: async (studentId, active) => {
+        try {
+          const updated = await apiUpdateStudent(studentId, { active });
+          setData((d) => ({
+            ...d,
+            users: d.users.map((u) => (u.id === studentId ? { ...u, active: updated.active } : u)),
+          }));
+        } catch {
+          /* ignore — caller handles messaging */
+        }
+      },
+      createStudent: async (name, email, password, whatsapp) => {
+        const input: CreateStudentInput = { name, email, password };
+        if (whatsapp !== undefined && whatsapp !== "") input.whatsapp = whatsapp;
+        const result = await apiCreateStudent(input);
+        if (!result.ok) return { ok: false, error: result.error };
+        const student: User = {
+          id: result.user.id,
+          name: result.user.name,
+          email: result.user.email,
+          role: "student",
+          active: result.user.active,
+          createdAt: result.user.createdAt,
         };
-      });
-    },
-    setStudentActive: async (studentId, active) => {
-      try {
-        const updated = await apiUpdateStudent(studentId, { active });
-        setData((d) => ({
-          ...d,
-          users: d.users.map((u) => (u.id === studentId ? { ...u, active: updated.active } : u)),
-        }));
-      } catch {
-        /* ignore — caller handles messaging */
-      }
-    },
-    createStudent: async (name, email, password, whatsapp) => {
-      const input: CreateStudentInput = { name, email, password };
-      if (whatsapp !== undefined && whatsapp !== "") input.whatsapp = whatsapp;
-      const result = await apiCreateStudent(input);
-      if (!result.ok) return { ok: false, error: result.error };
-      const student: User = {
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email,
-        role: "student",
-        active: result.user.active,
-        createdAt: result.user.createdAt,
-      };
-      if (result.user.whatsapp !== undefined) student.whatsapp = result.user.whatsapp;
-      setData((d) => ({ ...d, users: [...d.users, student] }));
-      return { ok: true };
-    },
-    updateStudent: async (id, patch) => {
-      try {
-        const updated = await apiUpdateStudent(id, patch);
-        setData((d) => ({
-          ...d,
-          users: d.users.map((u) => {
-            if (u.id !== id) return u;
-            const merged: User = {
-              ...u,
-              name: updated.name,
-              email: updated.email,
-              active: updated.active,
-            };
-            if (updated.whatsapp !== undefined) merged.whatsapp = updated.whatsapp;
-            return merged;
-          }),
-        }));
+        if (result.user.whatsapp !== undefined) student.whatsapp = result.user.whatsapp;
+        setData((d) => ({ ...d, users: [...d.users, student] }));
         return { ok: true };
-      } catch (e) {
-        return {
-          ok: false,
-          error: e instanceof Error ? e.message : "Could not update the student.",
-        };
-      }
-    },
-    changeStudentPassword: async (id, newPassword) => {
-      if (newPassword.length < 8) return { ok: false, error: "Use at least 8 characters." };
-      try {
-        await apiChangeStudentPassword(id, newPassword);
-        return { ok: true };
-      } catch (e) {
-        return {
-          ok: false,
-          error: e instanceof Error ? e.message : "Could not change the password.",
-        };
-      }
-    },
-    deleteStudent: async (id) => {
-      try {
-        await apiDeleteStudent(id);
-      } catch {
-        /* ignore */
-      }
-      setData((d) => ({
-        ...d,
-        users: d.users.filter((u) => u.id !== id),
-        enrollments: d.enrollments.filter((e) => e.studentId !== id),
-        progress: d.progress.filter((p) => p.studentId !== id),
-      }));
-    },
-
-    rejectEnrollment: (requestId) => {
-      void setEnrollmentStatus(requestId, "rejected");
-    },
-
-    deleteEnrollment: async (enrollmentId) => {
-      try {
-        await apiDeleteEnrollment(enrollmentId);
-      } catch {
-        /* ignore */
-      }
-      setData((d) => ({
-        ...d,
-        enrollments: d.enrollments.filter((e) => e.id !== enrollmentId),
-      }));
-    },
-
-    addReview: async (courseId, rating, content) => {
-      if (!currentUserId) return;
-      const user = data.users.find((u) => u.id === currentUserId);
-      if (!user) return;
-      try {
-        const review = await apiSubmitReview(courseId, rating, content);
-        // Optimistically add the review to local state instead of refetching entire catalog
+      },
+      updateStudent: async (id, patch) => {
+        try {
+          const updated = await apiUpdateStudent(id, patch);
+          setData((d) => ({
+            ...d,
+            users: d.users.map((u) => {
+              if (u.id !== id) return u;
+              const merged: User = {
+                ...u,
+                name: updated.name,
+                email: updated.email,
+                active: updated.active,
+              };
+              if (updated.whatsapp !== undefined) merged.whatsapp = updated.whatsapp;
+              return merged;
+            }),
+          }));
+          return { ok: true };
+        } catch (e) {
+          return {
+            ok: false,
+            error: e instanceof Error ? e.message : "Could not update the student.",
+          };
+        }
+      },
+      changeStudentPassword: async (id, newPassword) => {
+        if (newPassword.length < 8) return { ok: false, error: "Use at least 8 characters." };
+        try {
+          await apiChangeStudentPassword(id, newPassword);
+          return { ok: true };
+        } catch (e) {
+          return {
+            ok: false,
+            error: e instanceof Error ? e.message : "Could not change the password.",
+          };
+        }
+      },
+      deleteStudent: async (id) => {
+        try {
+          await apiDeleteStudent(id);
+        } catch {
+          /* ignore */
+        }
         setData((d) => ({
           ...d,
-          courses: d.courses.map((c) => {
-            if (c.id !== courseId) return c;
-            const newReview = {
-              id: review.id,
-              author: review.author,
-              role: "Student",
-              rating: review.rating,
-              content: review.content,
-              date: review.date,
-            };
-            const reviews = [...(c.reviews ?? []), newReview];
-            const reviewCount = reviews.length;
-            const avgRating = reviewCount > 0
-              ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) / 10
-              : 0;
-            return { ...c, reviews, reviewCount, rating: avgRating };
-          }),
+          users: d.users.filter((u) => u.id !== id),
+          enrollments: d.enrollments.filter((e) => e.studentId !== id),
+          progress: d.progress.filter((p) => p.studentId !== id),
         }));
-      } catch {
-        // silently fail — the review may already exist or enrollment may be missing
-      }
-    },
+      },
 
-    addResource: async (resource) => {
-      const created = await apiCreateResource(resource as CreateResourceInput);
-      setData((d) => ({ ...d, resources: [...d.resources, created] }));
-    },
+      rejectEnrollment: (requestId) => {
+        void setEnrollmentStatus(requestId, "rejected");
+      },
 
-    updateResource: async (id, patch) => {
-      const updated = await apiUpdateResource(id, patch as Partial<CreateResourceInput>);
-      setData((d) => ({
-        ...d,
-        resources: d.resources.map((r) => (r.id === id ? { ...r, ...updated } : r)),
-      }));
-    },
+      deleteEnrollment: async (enrollmentId) => {
+        try {
+          await apiDeleteEnrollment(enrollmentId);
+        } catch {
+          /* ignore */
+        }
+        setData((d) => ({
+          ...d,
+          enrollments: d.enrollments.filter((e) => e.id !== enrollmentId),
+        }));
+      },
 
-    deleteResource: async (id) => {
-      await apiDeleteResource(id);
-      setData((d) => ({
-        ...d,
-        resources: d.resources.filter((r) => r.id !== id),
-      }));
-    },
-  }), [ready, data, currentUser, syncCatalog, syncStudents, syncEnrollments, syncProgress, signIn, register, signOut]);
+      addReview: async (courseId, rating, content) => {
+        if (!currentUserId) return;
+        const user = data.users.find((u) => u.id === currentUserId);
+        if (!user) return;
+        try {
+          const review = await apiSubmitReview(courseId, rating, content);
+          // Optimistically add the review to local state instead of refetching entire catalog
+          setData((d) => ({
+            ...d,
+            courses: d.courses.map((c) => {
+              if (c.id !== courseId) return c;
+              const newReview = {
+                id: review.id,
+                author: review.author,
+                role: "Student",
+                rating: review.rating,
+                content: review.content,
+                date: review.date,
+              };
+              const reviews = [...(c.reviews ?? []), newReview];
+              const reviewCount = reviews.length;
+              const avgRating =
+                reviewCount > 0
+                  ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount) * 10) /
+                    10
+                  : 0;
+              return { ...c, reviews, reviewCount, rating: avgRating };
+            }),
+          }));
+        } catch {
+          // silently fail — the review may already exist or enrollment may be missing
+        }
+      },
+
+      addResource: async (resource) => {
+        const created = await apiCreateResource(resource as CreateResourceInput);
+        setData((d) => ({ ...d, resources: [...d.resources, created] }));
+      },
+
+      updateResource: async (id, patch) => {
+        const updated = await apiUpdateResource(id, patch as Partial<CreateResourceInput>);
+        setData((d) => ({
+          ...d,
+          resources: d.resources.map((r) => (r.id === id ? { ...r, ...updated } : r)),
+        }));
+      },
+
+      deleteResource: async (id) => {
+        await apiDeleteResource(id);
+        setData((d) => ({
+          ...d,
+          resources: d.resources.filter((r) => r.id !== id),
+        }));
+      },
+    }),
+    [
+      ready,
+      data,
+      currentUser,
+      syncCatalog,
+      syncStudents,
+      syncEnrollments,
+      syncProgress,
+      signIn,
+      register,
+      signOut,
+    ],
+  );
 
   return <LmsContext.Provider value={value}>{children}</LmsContext.Provider>;
 }

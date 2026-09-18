@@ -465,7 +465,7 @@ function AdminStudents() {
           });
           return (
             <AlertDialog open onOpenChange={(o) => !o && setDetailsId(null)}>
-              <AlertDialogContent className="sm:max-w-sm max-h-[90vh] overflow-y-auto">
+              <AlertDialogContent className="sm:max-w-md w-full max-h-[90vh] overflow-y-auto overflow-x-hidden">
                 <button
                   onClick={() => setDetailsId(null)}
                   className="absolute right-4 top-4 z-10 rounded-[5px] opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
@@ -474,21 +474,21 @@ function AdminStudents() {
                   <span className="sr-only">Close</span>
                 </button>
 
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{u.name}</AlertDialogTitle>
+                <AlertDialogHeader className="min-w-0">
+                  <AlertDialogTitle className="truncate pr-6">{u.name}</AlertDialogTitle>
                   <AlertDialogDescription>Student Details</AlertDialogDescription>
                 </AlertDialogHeader>
 
-                <div className="space-y-3">
-                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                <div className="space-y-3 min-w-0">
+                  <div className="rounded-lg bg-muted/50 px-4 py-3 min-w-0">
                     <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Email</p>
-                    <p className="mt-0.5 text-sm font-medium">{u.email}</p>
+                    <p className="mt-0.5 text-sm font-medium break-all">{u.email}</p>
                   </div>
-                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                  <div className="rounded-lg bg-muted/50 px-4 py-3 min-w-0">
                     <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">WhatsApp</p>
-                    <p className="mt-0.5 text-sm font-medium">{u.whatsapp || "—"}</p>
+                    <p className="mt-0.5 text-sm font-medium break-all">{u.whatsapp || "—"}</p>
                   </div>
-                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                  <div className="rounded-lg bg-muted/50 px-4 py-3 min-w-0">
                     <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">Joined</p>
                     <p className="mt-0.5 text-sm font-medium">
                       {new Date(u.createdAt).toLocaleDateString("en-US", {
@@ -498,22 +498,24 @@ function AdminStudents() {
                       })}
                     </p>
                   </div>
-                  <div className="rounded-lg bg-muted/50 px-4 py-3">
+                  <div className="rounded-lg bg-muted/50 px-4 py-3 min-w-0 overflow-hidden">
                     <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
                       Enrolled Classes ({enrolledCourses.length})
                     </p>
                     {enrolledCourses.length > 0 ? (
-                      <ul className="mt-1.5 space-y-1">
+                      <ul className="mt-2 space-y-2 divide-y divide-border/40">
                         {enrolledCourses.map((e) => (
-                          <li key={e.id} className="flex items-center justify-between text-sm">
-                            <span className="font-medium truncate">{e.courseTitle}</span>
+                          <li key={e.id} className="flex items-start justify-between gap-3 pt-2.5 first:pt-0 min-w-0 w-full">
+                            <span className="font-medium text-sm text-foreground leading-snug break-words min-w-0 flex-1">
+                              {e.courseTitle}
+                            </span>
                             <span
-                              className={`ml-2 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                              className={`shrink-0 mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                                 e.accessStatus === "accepted"
-                                  ? "bg-emerald-100 text-emerald-700"
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300"
                                   : e.accessStatus === "rejected"
-                                    ? "bg-red-100 text-red-700"
-                                    : "bg-yellow-100 text-yellow-700"
+                                    ? "bg-red-100 text-red-700 dark:bg-red-950/70 dark:text-red-300"
+                                    : "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/70 dark:text-yellow-300"
                               }`}
                             >
                               {e.accessStatus}

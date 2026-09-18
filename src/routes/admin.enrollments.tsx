@@ -296,6 +296,7 @@ function EnrollmentDetailDialog({
   if (!enrollment) return null;
 
   const student = data.users.find((u) => u.id === enrollment.studentId);
+  const course = data.courses.find((c) => c.id === enrollment.courseId);
   const accessStatus: EnrollmentState = enrollment.accessStatus ?? "pending";
   const isPending = accessStatus === "pending";
   const paymentScreenshot = enrollment.paymentScreenshot ?? getPaymentScreenshot(enrollment.studentId, enrollment.courseId);
@@ -310,17 +311,33 @@ function EnrollmentDetailDialog({
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </button>
-        <div className="px-6 pt-6 pb-4">
-          <h2 className="text-lg font-bold tracking-tight">Student Details</h2>
+        <div className="border-b border-border px-6 pt-6 pb-4">
+          <h2 className="text-lg font-bold tracking-tight">Enrollment Details</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            View student information and applied course details
+          </p>
         </div>
 
-        <div className="px-6 pb-5 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[1fr_260px] lg:gap-5">
-          {/* Left: Student Info */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-1 lg:gap-3">
+        <div className="px-6 py-5 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-[1fr_260px] lg:gap-5">
+          {/* Left: Course & Student Info */}
+          <div className="space-y-3">
+            {/* Course Card */}
+            <div className="rounded-lg border border-primary/20 bg-primary-soft/40 p-3.5">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-primary shrink-0" />
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">
+                  Applied Course
+                </p>
+              </div>
+              <p className="mt-1.5 text-sm font-bold text-foreground">
+                {course?.title ?? "Deleted / Unknown Course"}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
               <div className="rounded-lg bg-muted/50 px-4 py-3">
                 <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Name
+                  Student Name
                 </p>
                 <p className="mt-0.5 text-sm font-medium truncate">{student?.name ?? "Unknown"}</p>
               </div>
@@ -338,13 +355,23 @@ function EnrollmentDetailDialog({
               </div>
               <div className="rounded-lg bg-muted/50 px-4 py-3">
                 <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  Date
+                  Status
+                </p>
+                <div className="mt-1">
+                  <StatusPill status={accessStatus} />
+                </div>
+              </div>
+              <div className="col-span-2 rounded-lg bg-muted/50 px-4 py-3">
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  Applied Date
                 </p>
                 <p className="mt-0.5 text-sm font-medium">
                   {new Date(enrollment.enrolledAt).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                     year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   })}
                 </p>
               </div>
@@ -352,12 +379,12 @@ function EnrollmentDetailDialog({
           </div>
 
           {/* Right: Payment Screenshot */}
-          <div className="rounded-lg bg-muted/50 px-4 py-3">
+          <div className="rounded-lg bg-muted/50 px-4 py-3 flex flex-col">
             <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               Payment Screenshot
             </p>
             {paymentScreenshot ? (
-              <div className="mt-2 overflow-hidden rounded-lg border border-border">
+              <div className="mt-2 overflow-hidden rounded-lg border border-border flex-1 flex items-center justify-center bg-black/5">
                 <img
                   src={paymentScreenshot}
                   alt="Payment Screenshot"
@@ -365,7 +392,9 @@ function EnrollmentDetailDialog({
                 />
               </div>
             ) : (
-              <p className="mt-0.5 text-sm text-muted-foreground italic">No screenshot uploaded</p>
+              <div className="mt-2 flex-1 flex items-center justify-center p-4">
+                <p className="text-sm text-muted-foreground italic text-center">No screenshot uploaded</p>
+              </div>
             )}
           </div>
         </div>

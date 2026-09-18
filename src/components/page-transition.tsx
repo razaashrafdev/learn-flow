@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageTransitionProps {
@@ -7,25 +7,10 @@ interface PageTransitionProps {
 }
 
 export function PageTransition({ children, className }: PageTransitionProps) {
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsVisible(false);
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 50);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <div
-      className={cn(
-        "transition-all duration-300 ease-out",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
-        className
-      )}
-    >
+    <div className={cn("w-full", className)}>
       {children}
     </div>
   );
 }
+

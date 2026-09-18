@@ -42,7 +42,8 @@ export function CourseCard({
   const detailTo = appLink ? "/app/courses/$slug" : "/courses/$slug";
   const isRejected = enrollmentStatus === "rejected";
   const isPending = pending || enrollmentStatus === "pending";
-  const displayDuration = (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
+  const displayDuration =
+    (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
   return (
     <article className="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-pop">
       <Link
@@ -54,14 +55,13 @@ export function CourseCard({
           src={course.thumbnail}
           alt={`${course.title} cover`}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
         />
         <span
           className={cn(
             "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
-            course.courseType === "live"
-              ? "bg-red-500/90 text-white"
-              : "bg-gray-500/90 text-white",
+            course.courseType === "live" ? "bg-red-500/90 text-white" : "bg-gray-500/90 text-white",
           )}
         >
           {course.courseType === "live" ? "Live" : "Recorded"}
@@ -83,7 +83,9 @@ export function CourseCard({
             {course.title}
           </Link>
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{course.shortDescription}</p>
+        <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
+          {course.shortDescription}
+        </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
@@ -93,7 +95,13 @@ export function CourseCard({
             <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
-            <Tag className="h-3.5 w-3.5" /> <Link to="/about" className="text-primary hover:text-primary underline transition-colors">{course.instructor}</Link>
+            <Tag className="h-3.5 w-3.5" />{" "}
+            <Link
+              to="/about"
+              className="text-primary hover:text-primary underline transition-colors"
+            >
+              {course.instructor}
+            </Link>
           </span>
         </div>
 
@@ -140,7 +148,8 @@ export function LandingCourseCard({
   lessonCount: number;
   lessons?: Lesson[];
 }) {
-  const displayDuration = (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
+  const displayDuration =
+    (lessons && lessons.length > 0 ? formatLessonsDuration(lessons) : "") || course.duration;
   return (
     <div className="card-surface group flex flex-col overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <Link
@@ -154,15 +163,14 @@ export function LandingCourseCard({
           src={course.thumbnail}
           alt={`${course.title} cover`}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
         <span
           className={cn(
             "absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-bold backdrop-blur-sm",
-            course.courseType === "live"
-              ? "bg-red-500/90 text-white"
-              : "bg-gray-500/90 text-white",
+            course.courseType === "live" ? "bg-red-500/90 text-white" : "bg-gray-500/90 text-white",
           )}
         >
           {course.courseType === "live" ? "Live" : "Recorded"}
@@ -174,11 +182,18 @@ export function LandingCourseCard({
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary transition-colors">
-          <Link to="/courses/$slug" params={{ slug: course.slug }} target="_blank" rel="noopener noreferrer">
+          <Link
+            to="/courses/$slug"
+            params={{ slug: course.slug }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {course.title}
           </Link>
         </h3>
-        <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{course.shortDescription}</p>
+        <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
+          {course.shortDescription}
+        </p>
 
         <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
@@ -188,13 +203,28 @@ export function LandingCourseCard({
             <Clock className="h-3.5 w-3.5" /> {displayDuration}
           </span>
           <span className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5" /> <Link to="/about" className="text-primary hover:text-primary underline transition-colors">{course.instructor}</Link>
+            <Users className="h-3.5 w-3.5" />{" "}
+            <Link
+              to="/about"
+              className="text-primary hover:text-primary underline transition-colors"
+            >
+              {course.instructor}
+            </Link>
           </span>
         </div>
 
         <div className="mt-5">
-          <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-            <Link to="/courses/$slug" params={{ slug: course.slug }} target="_blank" rel="noopener noreferrer">
+          <Button
+            asChild
+            variant="outline"
+            className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+          >
+            <Link
+              to="/courses/$slug"
+              params={{ slug: course.slug }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               View Details <ChevronRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>

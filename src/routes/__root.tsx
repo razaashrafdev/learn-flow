@@ -70,8 +70,7 @@ export const Route = createRootRoute({
       { property: "og:title", content: "Hamza Visuals LMS — Learn at your own pace" },
       {
         property: "og:description",
-        content:
-          "A simple, modern learning platform with video lessons and progress tracking.",
+        content: "A simple, modern learning platform with video lessons and progress tracking.",
       },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "/images/favicon.PNG" },
@@ -80,6 +79,34 @@ export const Route = createRootRoute({
       { name: "msapplication-TileImage", content: "/images/favicon.PNG" },
     ],
     links: [
+      {
+        rel: "preload",
+        href: "/fonts/HelveticaNowText-Regular.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/HelveticaNowText-Bold.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/HelveticaNowText-ExtraBold.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: "/fonts/HelveticaNowText-Medium.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "stylesheet", href: appCss },
       { rel: "icon", type: "image/png", href: "/images/favicon.PNG" },
       { rel: "apple-touch-icon", href: "/images/favicon.PNG" },
@@ -119,16 +146,16 @@ function RootComponent() {
       : undefined;
 
   return (
-      <ThemeProvider>
-        <LmsProvider>
-          {showHeader ? <SiteHeader activeSection={activeSection} /> : null}
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <PageTransition>
-            <Outlet />
-          </PageTransition>
-          <Toaster position="bottom-right" richColors />
-          {pathname === "/" && <WebsitePopup />}
-        </LmsProvider>
-      </ThemeProvider>
+    <ThemeProvider>
+      <LmsProvider>
+        {showHeader ? <SiteHeader activeSection={activeSection} /> : null}
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
+        <Toaster position="bottom-right" richColors />
+        {pathname === "/" && <WebsitePopup />}
+      </LmsProvider>
+    </ThemeProvider>
   );
 }

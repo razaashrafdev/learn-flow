@@ -115,33 +115,42 @@ export function AppShell({
       <div
         className={cn("flex items-center gap-2.5 px-5 py-5", collapsed && "justify-center px-0")}
       >
-        {collapsed ? (
-          <>
-            <img
-              src="/images/black sidebar.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto shrink-0 dark:hidden"
-            />
-            <img
-              src="/images/white sidebar.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto shrink-0 hidden dark:block"
-            />
-          </>
-        ) : (
-          <>
-            <img
-              src="/images/Black-Logo.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto shrink-0 dark:hidden"
-            />
-            <img
-              src="/images/White-Logo.png"
-              alt="Hamza Visuals"
-              className="h-9 w-auto shrink-0 hidden dark:block"
-            />
-          </>
-        )}
+        <Link
+          to="/"
+          className={cn(
+            "flex items-center gap-2.5 transition-opacity hover:opacity-85 cursor-pointer",
+            collapsed && "justify-center"
+          )}
+          title="Hamza Visuals Home"
+        >
+          {collapsed ? (
+            <>
+              <img
+                src="/images/black sidebar.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto shrink-0 dark:hidden"
+              />
+              <img
+                src="/images/white sidebar.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto shrink-0 hidden dark:block"
+              />
+            </>
+          ) : (
+            <>
+              <img
+                src="/images/Black-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto shrink-0 dark:hidden"
+              />
+              <img
+                src="/images/White-Logo.png"
+                alt="Hamza Visuals"
+                className="h-9 w-auto shrink-0 hidden dark:block"
+              />
+            </>
+          )}
+        </Link>
         <button
           type="button"
           onClick={() => setOpen(false)}
